@@ -109,11 +109,64 @@ body {
 .header {
   padding: var(--space-md) 0;
   text-align: center;
+  position: relative;
 }
 
 .logo {
   height: 120px;
   width: auto;
+}
+
+.header-menu {
+  position: absolute;
+  top: 50%;
+  right: var(--space-md);
+  transform: translateY(-50%);
+}
+
+.menu-dots {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.menu-dots:hover {
+  background: var(--bg-card);
+}
+
+.menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  min-width: 140px;
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.menu-item {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  padding: var(--space-md);
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition-fast);
+}
+
+.menu-item:hover {
+  background: var(--bg-card-hover);
+  color: var(--accent);
 }
 
 /* ============================================
@@ -124,9 +177,9 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  padding: var(--space-md) 0;
-  justify-content: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg) 0 var(--space-md) 0;
+  justify-content: flex-start;
 }
 
 .menu-card {
@@ -181,6 +234,34 @@ body {
 
 .menu-card-arrow {
   font-size: 1.25rem;
+  color: var(--accent);
+}
+
+.exit-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-md);
+  margin-top: var(--space-md);
+}
+
+.exit-text {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+.exit-arrow {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.exit-link:hover .exit-text,
+.exit-link:hover .exit-arrow {
   color: var(--accent);
 }
 

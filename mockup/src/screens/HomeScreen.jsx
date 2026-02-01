@@ -1,4 +1,4 @@
-export default function HomeScreen({ onVenda, onInventario, onProdutos, onFinanceiro }) {
+export default function HomeScreen({ onVenda, onInventario, onProdutos, onFinanceiro, onSair }) {
     return (
         <div className="home-screen">
             {/* Venda */}
@@ -36,6 +36,12 @@ export default function HomeScreen({ onVenda, onInventario, onProdutos, onFinanc
                 </div>
                 <p className="menu-card-subtitle">Controle de pagamentos</p>
             </div>
+
+            {/* Link Sair */}
+            <button className="exit-link" onClick={onSair}>
+                <span className="exit-text">Sair</span>
+                <span className="exit-arrow">→</span>
+            </button>
         </div>
     )
 }

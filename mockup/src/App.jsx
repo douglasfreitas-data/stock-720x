@@ -18,6 +18,7 @@ function App() {
   const [scannerMode, setScannerMode] = useState(null) // 'sale' or 'inventory'
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [saleData, setSaleData] = useState(null)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   // Toast
   const [toast, setToast] = useState(null)
@@ -25,6 +26,12 @@ function App() {
   const showToast = (message, type = 'info') => {
     setToast({ message, type })
     setTimeout(() => setToast(null), 3000)
+  }
+
+  const handleExit = () => {
+    window.close()
+    // Fallback se window.close não funcionar (navegador bloqueia)
+    window.location.href = 'about:blank'
   }
 
   // Handlers
@@ -101,6 +108,7 @@ function App() {
           onInventario={() => openScanner('inventory')}
           onProdutos={() => setCurrentScreen('products')}
           onFinanceiro={() => setCurrentScreen('finance')}
+          onSair={handleExit}
         />
       )}
 

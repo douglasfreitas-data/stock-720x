@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
 
-export default function ScannerModal({ mode, onClose, onScan }) {
+export default function ScannerModal({ mode, cartCount = 0, onClose, onScan, onViewCart }) {
     const [barcode, setBarcode] = useState('')
     const [scannerReady, setScannerReady] = useState(false)
     const [isScanning, setIsScanning] = useState(false)
@@ -11,6 +11,7 @@ export default function ScannerModal({ mode, onClose, onScan }) {
     const initRef = useRef(false)
 
     const title = mode === 'sale' ? 'Escanear para Venda' : 'Escanear para Inventário'
+    const isSaleMode = mode === 'sale'
 
     // First step: show the container
     const prepareScanner = () => {
@@ -99,7 +100,15 @@ export default function ScannerModal({ mode, onClose, onScan }) {
             <div className="modal-header">
                 <button className="modal-close" onClick={handleClose}>←</button>
                 <h3 className="modal-title">{title}</h3>
-                <div style={{ width: 40 }}></div>
+                {/* Cart Button with Badge (only in sale mode) */}
+                {isSaleMode && cartCount > 0 ? (
+                    <button className="cart-header-btn" onClick={onViewCart}>
+                        🛒
+                        <span className="cart-badge">{cartCount}</span>
+                    </button>
+                ) : (
+                    <div style={{ width: 40 }}></div>
+                )}
             </div>
 
             <div className="modal-body">
@@ -194,6 +203,13 @@ export default function ScannerModal({ mode, onClose, onScan }) {
                         </button>
                     </div>
                 </div>
+
+                {/* View Cart Button (only in sale mode with items) */}
+                {isSaleMode && cartCount > 0 && (
+                    <button className="btn-view-cart" onClick={onViewCart}>
+                        🛒 Ver Carrinho ({cartCount} {cartCount === 1 ? 'item' : 'itens'})
+                    </button>
+                )}
             </div>
         </div>
     )

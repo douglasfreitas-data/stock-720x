@@ -12,7 +12,7 @@ export const products = [
         minStock: 5,
         category: "Dedeiras",
         brand: "Avalon",
-        image: "/dedeira-avalon.webp"
+        image: "/Dedeira Avalon Tec One.webp"
     },
     {
         id: 2,
@@ -26,7 +26,7 @@ export const products = [
         minStock: 15,
         category: "Flechas montadas",
         brand: "Avalon",
-        image: "https://d2r9epyceweg5n.cloudfront.net/stores/001/513/699/products/avalon-hybrid-arrow-2-7c2c61a0a3fb7c77e716719693754730-1024-1024.webp"
+        image: "/Flechas Avalon Hybrid.webp"
     },
     {
         id: 3,
@@ -40,7 +40,7 @@ export const products = [
         minStock: 30,
         category: "Nocks",
         brand: "720x",
-        image: "https://d2r9epyceweg5n.cloudfront.net/stores/001/513/699/products/bortonock-campadrao21-43467f3ad19d7e1ad816719742012970-480-0.webp"
+        image: "/BortoNock - 720x.webp"
     },
     {
         id: 4,
@@ -54,7 +54,7 @@ export const products = [
         minStock: 2,
         category: "Dragon 8",
         brand: "Sanlida",
-        image: "https://d2r9epyceweg5n.cloudfront.net/stores/001/513/699/products/fotodragonx81-4aa8ecc3dd2dab99a816716089232959-480-0.webp"
+        image: "/Kit Pro Dragon X8 (Preto) - Sanlida.webp"
     },
     {
         id: 5,
@@ -68,21 +68,21 @@ export const products = [
         minStock: 3,
         category: "Kits",
         brand: "Jandao",
-        image: "https://d2r9epyceweg5n.cloudfront.net/stores/001/513/699/products/fotomagnesio-eb3acb5e0e16f4f12016703015161011-480-0.webp"
+        image: "/Arco Recurvo Escola (Magnésio) - Jandao.webp"
     },
     {
         id: 6,
-        name: "Riser ILF Astral V2 - Core",
-        sku: "RIS-AST-006",
+        name: "OUTDOOR COMPOSTO - Alvo oficial WA 80cm (10 unidades)",
+        sku: "ALV-OUT-006",
         barcode: "7891234567005",
-        price: 1150.00,
-        priceDiscount: 1035.00,
-        costPrice: 550.00,
-        stock: 5,
-        minStock: 2,
-        category: "Punhos",
-        brand: "Core",
-        image: "https://d2r9epyceweg5n.cloudfront.net/stores/001/513/699/products/fotoastralv2-1-ed4e67a59b25c0dd7b16715933259892-480-0.webp"
+        price: 89.00,
+        priceDiscount: 80.10,
+        costPrice: 40.00,
+        stock: 25,
+        minStock: 10,
+        category: "Alvos",
+        brand: "Avalon",
+        image: "/OUTDOOR COMPOSTO - Alvo oficial WA 80cm (10 unidades) - Avalon.webp"
     }
 ];
 

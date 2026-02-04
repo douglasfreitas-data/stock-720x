@@ -1,0 +1,6 @@
+{
+    "buildCommand": "cd mockup && npm install && npm run build",
+    "outputDirectory": "mockup/dist",
+    "installCommand": "cd mockup && npm install",
+    "framework": "vite"
+}

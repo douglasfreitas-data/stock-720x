@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
         }
 
         const response = NextResponse.redirect(
-            new URL('/dashboard?auth=success', request.url)
+            new URL('/?auth=success', request.url)
         );
 
         // Salva o token em cookie httpOnly (backup e compatibilidade)

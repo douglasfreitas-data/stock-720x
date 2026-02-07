@@ -16,18 +16,9 @@ export async function POST(request: NextRequest) {
     }
 
     try {
-        // Recuperar credenciais do cookie para o sync (precisamos do token bruto)
-        // O client já tem, mas por design da lib sync, passamos explicitamente
-        const cookieStore = await cookies();
-        const tokenCookie = cookieStore.get('nuvemshop_token');
-        const tokenData = JSON.parse(tokenCookie?.value || '{}');
-
-        if (!tokenData.access_token) {
-            throw new Error('Token inválido');
-        }
-
         // 2. Executar Sincronização
-        const count = await syncAllProducts(tokenData.store_id, tokenData.access_token);
+        // Usa as credenciais diretamente do cliente autenticado (seja via cookie ou DB fallback)
+        const count = await syncAllProducts(client.getStoreId(), client.getAccessToken());
 
         return NextResponse.json({
             success: true,

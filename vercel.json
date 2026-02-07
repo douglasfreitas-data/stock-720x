@@ -1,6 +1,15 @@
 {
-    "buildCommand": "cd mockup && npm install && npm run build",
-    "outputDirectory": "mockup/dist",
-    "installCommand": "cd mockup && npm install",
-    "framework": "vite"
+    "version": 2,
+    "builds": [
+        {
+            "src": "app/package.json",
+            "use": "@vercel/next"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/app/$1"
+        }
+    ]
 }

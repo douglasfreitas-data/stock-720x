@@ -1,0 +1,85 @@
+# Análise: Tipo de Aplicativo Nuvemshop para Stock 720x
+
+## Contexto
+
+O projeto Stock 720x é um **PDV Mobile + Controle de Estoque** que precisa sincronizar com a Nuvemshop. A questão é definir qual tipo de aplicativo é mais adequado: **Incorporado** ou **Externo**.
+
+---
+
+## Comparativo dos Tipos de Aplicativos
+
+| Aspecto | Incorporado | Externo |
+|---------|-------------|---------|
+| **Onde roda** | Iframe dentro do Admin Nuvemshop | Aplicação independente (PWA, mobile, web) |
+| **UI obrigatória** | Nimbus (Design System Nuvemshop) | Livre escolha |
+| **Tecnologia** | React obrigatório + Nexo SDK | Qualquer stack |
+| **Autenticação** | Nexo + Session Token | OAuth2 padrão |
+| **Uso típico** | Extensões do painel admin | ERPs, PDVs, apps mobile |
+| **Complexidade** | Maior (Nimbus, Nexo, iframe) | Menor (só API REST) |
+| **PWA/Mobile** | ❌ Não suportado | ✅ Suportado |
+| **Template disponível** | React + Nimbus + Nexo | Node.js + Express |
+
+---
+
+## Análise para o Stock 720x
+
+### Requisitos do Projeto:
+1. ✅ **PWA Mobile** - Usuário usa pelo celular na loja física
+2. ✅ **Scanner de câmera** - Leitura de códigos de barras
+3. ✅ **Sincronização de estoque** - API de produtos (read/write)
+4. ✅ **Webhooks** - Receber notificações de vendas online
+5. ✅ **Operação autônoma** - Funcionar independente do painel Nuvemshop
+
+### Por que **Aplicativo Externo** é a escolha certa:
+
+| Requisito | Incorporado | Externo |
+|-----------|:-----------:|:-------:|
+| PWA instalável no celular | ❌ | ✅ |
+| Usar câmera para scanner | ❌ | ✅ |
+| Design customizado (já temos mockup) | ❌ | ✅ |
+| Uso fora do navegador admin | ❌ | ✅ |
+| API REST para produtos/estoque | ✅ | ✅ |
+| Receber webhooks | ✅ | ✅ |
+
+> [!IMPORTANT]
+> **Aplicativos Incorporados são projetados para rodar DENTRO do painel admin da Nuvemshop**, usando iframe e design system obrigatório. O Stock 720x precisa ser um **app independente usado no celular pelo vendedor**, o que torna o tipo Externo a única opção viável.
+
+---
+
+## Recomendação Final
+
+### ✅ **Aplicativo Externo** 
+
+**Justificativa:**
+- O Stock 720x é um **PDV Mobile** que roda no celular do vendedor, não dentro do admin
+- Já temos um **mockup PWA** com design próprio - não faz sentido refazer com Nimbus
+- Precisamos de acesso à **câmera** para scanner - impossível em iframe
+- A documentação oficial cita explicitamente "gerenciamento de estoque" como caso de uso de apps externos
+
+### Escopos de API necessários:
+```
+read_products / write_products  → Sincronizar produtos e estoque
+read_orders                     → Receber vendas online via webhook
+```
+
+### Próximos Passos:
+1. Criar conta no [Painel de Parceiros Nuvemshop](https://partners.nuvemshop.com.br/)
+2. Registrar aplicativo externo com escopos de produtos e orders
+3. Implementar fluxo OAuth2 para autenticação
+4. Desenvolver integração com API REST
+
+---
+
+## Verificação
+
+Este documento é uma **análise de arquitetura** e não requer verificação técnica. A decisão será validada durante a implementação.
+
+---
+
+## Fontes Consultadas
+
+- [DevHub Nuvemshop - Primeiros Passos](https://dev.nuvemshop.com.br/docs/getting-started)
+- [DevHub - Aplicativos Externos](https://dev.nuvemshop.com.br/docs/applications/standalone)
+- [DevHub - Aplicativos Incorporados](https://dev.nuvemshop.com.br/docs/applications/native)
+- [API Authentication](https://tiendanube.github.io/api-documentation/authentication)
+- Template de referência: [tiendanube-app-standalone-template-node](https://github.com/TiendaNube/tiendanube-app-standalone-template-node)

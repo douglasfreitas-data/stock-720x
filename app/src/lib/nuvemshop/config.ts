@@ -14,9 +14,10 @@ export const NUVEMSHOP_CONFIG = {
 
     // Escopos necessários para o app
     SCOPES: [
-        'read_products',
-        'write_products',
-        'read_orders',
+        'read_products',    // Ler produtos da loja
+        'write_products',   // Atualizar produtos e estoque
+        'read_orders',      // Ler pedidos (webhook de vendas online)
+        'write_orders',     // Confirmar pedidos (futuro)
     ].join(','),
 } as const;
 

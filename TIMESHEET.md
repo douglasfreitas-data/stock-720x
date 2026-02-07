@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 2.5h | 🔄 Em andamento |
-| **Total** | **20.5h** | - |
+| Desenvolvimento | 4h | 🔄 Em andamento |
+| **Total** | **22h** | - |
 
 ---
 
@@ -41,13 +41,14 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 2.5 horas (em andamento)
+**Total**: 4 horas (em andamento)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
 | 07/02/2026 | 0.5h | Análise integração Nuvemshop (tipos de apps) |
 | 07/02/2026 | 1h | Estrutura backend Next.js + API OAuth2 + endpoints |
 | 07/02/2026 | 1h | Webhooks LGPD + Migração Frontend (Scanner, Cart, Checkout) |
+| 07/02/2026 | 1.5h | Análise doc Nuvemshop + Escopos OAuth2 + Documentação setup |
 
 ---
 
@@ -55,7 +56,7 @@
 
 - **Velocidade média estimada**: ~4h/dia de trabalho focado
 - **Previsão total do projeto**: ~96h (4 semanas × 24h/semana)
-- **Progresso atual**: ~21% (mockup + início backend)
+- **Progresso atual**: ~23% (mockup + backend + configuração Nuvemshop)
 
 ---
 

@@ -1,0 +1,127 @@
+Vou analisar esses documentos para você entender como usar as ferramentas de otimização no Antigravity.Perfeito! Analisei os dois documentos e vou explicar como usar essas ferramentas de otimização no Antigravity de forma bem clara e prática:
+
+## **O que é o Google Antigravity**
+
+É um IDE (ambiente de desenvolvimento) criado pelo Google, baseado no VS Code, mas otimizado especificamente para trabalhar com agentes de IA. Ele funciona com o modelo Gemini 3 e permite que você desenvolva software usando inteligência artificial de forma muito mais eficiente.
+
+---
+
+## **As 5 Ferramentas/Hacks Principais de Otimização:**
+
+### **1. SKILLS (Habilidades) - A Mais Importante**
+
+**O que é:** Um arquivo de texto (formato .md) que ensina o agente a fazer determinadas tarefas sempre do mesmo jeito, sem precisar pensar do zero.
+
+**Como funciona:**
+- Você cria um arquivo chamado `SKILL.md` 
+- Dentro dele, coloca instruções passo a passo, exemplos, boas práticas
+- Quando você pedir algo relacionado, o agente lê essa skill e executa conforme suas regras
+
+**Onde criar:**
+- **Global** (para todos os projetos): `~/.gemini/antigravity/skills/`
+- **Local** (só para um projeto): `.agent/skills/` na pasta do projeto
+
+**Economia:** Você não gasta tokens explicando a mesma coisa toda vez. O agente já sabe o padrão.
+
+**Exemplo de uso:**
+- Criar uma skill de "como fazer telas de login"
+- Criar uma skill de "padrões de cores e design do meu projeto"
+- Criar uma skill baseada em um projeto que já funcionou bem
+
+---
+
+### **2. MCP (Model Context Protocol) - Conexão com Ferramentas Externas**
+
+**O que é:** Um sistema que permite o Antigravity se conectar com outras ferramentas e serviços automaticamente.
+
+**Como configurar:**
+1. No Antigravity, vá em "MCP Servers"
+2. Clique em "Manage MCP Servers" 
+3. Adicione as configurações (um arquivo JSON) da ferramenta que quer conectar
+
+**Principais integrações úteis:**
+- **Supabase** (banco de dados)
+- **GitHub** (versionamento de código)
+- **Vercel** (hospedagem/deploy)
+- **n8n** (automações visuais)
+
+**Economia:** O agente acessa dados diretamente sem você copiar e colar entre janelas.
+
+---
+
+### **3. TOON (Token-Oriented Object Notation) - Formato Otimizado**
+
+**O que é:** Um formato de dados mais enxuto que JSON, criado para economizar tokens.
+
+**Como usar:**
+- Configure um servidor MCP TOON
+- Ele converte automaticamente dados grandes (como resultados de banco de dados) para um formato mais compacto
+- O agente processa muito mais informação com menos tokens
+
+**Economia:** Reduz de 38% a 96% o consumo de tokens em dados grandes.
+
+---
+
+### **4. Agent Manager - Trabalho Paralelo**
+
+**O que é:** Um gerenciador que permite rodar até 5 agentes ao mesmo tempo em tarefas diferentes.
+
+**Como usar:**
+1. Abra o "Agent Manager" no Antigravity
+2. Crie diferentes tarefas (ex: uma para autenticação, outra para SEO, outra para pesquisar concorrentes)
+3. Os agentes trabalham simultaneamente
+
+**Economia:** Você multiplica sua produtividade, desenvolvendo várias coisas ao mesmo tempo.
+
+---
+
+### **5. Arquivo SUMMARY.md - Memória entre Sessões**
+
+**O que é:** Um arquivo de resumo que guarda tudo o que foi feito na sessão.
+
+**Como usar:**
+1. No final do trabalho, peça ao agente: "Gere um SUMMARY.md desta conversa"
+2. Ele cria um resumo com patches aplicados, bugs corrigidos e próximas tarefas
+3. Na próxima sessão, forneça esse arquivo em vez do histórico completo
+
+**Economia:** Reduz o input de ~50.000 tokens para apenas ~2.000 tokens.
+
+---
+
+## **Ferramentas Complementares Mencionadas:**
+
+### **Clerk - Sistema de Autenticação Pronto**
+- Evita desenvolver login do zero
+- Suporta login com Google, telefone, email
+- Grátis até 10.000 usuários
+- Crie uma skill que integra com Clerk
+
+### **n8n - Backend Visual**
+- Conecte via MCP
+- Crie fluxos visuais de automação
+- O agente acessa e dispara esses fluxos automaticamente
+
+---
+
+## **Dicas Práticas de Economia de Tokens:**
+
+1. **Use modo "Fast"** para edições simples (renomear variáveis, ajustar CSS)
+2. **Use modo "Planning"** só para arquiteturas complexas
+3. **Configure "Thinking Low"** para tarefas rotineiras
+4. **Configure "Thinking High"** só para bugs difíceis
+5. **Sempre use Skills** para tarefas repetitivas
+6. **Use SUMMARY.md** entre sessões
+
+---
+
+## **Fluxo de Trabalho Ideal Diário:**
+
+1. **Início:** Carregue o SUMMARY.md da sessão anterior
+2. **Desenvolvimento:** Use modo Fast + Agent Manager para paralelizar
+3. **Dados:** Consulte Supabase via MCP com formato TOON
+4. **Validação:** Deixe o Browser Agent validar a interface
+5. **Fim:** Gere novo SUMMARY.md e versione no GitHub
+
+---
+
+Essas ferramentas transformam você num "gerente de equipe digital", onde você coordena agentes de IA em vez de escrever cada linha de código. A chave é delegar tudo que não é lógica central do negócio!

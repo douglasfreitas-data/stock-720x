@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 5h | 🔄 Em andamento |
-| **Total** | **23h** | - |
+| Desenvolvimento | 6.5h | 🔄 Em andamento |
+| **Total** | **24.5h** | - |
 
 ---
 
@@ -41,15 +41,15 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 5 horas (em andamento)
+**Total**: 6.5 horas (em andamento)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
-| 07/02/2026 | 0.5h | Análise integração Nuvemshop (tipos de apps) |
 | 07/02/2026 | 1h | Estrutura backend Next.js + API OAuth2 + endpoints |
 | 07/02/2026 | 1h | Webhooks LGPD + Migração Frontend (Scanner, Cart, Checkout) |
 | 07/02/2026 | 1.5h | Análise doc Nuvemshop + Escopos OAuth2 + Documentação setup |
 | 07/02/2026 | 1h | Deploy Vercel (fix localhost) + Configuração Domínio Produção |
+| 07/02/2026 | 2h | Integração Supabase (Auth storage) + Sync de Produtos (API + UI) |
 
 ---
 

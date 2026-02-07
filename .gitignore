@@ -32,3 +32,7 @@ node_modules/
 # Build directories (if applicable)
 dist/
 build/
+.vercel
+.agent/SUMMARY.md
+.agent/summaries/
+.agent/mcp_config.json

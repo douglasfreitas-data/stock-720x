@@ -1,0 +1,260 @@
+Ótima pergunta! Vou explicar onde colocar e como organizar os arquivos SUMMARY.md:
+
+## **Localização do SUMMARY.md:**
+
+### **Opção 1: Na Raiz do Projeto (Recomendada)**
+
+```
+/seu-projeto/
+  ├── .agent/
+  │   ├── mcp_config.json
+  │   └── skills/
+  ├── src/
+  ├── .env
+  ├── .gitignore
+  └── SUMMARY.md          ← Aqui!
+```
+
+**Vantagens:**
+- Fácil de encontrar
+- O agente acessa rapidamente
+- Fica versionado com o projeto (se você quiser)
+
+---
+
+### **Opção 2: Dentro da Pasta .agent/ (Mais Organizado)**
+
+```
+/seu-projeto/
+  ├── .agent/
+  │   ├── mcp_config.json
+  │   ├── skills/
+  │   └── SUMMARY.md      ← Aqui!
+  ├── src/
+  └── .env
+```
+
+**Vantagens:**
+- Mantém arquivos de configuração/IA juntos
+- Pasta `.agent/` centraliza tudo relacionado ao agente
+- Mais limpo visualmente
+
+---
+
+### **Opção 3: Múltiplos Resumos (Para Projetos Grandes)**
+
+Para projetos complexos, você pode ter vários resumos organizados por funcionalidade:
+
+```
+/seu-projeto/
+  ├── .agent/
+  │   ├── summaries/
+  │   │   ├── SUMMARY-authentication.md
+  │   │   ├── SUMMARY-database.md
+  │   │   ├── SUMMARY-frontend.md
+  │   │   └── SUMMARY-latest.md        ← Resumo geral mais recente
+  │   ├── mcp_config.json
+  │   └── skills/
+  └── src/
+```
+
+**Vantagens:**
+- Organiza por módulo/funcionalidade
+- Facilita encontrar contexto específico
+- Útil para projetos com múltiplos desenvolvedores
+
+---
+
+## **Como Usar na Prática:**
+
+### **1. Gerando o SUMMARY.md:**
+
+No final da sessão de trabalho, peça ao agente:
+
+```
+"Crie um SUMMARY.md desta sessão incluindo:
+- Todas as mudanças feitas nos arquivos
+- Bugs corrigidos
+- Features implementadas
+- Próximas tarefas pendentes
+- Decisões arquiteturais tomadas
+
+Salve em .agent/SUMMARY.md"
+```
+
+---
+
+### **2. Carregando o SUMMARY.md na Próxima Sessão:**
+
+No início da próxima sessão:
+
+```
+"Leia o arquivo .agent/SUMMARY.md e me diga onde paramos.
+Continue de onde paramos."
+```
+
+Ou simplesmente:
+
+```
+"Carregue o contexto do SUMMARY.md"
+```
+
+---
+
+### **3. Atualizando o SUMMARY.md:**
+
+Durante a sessão, você pode pedir:
+
+```
+"Atualize o SUMMARY.md com o que fizemos agora"
+```
+
+Ou no final:
+
+```
+"Substitua o SUMMARY.md anterior por um novo com tudo 
+que fizemos hoje"
+```
+
+---
+
+## **Estrutura Recomendada do SUMMARY.md:**
+
+```markdown
+# Project Summary - [Nome do Projeto]
+**Última atualização:** 07/02/2026
+
+## Status Atual
+- Projeto em desenvolvimento
+- Fase: Implementação de autenticação
+- Progresso: 60%
+
+## Última Sessão (07/02/2026)
+
+### Mudanças Implementadas
+- Criada rota de login em `src/routes/auth.ts`
+- Integrado Clerk para autenticação
+- Configurado MCP do Supabase para tabela `users`
+
+### Arquivos Modificados
+- `src/routes/auth.ts` (criado)
+- `src/components/LoginForm.tsx` (modificado)
+- `.env` (adicionado CLERK_SECRET_KEY)
+
+### Bugs Corrigidos
+- ✅ Erro de CORS na rota `/api/login`
+- ✅ Validação de email não funcionando
+
+### Pendências
+- [ ] Criar fluxo de recuperação de senha
+- [ ] Adicionar autenticação com Google
+- [ ] Implementar middleware de proteção de rotas
+
+## Decisões Arquiteturais
+- Usando Clerk em vez de Auth0 (custo-benefício)
+- Banco de dados: Supabase PostgreSQL
+- Frontend: React + TypeScript + Tailwind
+
+## Skills Criadas/Usadas
+- `authentication-clerk.md`
+- `supabase-integration.md`
+
+## Configurações MCP Ativas
+- Supabase (projeto: projeto-cliente-x)
+- GitHub
+- Vercel
+
+## Próximos Passos Sugeridos
+1. Implementar recuperação de senha
+2. Adicionar testes unitários para autenticação
+3. Configurar CI/CD no Vercel
+```
+
+---
+
+## **Versionamento do SUMMARY.md:**
+
+### **Opção A: Versionado no Git (Trabalho em Equipe)**
+
+```bash
+# .gitignore
+.env
+.agent/mcp_config.json
+
+# SUMMARY.md NÃO está no .gitignore
+# Ele será versionado e compartilhado com a equipe
+```
+
+**Útil quando:**
+- Trabalho em equipe
+- Quer histórico de decisões
+- Documentação do projeto
+
+---
+
+### **Opção B: NÃO Versionado (Trabalho Solo)**
+
+```bash
+# .gitignore
+.env
+.agent/mcp_config.json
+.agent/SUMMARY.md          ← Adicione aqui
+SUMMARY.md
+```
+
+**Útil quando:**
+- Trabalho individual
+- Resumo é só para você
+- Não quer poluir o repositório
+
+---
+
+## **Dica Extra: Automatização com Skill**
+
+Crie uma **Skill de gerenciamento de sessão**:
+
+```markdown
+# SKILL.md - Session Manager
+
+## Goal
+Automatizar criação e atualização de SUMMARY.md
+
+## Instructions
+1. Ao final de cada sessão de trabalho
+2. Gere automaticamente um SUMMARY.md atualizado
+3. Salve em `.agent/SUMMARY.md`
+4. Inclua timestamp, mudanças, pendências e próximos passos
+
+## Format
+Use sempre o template padrão com seções:
+- Status Atual
+- Última Sessão
+- Mudanças Implementadas
+- Bugs Corrigidos
+- Pendências
+- Decisões Arquiteturais
+```
+
+---
+
+## **Recomendação Final:**
+
+**Para você, sugiro:**
+
+```
+/seu-projeto/
+  ├── .agent/
+  │   ├── SUMMARY.md              ← Resumo geral mais recente
+  │   ├── summaries/
+  │   │   └── SUMMARY-[data].md   ← Histórico (opcional)
+  │   ├── mcp_config.json
+  │   └── skills/
+```
+
+**E adicione ao `.gitignore`:**
+```
+.agent/SUMMARY.md
+.agent/summaries/
+```
+
+Assim você tem o resumo sempre acessível, mas ele não polui o Git! 📝

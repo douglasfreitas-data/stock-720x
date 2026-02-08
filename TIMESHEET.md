@@ -51,6 +51,7 @@
 | 07/02/2026 | 1h | Deploy Vercel (fix localhost) + Configuração Domínio Produção |
 | 07/02/2026 | 2.5h | Integração Supabase + Gestão de Dashboards (Nuvemshop/Vercel) |
 | 07/02/2026 | 3.5h | Suporte Instalação Nuvemshop (Debug OAuth, Env Vars, Backend Connection) |
+| 07/02/2026 | 2.0h | UX Audit, Visual Corrections, Scanner Fix & PDF Generation |
 
 ---
 
@@ -58,7 +59,7 @@
 
 - **Velocidade média estimada**: ~4h/dia de trabalho focado
 - **Previsão total do projeto**: ~96h (4 semanas × 24h/semana)
-- **Progresso atual**: ~25% (mockup + backend + deploy produção)
+- **Progresso atual**: ~30% (mockup + backend + deploy + UX polish)
 
 ---
 

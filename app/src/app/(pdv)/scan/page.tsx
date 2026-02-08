@@ -21,9 +21,21 @@ function ScanContent() {
         console.log('Scanned:', decodedText);
 
         // Busca produto (mock por enquanto)
-        const product = findProductByBarcode(decodedText);
+        const mockProduct = findProductByBarcode(decodedText);
 
-        if (product) {
+        if (mockProduct) {
+            // Adapta o produto mock para o formato do carrinho
+            const product = {
+                id: mockProduct.id,
+                name: mockProduct.name,
+                sku: mockProduct.sku,
+                barcode: mockProduct.barcode,
+                price: mockProduct.price,
+                stock: mockProduct.stock,
+                minStock: mockProduct.minStock,
+                image: mockProduct.image
+            };
+
             if (mode === 'sale') {
                 addToCart(product);
                 showToast(`${product.name} adicionado!`, 'success');

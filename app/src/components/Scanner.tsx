@@ -73,9 +73,18 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
                     if (onError) onError(errorMessage);
                 }
             );
-        } catch (err) {
+        } catch (err: unknown) {
             console.error('Error starting scanner:', err);
-            setError(err instanceof Error ? err.message : 'Unknown error starting scanner');
+            const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+
+            // Handle common camera errors gracefully
+            if (errorMessage.includes('NotFoundError') || errorMessage.includes('device not found')) {
+                setError('📷 Câmera não encontrada. Use os botões de teste rápido ou conecte uma câmera.');
+            } else if (errorMessage.includes('NotAllowedError') || errorMessage.includes('Permission denied')) {
+                setError('🔒 Acesso à câmera negado. Permita o uso da câmera nas configurações do navegador.');
+            } else {
+                setError(`Erro ao iniciar câmera: ${errorMessage}`);
+            }
         }
     };
 

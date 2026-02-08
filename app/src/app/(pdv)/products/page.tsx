@@ -1,47 +1,43 @@
-import React from 'react';
 import Link from 'next/link';
-import { getNuvemshopClient } from '@/lib/nuvemshop/server';
-import { NuvemshopProduct } from '@/lib/nuvemshop/api';
-import { SyncButton } from './SyncButton';
-import ProductsList from './ProductsList';
 
-export default async function ProductsScreen() {
-    const client = await getNuvemshopClient();
-
-    if (!client) {
-        return (
-            <div className="p-6 text-center">
-                <p>Você não está autenticado.</p>
-                <Link href="/api/auth/login" className="text-blue-500 underline">
-                    Fazer Login na Nuvemshop
-                </Link>
-            </div>
-        );
-    }
-
-    let products: NuvemshopProduct[] = [];
-    try {
-        products = await client.getProducts(1, 50);
-    } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
-    }
+export default function ProductsMenu() {
+    const menuItems = [
+        { icon: '➕', title: 'Incluir Produto', subtitle: 'Cadastrar novo produto', disabled: true },
+        { icon: '✏️', title: 'Alterar Produto', subtitle: 'Editar produto existente', disabled: true },
+        { icon: '📋', title: 'Lista de Produtos', subtitle: 'Ver todos os produtos', href: '/products/list' },
+        { icon: '🏷️', title: 'Imprimir QR Code', subtitle: 'Gerar PDF para impressão', href: '/products/print-qr' }
+    ];
 
     return (
         <div className="products-screen p-4">
-            {/* Header */}
-            <header className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                    <Link href="/" className="text-gray-400 hover:text-white transition-colors">← Voltar</Link>
-                    <h1 className="text-xl font-bold text-white">Produtos ({products.length})</h1>
-                </div>
-
-                <div className="flex gap-2">
-                    <SyncButton />
-                </div>
+            <header className="flex items-center gap-3 mb-6">
+                <Link href="/" className="text-gray-400 hover:text-white transition-colors">← Voltar</Link>
+                <h1 className="text-xl font-bold text-white">Produtos</h1>
             </header>
 
-            {/* Pass products to client component */}
-            <ProductsList products={products} />
+            <div className="products-menu">
+                {menuItems.map((item, i) => (
+                    item.disabled ? (
+                        <div key={i} className="products-menu-item disabled">
+                            <div className="products-menu-icon">{item.icon}</div>
+                            <div className="products-menu-content">
+                                <div className="products-menu-title">{item.title}</div>
+                                <div className="products-menu-subtitle">{item.subtitle}</div>
+                            </div>
+                            <div className="products-menu-badge">Em breve</div>
+                        </div>
+                    ) : (
+                        <Link key={i} href={item.href!} className="products-menu-item decoration-none">
+                            <div className="products-menu-icon">{item.icon}</div>
+                            <div className="products-menu-content">
+                                <div className="products-menu-title">{item.title}</div>
+                                <div className="products-menu-subtitle">{item.subtitle}</div>
+                            </div>
+                            <div className="products-menu-arrow">→</div>
+                        </Link>
+                    )
+                ))}
+            </div>
         </div>
     );
 }

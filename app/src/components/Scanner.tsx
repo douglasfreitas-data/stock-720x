@@ -30,6 +30,29 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
 
     const startScanner = async () => {
         try {
+            // First, check if camera is available to prevent library crash
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                setError('📷 Seu navegador não suporta acesso à câmera.');
+                return;
+            }
+
+            // Pre-check camera availability
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                // Stop the test stream immediately
+                stream.getTracks().forEach(track => track.stop());
+            } catch (mediaErr: unknown) {
+                const msg = mediaErr instanceof Error ? mediaErr.message : '';
+                if (msg.includes('NotFoundError') || msg.includes('device not found') || msg.includes('Requested device not found')) {
+                    setError('📷 Câmera não encontrada. Use os botões de teste rápido ou conecte uma câmera.');
+                } else if (msg.includes('NotAllowedError') || msg.includes('Permission denied')) {
+                    setError('🔒 Acesso à câmera negado. Permita o uso da câmera nas configurações do navegador.');
+                } else {
+                    setError(`Erro ao acessar câmera: ${msg}`);
+                }
+                return;
+            }
+
             const container = document.getElementById(containerId);
             if (!container) {
                 setError('Scanner container not found');

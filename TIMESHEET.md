@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 10.5h | 🔄 Em andamento |
-| **Total** | **28.5h** | - |
+| Desenvolvimento | 12.5h | 🔄 Em andamento |
+| **Total** | **30.5h** | - |
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 10.5 horas (em andamento)
+**Total**: 12.5 horas (em andamento)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|

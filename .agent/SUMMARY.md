@@ -37,8 +37,27 @@
 - **MCP:** `@supabase/mcp-server` and `@vercel/mcp-server` don't exist on npm. Removed from templates.
 - **MCP:** Only `@modelcontextprotocol/server-github` works.
 
+## Next Session Plan: Data Integration & Stock Module 🚀
+
+### 1. 🛑 Stop Using Mock Data
+- **Objective:** Fix the "Empty Cart" issue in production.
+- **Action:** Replace `lib/mock-data.ts` usage with real `supabaseClient` queries in `CartProvider` and `Scanner`.
+
+### 2. 📦 Stock Entry Module (Entrada de Estoque)
+- **Objective:** Allow operators to register new stock arrivals.
+- **UI:** Create specific screen for adding quantity to existing SKUs.
+- **Backend:** Implement Supabase SQL function to increment stock securely.
+
+### 3. 🔍 Inventory Adjustment (Ajuste de Inventário)
+- **Objective:** Audit trail for stock corrections (loss, theft, count error).
+- **Action:** Create `inventory_logs` table in Supabase.
+- **Requirement:** User must select a "Reason" for the adjustment.
+
+### 4. 🔄 Product Sync Verification
+- **Objective:** Ensure Nuvemshop data is flowing to Supabase.
+- **Action:** Run full sync and verify table populations variables in Vercel.
+
 ## Environment & Tokens
-- **Next Step:** Design/UX, QR Code, Entrada de Estoque e Histórico de Ajustes
 - **Nuvemshop:** Client ID/Secret in `.env.local`
 - **Supabase:** URL/Key in `.env.local`
 - **MCP:** Configured in `.agent/mcp_config.json` (only GitHub active)

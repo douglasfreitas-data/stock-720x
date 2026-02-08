@@ -8,7 +8,7 @@ export default function HomeScreen() {
     const { showToast } = useToast();
 
     return (
-        <div className="home-screen flex-1 flex flex-col gap-6 p-6 pt-8">
+        <div className="home-screen">
             {/* Venda */}
             <Link href="/scan?mode=sale" className="menu-card decoration-none">
                 <div className="menu-card-row">

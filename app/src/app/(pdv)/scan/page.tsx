@@ -3,6 +3,7 @@
 import React, { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Scanner from '@/components/Scanner';
+import Link from 'next/link';
 import { useCart } from '@/components/providers/CartProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 import { findProductByBarcode } from '@/lib/mock-data';
@@ -10,9 +11,11 @@ import { findProductByBarcode } from '@/lib/mock-data';
 function ScanContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const mode = searchParams.get('mode') || 'sale'; // 'sale' or 'inventory'
-    const { addToCart } = useCart();
+    const mode = searchParams.get('mode') || 'sale';
+    const { addToCart, cartCount } = useCart();
     const { showToast } = useToast();
+
+    const title = mode === 'sale' ? 'Escanear para Venda' : 'Escanear para Inventário';
 
     const handleScan = (decodedText: string) => {
         console.log('Scanned:', decodedText);
@@ -36,24 +39,47 @@ function ScanContent() {
     };
 
     return (
-        <div className="flex flex-col items-center p-6 h-full">
-            <h1 className="text-xl font-bold mb-6">
-                {mode === 'sale' ? 'Escanear para Venda' : 'Inventário'}
-            </h1>
-
-            <Scanner onScan={handleScan} />
-
-            <div className="mt-8 text-center text-gray-500 text-sm">
-                <p>Aponte a câmera para o código de barras</p>
-                <p className="mt-2 text-xs opacity-50">Modo: {mode === 'sale' ? 'Venda Rápida' : 'Conferência'}</p>
+        <div className="modal-overlay">
+            <div className="modal-header">
+                <Link href="/" className="modal-close">←</Link>
+                <h3 className="modal-title">{title}</h3>
+                {mode === 'sale' && cartCount > 0 ? (
+                    <Link href="/cart" className="cart-header-btn">
+                        🛒
+                        <span className="cart-badge">{cartCount}</span>
+                    </Link>
+                ) : (
+                    <div style={{ width: 40 }}></div>
+                )}
             </div>
 
-            <button
-                onClick={() => router.back()}
-                className="mt-auto mb-4 text-gray-400 hover:text-white underline"
-            >
-                Cancelar e Voltar
-            </button>
+            <div className="modal-body">
+                <Scanner onScan={handleScan} />
+
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)', margin: '16px 0 8px', fontSize: '0.875rem' }}>
+                    Ou digite manualmente:
+                </p>
+
+                {/* Quick Test Buttons */}
+                <div className="quick-codes">
+                    <p className="quick-codes-label">Teste rápido:</p>
+                    <div className="quick-codes-list">
+                        <button
+                            type="button"
+                            className="quick-code"
+                            onClick={() => handleScan('6426010922905')}
+                        >
+                            🏷️ Dedeira Avalon
+                        </button>
+                    </div>
+                </div>
+
+                {mode === 'sale' && cartCount > 0 && (
+                    <Link href="/cart" className="btn-view-cart">
+                        🛒 Ver Carrinho ({cartCount} {cartCount === 1 ? 'item' : 'itens'})
+                    </Link>
+                )}
+            </div>
         </div>
     );
 }

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useCart } from '@/components/providers/CartProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 
@@ -23,25 +24,19 @@ export default function CheckoutPage() {
     const [selectedPayment, setSelectedPayment] = useState('pix');
     const [isProcessing, setIsProcessing] = useState(false);
 
-    // Redireciona se carrinho vazio
+    // Redirect if cart is empty
     if (cart.length === 0) {
-        // router.push('/cart'); // Retorna erro hydration se renderizar diferente no server
-        // Melhor retornar null e useEffect redirecionar
         if (typeof window !== 'undefined') router.push('/cart');
         return null;
     }
 
     const handleConfirmSale = async () => {
         setIsProcessing(true);
-
         try {
-            // Loop para dar baixa item a item (devido à limitação da API atual stock V1)
-            // Idealmente, endpoint suportaria batch
+            // Processing logic...
             const errors = [];
-
             for (const item of cart) {
                 if (!item.product?.barcode) continue;
-
                 try {
                     const response = await fetch('/api/stock', {
                         method: 'POST',
@@ -51,13 +46,8 @@ export default function CheckoutPage() {
                             quantity: item.quantity
                         })
                     });
-
-                    if (!response.ok) {
-                        console.error(`Falha ao baixar estoque do item ${item.productId}`);
-                        errors.push(item.product.name);
-                    }
+                    if (!response.ok) errors.push(item.product.name);
                 } catch (err) {
-                    console.error('Erro de rede:', err);
                     errors.push(item.product.name);
                 }
             }
@@ -68,14 +58,8 @@ export default function CheckoutPage() {
                 showToast('Venda realizada com sucesso!', 'success');
             }
 
-            // Limpa carrinho e vai para sucesso
-            // Passar dados da venda via query ou state management global seria melhor
-            // Ex: setLastSale({ ... }) no context
-
-            // Simples redirect
             clearCart();
             router.push('/success');
-
         } catch (error) {
             console.error('Erro geral na venda:', error);
             showToast('Erro ao processar venda', 'error');
@@ -85,90 +69,70 @@ export default function CheckoutPage() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-[var(--bg-primary)]">
-            <div className="flex items-center p-4 border-b border-[var(--border-color)]">
-                <button onClick={() => router.back()} className="text-xl mr-4">←</button>
-                <h1 className="text-lg font-bold">Finalizar Venda</h1>
+        <div className="modal-overlay">
+            <div className="modal-header">
+                <button onClick={() => router.back()} className="modal-close">←</button>
+                <h3 className="modal-title">Finalizar Venda</h3>
+                <div style={{ width: 40 }}></div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4">
-                {/* Resumo */}
-                <div className="bg-[var(--bg-card)] rounded-lg p-4 mb-6 border border-[var(--border-color)]">
-                    <h2 className="text-sm text-gray-400 mb-3 uppercase tracking-wider">Resumo do Pedido</h2>
-                    <div className="space-y-2 mb-4">
+            <div className="modal-body">
+                {/* Order Summary */}
+                <div className="checkout-summary">
+                    <h4 className="checkout-section-title">Resumo do Pedido</h4>
+                    <div className="checkout-items">
                         {cart.map(item => (
-                            <div key={item.productId} className="flex justify-between text-sm">
-                                <span className="text-gray-300">
-                                    <span className="text-gray-500 mr-2">{item.quantity}x</span>
-                                    {item.product?.name}
-                                </span>
-                                <span className="font-medium text-[var(--accent)]">
-                                    R$ {((item.product?.price || 0) * item.quantity).toFixed(2)}
-                                </span>
+                            <div key={item.productId} className="checkout-item">
+                                <span className="checkout-item-qty">{item.quantity}x</span>
+                                <span className="checkout-item-name">{item.product?.name}</span>
                             </div>
                         ))}
                     </div>
-
-                    <div className="pt-3 border-t border-[var(--border-color)] flex justify-between items-center">
-                        <span className="font-bold">Total</span>
-                        <div className="text-right">
-                            <div className="text-xs text-gray-500">{cartCount} itens</div>
-                            <div className="text-xl font-bold text-[var(--accent)]">
-                                R$ {cartTotal.toFixed(2)}
-                            </div>
-                        </div>
+                    <div className="checkout-total">
+                        <span>Total</span>
+                        <span>{cartCount} {cartCount === 1 ? 'item' : 'itens'}</span>
+                    </div>
+                    <div className="text-right mt-2">
+                        <span className="text-xl font-bold text-[var(--accent)]">R$ {cartTotal.toFixed(2)}</span>
                     </div>
                 </div>
 
-                {/* Cliente */}
-                <div className="mb-6">
-                    <label className="block text-sm text-gray-400 mb-2">Cliente (Opcional)</label>
+                {/* Customer name */}
+                <div className="form-section">
+                    <label className="form-label">Nome do cliente (opcional)</label>
                     <input
                         type="text"
+                        className="form-input"
+                        placeholder="Ex: Maria Silva"
                         value={customer}
                         onChange={(e) => setCustomer(e.target.value)}
-                        placeholder="Ex: Maria Silva"
-                        className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg p-3 text-white focus:border-[var(--accent)] outline-none"
                     />
                 </div>
 
-                {/* Pagamento */}
-                <div className="mb-6">
-                    <label className="block text-sm text-gray-400 mb-2">Forma de Pagamento</label>
-                    <div className="grid grid-cols-3 gap-3">
-                        {paymentMethods.map(method => (
-                            <button
-                                key={method.id}
-                                onClick={() => setSelectedPayment(method.id)}
-                                className={`p-3 rounded-lg border flex flex-col items-center justify-center gap-2 transition-all
-                     ${selectedPayment === method.id
-                                        ? 'bg-[var(--accent-subtle)] border-[var(--accent)] text-[var(--accent)]'
-                                        : 'bg-[var(--bg-card)] border-[var(--border-color)] text-gray-400 hover:border-gray-500'
-                                    }
-                   `}
+                {/* Payment Method */}
+                <div className="form-section">
+                    <label className="form-label">Forma de pagamento</label>
+                    <div className="payment-options">
+                        {paymentMethods.map(p => (
+                            <div
+                                key={p.id}
+                                className={`payment-option ${selectedPayment === p.id ? 'selected' : ''}`}
+                                onClick={() => setSelectedPayment(p.id)}
                             >
-                                <span className="text-xl">{method.icon}</span>
-                                <span className="text-xs font-medium">{method.label}</span>
-                            </button>
+                                <div className="payment-icon">{p.icon}</div>
+                                <div className="payment-label">{p.label}</div>
+                            </div>
                         ))}
                     </div>
                 </div>
-            </div>
 
-            {/* Botão Finalizar */}
-            <div className="p-4 bg-[var(--bg-card)] border-t border-[var(--border-color)]">
+                {/* Confirm Button */}
                 <button
+                    className="btn-confirm"
                     onClick={handleConfirmSale}
                     disabled={isProcessing}
-                    className="w-full py-4 bg-[var(--accent)] text-white rounded-lg font-bold text-lg hover:bg-[var(--accent-hover)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                    {isProcessing ? (
-                        <>
-                            <span className="animate-spin">⏳</span> Processando...
-                        </>
-                    ) : (
-                        '✓ Confirmar Venda'
-                    )}
+                    {isProcessing ? '✓ Processando...' : '✓ Confirmar Venda'}
                 </button>
             </div>
         </div>

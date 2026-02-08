@@ -96,8 +96,19 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
 
                 try {
                     const imgData = await loadImage(product.image);
-                    if (imgData) pdf.addImage(imgData, 'JPEG', margin + 5, y + 5, 40, 40);
-                } catch { }
+                    if (imgData) {
+                        pdf.addImage(imgData, 'JPEG', margin + 5, y + 5, 40, 40);
+                    } else {
+                        // Placeholder for failed images (CORS)
+                        pdf.setFillColor(230, 230, 230);
+                        pdf.roundedRect(margin + 5, y + 5, 40, 40, 2, 2, 'F');
+                        pdf.setFontSize(8);
+                        pdf.setTextColor(150);
+                        pdf.text('Imagem não disponível', margin + 8, y + 25);
+                    }
+                } catch (err) {
+                    console.error('Error adding image to PDF:', err);
+                }
 
                 const textX = margin + 50;
                 pdf.setFontSize(12);

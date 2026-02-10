@@ -4,6 +4,23 @@ Todas as mudanças notáveis do projeto são documentadas aqui.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [0.2.1] - 2026-02-10
+
+### Adicionado
+- **Organização**: Novo `ROADMAP.md` centralizado e guia prático `ai_team_roles`.
+- **UX/UI Round 1 & 2**: 11 correções visuais e funcionais.
+- **Header**: Ícone de carrinho 🛒 persistente no cabeçalho global.
+- **Scanner**: Novo design de overlay para ativação da câmera.
+- **Busca por Nome**: Suporte inicial para campo de busca por nome no Scanner.
+
+### Corrigido
+- **Next.js 16 Compatibility**: Fix 404 no inventário aguardando `params` (Promise).
+- **Scanner Stability**: Proteção contra crashes client-side na entrada de estoque.
+- **Visual**: Remoção de sublinhados globais e correção de cores de botões para branco.
+- **Acessibilidade**: Botão de ativação de câmera aumentado e centralizado.
+
+---
+
 ## [0.2.0] - 2026-02-10
 
 ### Adicionado

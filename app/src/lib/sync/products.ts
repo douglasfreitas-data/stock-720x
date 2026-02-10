@@ -15,24 +15,36 @@ export async function syncAllProducts(storeId: string, accessToken: string) {
     console.log(`[Sync] Iniciando sincronização de produtos para loja ${storeId}...`);
 
     while (hasMore) {
-        // Busca página de produtos
-        const products = await api.getProducts(page, 50);
+        try {
+            // Busca página de produtos
+            const products = await api.getProducts(page, 50);
 
-        if (!products || products.length === 0) {
+            if (!products || products.length === 0) {
+                hasMore = false;
+                break;
+            }
+
+            console.log(`[Sync] Processando página ${page} com ${products.length} produtos...`);
+
+            // Processa cada produto
+            for (const product of products) {
+                await upsertProduct(storeId, product);
+                totalSynced++;
+            }
+
+            // Se retornou menos que o per_page, é a última página
+            if (products.length < 50) {
+                hasMore = false;
+            } else {
+                page++;
+            }
+        } catch (error) {
+            // Nuvemshop retorna 404 quando a página não existe
+            console.log(`[Sync] Página ${page} não existe, finalizando paginação.`);
             hasMore = false;
-            break;
         }
 
-        console.log(`[Sync] Processando página ${page} com ${products.length} produtos...`);
-
-        // Processa cada produto
-        for (const product of products) {
-            await upsertProduct(storeId, product);
-            totalSynced++;
-        }
-
-        page++;
-        // Limite de segurança para evitar loops infinitos em dev
+        // Limite de segurança
         if (page > 100) hasMore = false;
     }
 

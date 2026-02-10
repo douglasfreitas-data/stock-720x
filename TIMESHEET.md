@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 12.5h | 🔄 Em andamento |
-| **Total** | **30.5h** | - |
+| Desenvolvimento | 15.5h | 🔄 Em andamento |
+| **Total** | **33.5h** | - |
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 12.5 horas (em andamento)
+**Total**: 15.5 horas (em andamento)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -52,6 +52,7 @@
 | 07/02/2026 | 2.5h | Integração Supabase + Gestão de Dashboards (Nuvemshop/Vercel) |
 | 07/02/2026 | 3.5h | Suporte Instalação Nuvemshop (Debug OAuth, Env Vars, Backend Connection) |
 | 07/02/2026 | 2.0h | UX Audit, Visual Corrections, Scanner Fix & PDF Generation |
+| 10/02/2026 | 3.0h | Correção de Arquitetura: Fix sync pagination, Dual-write Nuvemshop+Supabase, API barcode route, operation codes |
 
 ---
 

@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 21.0h | 🔄 Em andamento |
-| **Total** | **40.0h** | - |
+| Desenvolvimento | 23.0h | 🔄 Em andamento |
+| **Total** | **41.0h** | - |
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 22.0 horas (em andamento)
+**Total**: 23.0 horas (em andamento)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -56,6 +56,8 @@
 | 10/02/2026 | 0.5h | **Organização do Projeto**: Criação do `ROADMAP.md`, refatoração do `ai_team_roles` com guia prático multi-modelo, workflow `/iniciar`. |
 | 10/02/2026 | 1.5h | **Correções UX (6 bugs)**: Reset CSS global, limpeza Scanner, botão câmera maior, redesign Entrada de Estoque, simplificação Lista de Produtos. Build verificado. |
 | 10/02/2026 | 1.0h | **UX Fixes Round 2 (Recovery)**: Revert de commit problemático, reaplicação limpa de 5 fixes (Header, Scanner overlay, Cart position, 404, Crash). |
+| 10/02/2026 | 0.5h | **Backend Search**: `searchProducts()` em `api.ts`, suporte a `?search=` em `route.ts`. |
+| 10/02/2026 | 0.5h | **Fix Entrada de Estoque**: Modal de Quantidade + Busca Autocomplete em `entry/page.tsx`. |
 
 ---
 
@@ -63,8 +65,8 @@
 
 - **Velocidade média estimada**: ~4h/dia de trabalho focado
 - **Previsão total do projeto**: ~96h (4 semanas × 24h/semana)
-- **Progresso atual**: ~30% (mockup + backend + deploy + UX polish)
+- **Progresso atual**: ~43% (mockup + backend + deploy + UX polish + movimentação)
 
 ---
 
-*Última atualização: 10/02/2026 18:27*
+*Última atualização: 10/02/2026 20:43*

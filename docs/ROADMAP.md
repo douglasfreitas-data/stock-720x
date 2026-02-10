@@ -1,7 +1,7 @@
 # 🗺️ Stock 720x — Roadmap Geral
 
 **Última atualização:** 10/02/2026  
-**Horas acumuladas:** 37h
+**Horas acumuladas:** 41h
 
 ---
 
@@ -16,12 +16,12 @@
 ---
 
 ## Fase 2: Backend + Integração Nuvemshop ✅
-> 19h — Início: 07/02/2026
+> 23h — Início: 07/02/2026
 
 | Data | Horas | Entregas |
 |------|-------|----------|
 | 07/02 | 12.5h | Next.js + OAuth2, Webhooks LGPD, Migração frontend, Deploy Vercel, Supabase, Instalação Nuvemshop, UX Audit |
-| 10/02 | 6.5h | Fix sync paginação, Dual-write, Módulo movimentação (Entrada/Saída/Ajuste), Relatórios, `/atualize` |
+| 10/02 | 10.5h | Fix sync, Dual-write, Módulo movimentação, Relatórios, `/atualize`, UX Fixes (11 bugs), Modal Quantidade + Autocomplete |
 
 ### Tarefas
 - [x] F2.1 — Next.js + OAuth2 + Deploy Vercel *(07/02)*

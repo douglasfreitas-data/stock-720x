@@ -1,5 +1,5 @@
 # Project Summary - Stock - 720x
-**Last Updated:** 2026-02-10T19:30:00
+**Last Updated:** 2026-02-10T20:43:00
 
 ## Status
 - **Current Phase:** Correção de Arquitetura + Módulo de Estoque
@@ -57,12 +57,11 @@ Nuvemshop ──sync──► Supabase (products, product_variants)
 - [x] Organização: ROADMAP.md + ai_team_roles + /iniciar ✅
 - [x] UX Fixes: 6 bugs corrigidos (links, cores, scanner, entrada, lista) ✅
 - [x] UX Fixes Round 2: 5 bugs corrigidos (Recuperação limpa) ✅
-- [/] Entry Page UX: Backend pronto, Frontend pendente 🔄
+- [x] Entry Page UX: Modal de Quantidade + Busca Autocomplete ✅
 
 ## Known Issues
 - **inventory_logs table:** Deve ser removida do Supabase (substituída por `stock_sessions`/`stock_movements`) - Ver ROADMAP F3.1.1
 - **Sync manual:** Sync precisa ser rodado manualmente via `POST /api/sync`. Futuro: automatizar com cron - Ver ROADMAP F3.4.1
-- **Autocomplete busca:** Campo de busca por nome no Scanner precisa implementar autocomplete - Ver ROADMAP F3.2.x
 
 ## Tabelas no Supabase
 | Tabela | Status | Uso |

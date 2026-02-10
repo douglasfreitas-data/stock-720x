@@ -4,6 +4,15 @@ Todas as mudanças notáveis do projeto são documentadas aqui.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [0.2.2] - 2026-02-10
+
+### Adicionado
+- **Modal de Quantidade**: Scan na Entrada de Estoque agora abre modal para escolher quantidade antes de adicionar.
+- **Busca Autocomplete**: Campo "busque por nome" com debounce 300ms e dropdown de resultados.
+- **Backend Search**: API `GET /api/products?search=` para busca por nome.
+
+---
+
 ## [0.2.1] - 2026-02-10
 
 ### Adicionado

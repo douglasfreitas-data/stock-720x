@@ -4,25 +4,27 @@ description: Automatically update project documentation, commit and push changes
 
 # End of Session Automation (/atualize)
 
-This workflow summarizes and persists all work done during the session.
+**CRITICAL**: This workflow MUST be followed strictly and in order. Do not skip any documentation steps.
 
 1. **Analyze Session Work**
    - Review all modified files and the task history.
-   - Calculate the time spent based on the current local time vs the start of work.
+   - Calculate total time spent (current time vs. session start).
 
 2. **Update Detailed Documentation**
-   - Update `walkthrough.md` in the brain.
-   - Append a summary entry to `docs/dev/2026-02.md` (or the current month).
-   - Update the latest entry in `TIMESHEET.md`.
+   - **Walkthrough**: Update the current `walkthrough.md` in the brain.
+   - **Dev Log**: Append/Update entry in `docs/dev/YYYY-MM.md`.
+   - **Timesheet**: Update/Add entry in `TIMESHEET.md`.
 
 3. **Project Synchronization**
-   - Update `.agent/SUMMARY.md` status and tasks.
-   - Update `CHANGELOG.md` with notable changes.
+   - **Summary**: Update `.agent/SUMMARY.md` tasks and known issues.
+   - **Changelog**: Update `docs/CHANGELOG.md` with new features/fixes.
 
 4. **Git Sync**
-   - Run `git add .`
-   - Commit changes with a descriptive message (e.g., `feat: movement module and documentation update`).
-   - Push to the current remote branch.
+   - `git add .`
+   - `git commit -m "[type]: [description]"`
+   - `git push`
 
-5. **Final Notification**
-   - Notify the user with a summary of which documents were updated and the commit hash.
+5. **Mandatory Validation Checklist**
+   - BEFORE notifying the user, the agent MUST verify internally that steps 1, 2, 3, and 4 were fully executed.
+   - The final notification MUST list the updated files and the commit hash.
+

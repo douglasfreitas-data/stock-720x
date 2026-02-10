@@ -39,7 +39,8 @@ function EntryContent() {
         try {
             console.log('Scanned for Entry:', decodedText);
 
-            const existing = items.find(i => i.product?.barcode === decodedText);
+            const safeItems = items || [];
+            const existing = safeItems.find(i => i.product ? i.product.barcode === decodedText : false);
             if (existing) {
                 setItems(prev => prev.map(i =>
                     i.product && i.product.barcode === decodedText
@@ -49,7 +50,7 @@ function EntryContent() {
                 showToast(`+1 ${existing.product?.name} (Total: ${existing.quantity + 1})`, 'success');
             } else {
                 const product = await fetchProductByBarcode(decodedText);
-                if (product) {
+                if (product && product.id) {
                     setItems(prev => [...prev, {
                         productId: product.id,
                         quantity: 1,
@@ -57,14 +58,15 @@ function EntryContent() {
                     }]);
                     showToast(`${product.name} adicionado!`, 'success');
                 } else {
+                    console.warn('Product not found or invalid:', product);
                     showToast('Produto não encontrado', 'error');
                 }
             }
         } catch (err) {
-            console.error(err);
-            showToast('Erro ao buscar produto', 'error');
+            console.error('Critical Entry Scan Error:', err);
+            showToast('Erro ao processar item. Tente novamente.', 'error');
         } finally {
-            setTimeout(() => setIsScanning(false), 1000);
+            setTimeout(() => setIsScanning(false), 1500);
         }
     };
 

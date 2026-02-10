@@ -90,6 +90,15 @@ export class NuvemshopAPI {
     }
 
     /**
+     * Busca produtos por termo (nome)
+     */
+    async searchProducts(query: string, page = 1, perPage = 50): Promise<NuvemshopProduct[]> {
+        return this.request<NuvemshopProduct[]>(
+            `/products?q=${encodeURIComponent(query)}&page=${page}&per_page=${perPage}`
+        );
+    }
+
+    /**
      * Busca produto por ID
      */
     async getProduct(productId: number): Promise<NuvemshopProduct> {

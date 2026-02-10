@@ -44,8 +44,15 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get('page') || '1');
     const barcode = searchParams.get('barcode');
+    const search = searchParams.get('search');
 
     try {
+        // Busca por nome (search)
+        if (search) {
+            const products = await api.searchProducts(search, page);
+            return NextResponse.json({ products, page });
+        }
+
         // Busca por código de barras
         if (barcode) {
             const result = await api.findVariantByBarcode(barcode);

@@ -1,5 +1,13 @@
 
-***10/02/2026 18:53
+*** 10/02/2026 20:00 - 
+
+Na tela de entrada de estoque, ao ler o codigo de barras o produto é incluso sem a opção de escolher a quantidade.
+No campo digite o nome do produto, ele não encontra o produto, nem aperece uma lista de autocomplete com os produtos.
+
+
+
+
+***10/02/2026 18:53 - Resolvido
 
 Na tela inicial tirar o menu de 3 pontos na parte superior direita, troque pelo icone do carrinho como aparece na tela do scanner com  a quantidade de itens no carrinho - extamente igual, que leva ate o carrinho. 
 O botão ver carrinho pode ficar um pouco mais para baixo e centralizado.

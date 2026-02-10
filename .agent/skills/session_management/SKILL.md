@@ -8,6 +8,10 @@ description: "Guidelines for starting and ending development sessions with autom
 ## Goal
 Establish a robust and automated process for documenting development progress and ensuring all records are synchronized before finishing.
 
+## Workflows Available
+- **`/iniciar`**: Run this at the start of every session to analyze logs and summary.
+- **`/atualize`**: Run this at the end to persist all work and sync with Git.
+
 ## Instructions
 
 ### 1. Starting a Session

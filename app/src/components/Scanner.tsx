@@ -133,7 +133,7 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
 
             <button
                 onClick={startScanner}
-                className="mt-4 px-6 py-3 bg-[var(--accent)] text-white rounded-lg font-medium hover:bg-[var(--accent-hover)] transition-colors"
+                className="mt-4 px-8 py-4 bg-[var(--accent)] text-white rounded-lg font-medium text-lg hover:bg-[var(--accent-hover)] transition-colors shadow-lg"
             >
                 📷 Ativar Câmera
             </button>

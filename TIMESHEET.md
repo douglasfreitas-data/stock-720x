@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 19.0h | 🔄 Em andamento |
-| **Total** | **37.0h** | - |
+| Desenvolvimento | 21.0h | 🔄 Em andamento |
+| **Total** | **39.0h** | - |
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 19.0 horas (em andamento)
+**Total**: 21.0 horas (em andamento)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -53,6 +53,8 @@
 | 07/02/2026 | 3.5h | Suporte Instalação Nuvemshop (Debug OAuth, Env Vars, Backend Connection) |
 | 07/02/2026 | 2.0h | UX Audit, Visual Corrections, Scanner Fix & PDF Generation |
 | 10/02/2026 | 6.5h | **Módulo de Movimentação Completo & Automação**: Fix sync, dual-write, tela de entrada, checkout com operação, tela de ajuste, dashboard de relatórios e criação do comando `/atualize`. |
+| 10/02/2026 | 0.5h | **Organização do Projeto**: Criação do `ROADMAP.md`, refatoração do `ai_team_roles` com guia prático multi-modelo, workflow `/iniciar`. |
+| 10/02/2026 | 1.5h | **Correções UX (6 bugs)**: Reset CSS global, limpeza Scanner, botão câmera maior, redesign Entrada de Estoque, simplificação Lista de Produtos. Build verificado. |
 
 ---
 
@@ -64,4 +66,4 @@
 
 ---
 
-*Última atualização: 10/02/2026*
+*Última atualização: 10/02/2026 18:27*

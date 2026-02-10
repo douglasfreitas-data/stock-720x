@@ -84,36 +84,27 @@ function ScanContent() {
                         <Scanner onScan={handleScan} />
 
                         <p style={{ textAlign: 'center', color: 'var(--text-muted)', margin: '16px 0 8px', fontSize: '0.875rem' }}>
-                            Ou digite manualmente:
+                            Ou busque por nome:
                         </p>
 
-                        {/* Botões de teste com barcodes reais da loja */}
-                        <div className="quick-codes">
-                            <p className="quick-codes-label">Teste rápido:</p>
-                            <div className="quick-codes-list">
-                                <button
-                                    type="button"
-                                    className="quick-code"
-                                    onClick={() => handleScan('6426010922905')}
-                                >
-                                    🏷️ Dedeira Avalon
-                                </button>
-                                <button
-                                    type="button"
-                                    className="quick-code"
-                                    onClick={() => handleScan('7891234567001')}
-                                >
-                                    🏹 Flechas Hybrid
-                                </button>
-                            </div>
+                        {/* Campo de busca por nome (autocomplete futuro) */}
+                        <div style={{ padding: '0 16px' }}>
+                            <input
+                                type="text"
+                                placeholder="Digite o nome do produto..."
+                                className="form-input"
+                                style={{ marginBottom: '16px' }}
+                            />
                         </div>
                     </>
                 )}
 
                 {mode === 'sale' && cartCount > 0 && !isLoading && (
-                    <Link href="/cart" className="btn-view-cart">
-                        🛒 Ver Carrinho ({cartCount} {cartCount === 1 ? 'item' : 'itens'})
-                    </Link>
+                    <div style={{ position: 'sticky', bottom: 0, padding: '16px', background: 'var(--bg-primary)' }}>
+                        <Link href="/cart" className="btn-view-cart" style={{ margin: 0 }}>
+                            🛒 Ver Carrinho ({cartCount} {cartCount === 1 ? 'item' : 'itens'})
+                        </Link>
+                    </div>
                 )}
             </div>
         </div>

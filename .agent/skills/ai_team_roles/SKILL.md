@@ -5,60 +5,110 @@ description: "Guidelines for assigning tasks to different AI models to optimize 
 
 # AI Team Structure & Token Optimization
 
-## 🎯 Objective
-Maximize project efficiency and minimize token costs by assigning tasks to the specific AI model best suited for the complexity level. Treat your AI interaction as managing a team of developers with different seniorities.
+## 🎯 Objetivo
+Maximizar eficiência e minimizar custo de tokens atribuindo cada tarefa ao modelo certo.
 
-## 👥 The Team (Model Roles)
+## 👥 Os Modelos (Funções)
 
-### 1. **Architect & Lead (Opus 4.6 / o1)**
-*   **Role:** Tech Lead / Staff Engineer.
-*   **Best for:**
-    *   **Planning phases:** Creating the initial `implementation_plan.md`.
-    *   **Complex Debugging:** Diagnosing root causes when multiple files interact (e.g., sync + database + frontend conflicts).
-    *   **Architecture:** Designing database schemas, data flow diagrams.
-    *   **Context Management:** updating `SUMMARY.md` and high-level project direction.
-*   **Cost:** $$$$ (Use sparingly, for high-value decisions).
+| Papel | Modelo | Quando Usar | Custo |
+|-------|--------|-------------|-------|
+| **Arquiteto** | Opus 4 / o1 | Planejamento, debugging complexo, arquitetura | $$$$ |
+| **Dev Senior** | Sonnet 4 / Opus 4 | Implementação de features, refactoring | $$$ |
+| **Dev Junior** | Gemini 2.5 Flash / GPT-4o | Tarefas rotineiras, copiar padrões, testes | $$ |
 
-### 2. **Senior Developer (Opus 4.5 / Sonnet 3.5)**
-*   **Role:** Senior Full-Stack Dev.
-*   **Best for:**
-    *   **Implementation:** Writing functional code for complete features.
-    *   **Refactoring:** Improving code quality and splitting large files.
-    *   **Review:** checking code against the plan.
-    *   **Documentation:** Updating `task.md`, `walkthrough.md`.
-*   **Cost:** $$$ (The workhorse for complex coding).
+---
 
-### 3. **Developer / Junior (Gemini / GPT-4o)**
-*   **Role:** Mid-level Dev.
-*   **Best for:**
-    *   **Routine Tasks:** "Create a new page following the pattern of page X".
-    *   **Simple Fixes:** "Fix the lint error on line 45".
-    *   **Tests:** Writing unit tests for existing functions.
-    *   **Scripts:** Creating small utility scripts.
-*   **Cost:** $$ (Good for volume).
+## 🚀 Guia Prático — Como Usar no Dia a Dia
 
-## 🔄 Workflow Strategy
+### Passo 1: Sempre comece com `/iniciar`
+Isso carrega o contexto mínimo (`SUMMARY.md`, `TIMESHEET.md`, `ROADMAP.md`).
 
-1.  **Start with the Lead (Opus 4.6):**
-    *   Brief the problem.
-    *   Ask for a plan (`implementation_plan.md`) and task breakdown (`task.md`).
-    *   *Result:* A concrete roadmap.
+### Passo 2: Escolha o modelo pela tarefa, não pela sessão
 
-2.  **Handoff to Developers (Sonnet/Gemini):**
-    *   Switch to a cheaper model.
-    *   Execute the plan item by item.
-    *   *Prompt:* "Execute task 1 from `task.md`. Context is in `implementation_plan.md`."
+#### Para PLANEJAR (use Opus 4 / o1):
+> **Prompt exemplo:**
+> ```
+> Leia docs/ROADMAP.md e .agent/SUMMARY.md.
+> Crie um implementation_plan.md para a tarefa F3.3 (QR Code).
+> Inclua: arquivos a criar/modificar, dependências e plano de verificação.
+> ```
 
-3.  **Review & Verify (Opus 4.5/4.6):**
-    *   Verify the work (`verify_implementation`).
-    *   Update `SUMMARY.md` and `TIMESHEET.md`.
+#### Para IMPLEMENTAR (use Sonnet 4):
+> **Prompt exemplo:**
+> ```
+> Leia .agent/SUMMARY.md e o implementation_plan.md da conversa anterior.
+> Execute os itens 1 e 2 do plano. Não altere a arquitetura.
+> Quando terminar, rode /atualize.
+> ```
 
-## 📂 Context Management (Crucial for Savings)
+#### Para TAREFAS SIMPLES (use Gemini Flash / GPT-4o):
+> **Prompt exemplo:**
+> ```
+> Leia .agent/SUMMARY.md.
+> Crie a página /stock/entry seguindo exatamente o padrão
+> de /stock/checkout (mesmo layout, componentes, estilo).
+> ```
 
-To save tokens, **do not** make the model read every file every time. Rely on:
+---
 
-*   `task.md`: What are we doing *now*?
-*   `implementation_plan.md`: *How* are we doing it?
-*   `SUMMARY.md`: What is the *current state* of the project?
+## 📋 Regra de Ouro: Cada Sessão = 1 Tarefa
 
-**Tip:** When switching models, ask the new model to "Read `SUMMARY.md` and `task.md` to get up to speed" instead of dumping the whole history.
+**ANTES de começar**, defina:
+1. **Qual tarefa?** → Use o ID do `ROADMAP.md` (ex: `F3.3.1`)
+2. **Qual modelo?** → Veja a tabela acima
+3. **Qual prompt?** → Veja os exemplos acima
+
+**DEPOIS de terminar**, sempre execute:
+- `/atualize` → Atualiza docs, commit e push
+
+---
+
+## 🔄 Fluxo Completo de uma Feature
+
+```
+1. [Opus 4]   /iniciar → Escolhe a próxima tarefa do ROADMAP
+2. [Opus 4]   Cria implementation_plan.md → Você aprova
+3. [Sonnet 4] Implementa o code seguindo o plano
+4. [Sonnet 4] Verifica (build, testes)
+5. [Qualquer] /atualize → Commit, push, atualiza docs
+```
+
+Para features simples (1 arquivo, sem decisão de arquitetura):
+```
+1. [Sonnet 4]  /iniciar → Implementa direto → /atualize
+```
+
+---
+
+## 📂 Documentos-Chave (Contexto Mínimo)
+
+| Arquivo | O que contém | Quando ler |
+|---------|--------------|------------|
+| `SUMMARY.md` | Estado atual do projeto | **Sempre** (toda sessão) |
+| `docs/ROADMAP.md` | O quê falta fazer | Ao escolher a próxima tarefa |
+| `TIMESHEET.md` | Horas gastas | Ao finalizar sessão |
+| `implementation_plan.md` | Como fazer a tarefa atual | Antes de implementar |
+
+> **Dica:** Nunca peça para o modelo "ler todo o código". Aponte para 
+> os 2-3 arquivos específicos que ele precisa.
+
+---
+
+## 🪙 Regras de Economia de Tokens
+
+> **Lema do projeto:** *"Economia de tokens alcançando ótimos resultados"*
+
+1. **NUNCA** fazer auditoria via navegador (abrir telas, screenshots, comparar) sem o usuário pedir explicitamente.
+2. **Bugs e UX:** O usuário testa e envia a lista → o agente corrige em lote lendo só os arquivos afetados.
+3. **Evitar reler arquivos** que já foram lidos na mesma sessão.
+4. **Preferir comparação de código** (grep, view_file) em vez de navegação no browser.
+5. **Sessões curtas e focadas:** 1 tarefa por sessão, nunca expandir o escopo sem perguntar.
+
+---
+
+## ⚡ Atalhos Disponíveis
+
+| Comando | Quando usar |
+|---------|-------------|
+| `/iniciar` | Início de cada sessão |
+| `/atualize` | Final de cada sessão (commit + docs) |

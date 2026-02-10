@@ -1,5 +1,5 @@
 # Project Summary - Stock - 720x
-**Last Updated:** 2026-02-10T18:27:00
+**Last Updated:** 2026-02-10T19:00:00
 
 ## Status
 - **Current Phase:** Correção de Arquitetura + Módulo de Estoque
@@ -55,7 +55,8 @@ Nuvemshop ──sync──► Supabase (products, product_variants)
 - [x] Tela de Sessão de Saída (pregão, doação, consumo) ✅
 - [x] Dashboard de relatórios (Movimentações) ✅
 - [x] Organização: ROADMAP.md + ai_team_roles + /iniciar ✅
-- [x] UX Fixes: 6 bugs corrigidos (links, cores, scanner, entrada, lista) ✅
+- [x] UX Fixes (Round 1): 6 bugs corrigidos ✅
+- [x] UX Fixes (Round 2): Header, Overlay Scanner, Crash Fixes ✅
 
 ## Known Issues
 - **inventory_logs table:** Deve ser removida do Supabase (substituída por `stock_sessions`/`stock_movements`) - Ver ROADMAP F3.1.1

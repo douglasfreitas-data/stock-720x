@@ -2,8 +2,6 @@
 description: Automatically update project documentation, commit and push changes.
 ---
 
-# End of Session Automation (/atualize)
-
 **CRITICAL**: This workflow MUST be followed strictly and in order. Do not skip any documentation steps.
 
 1. **Analyze Session Work**
@@ -27,4 +25,3 @@ description: Automatically update project documentation, commit and push changes
 5. **Mandatory Validation Checklist**
    - BEFORE notifying the user, the agent MUST verify internally that steps 1, 2, 3, and 4 were fully executed.
    - The final notification MUST list the updated files and the commit hash.
-

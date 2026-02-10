@@ -6,7 +6,7 @@
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
 | Desenvolvimento | 21.0h | 🔄 Em andamento |
-| **Total** | **39.0h** | - |
+| **Total** | **40.0h** | - |
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 21.0 horas (em andamento)
+**Total**: 22.0 horas (em andamento)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -55,6 +55,7 @@
 | 10/02/2026 | 6.5h | **Módulo de Movimentação Completo & Automação**: Fix sync, dual-write, tela de entrada, checkout com operação, tela de ajuste, dashboard de relatórios e criação do comando `/atualize`. |
 | 10/02/2026 | 0.5h | **Organização do Projeto**: Criação do `ROADMAP.md`, refatoração do `ai_team_roles` com guia prático multi-modelo, workflow `/iniciar`. |
 | 10/02/2026 | 1.5h | **Correções UX (6 bugs)**: Reset CSS global, limpeza Scanner, botão câmera maior, redesign Entrada de Estoque, simplificação Lista de Produtos. Build verificado. |
+| 10/02/2026 | 1.0h | **UX Fixes Round 2 (Recovery)**: Revert de commit problemático, reaplicação limpa de 5 fixes (Header, Scanner overlay, Cart position, 404, Crash). |
 
 ---
 

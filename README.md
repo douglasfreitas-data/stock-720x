@@ -55,14 +55,12 @@ Escaneia prateleiras → Compara com sistema → Ajusta divergências → Sincro
 
 ## 📅 Cronograma de Desenvolvimento
 
-| Semana | Entrega | Status |
-|--------|---------|--------|
-| 1 | Conexão Nuvemshop + Sync de Produtos | ⏳ Pendente |
-| 2 | PDV Mobile + Baixa Automática | ⏳ Pendente |
-| 3 | Alertas de Estoque + Inventário | ⏳ Pendente |
-| 4 | Módulo Financeiro + Entrega | ⏳ Pendente |
+| 1 | Conexão Nuvemshop + Sync de Produtos | ✅ Concluído |
+| 2 | PDV Mobile + Baixa Automática + Módulo de Movimentação | ✅ Concluído |
+| 3 | Alertas de Estoque + Relatórios | 🔄 Em andamento |
+| 4 | Módulo Financeiro + Entrega Final | ⏳ Pendente |
 
-**Prazo Total**: 4 semanas (~24 dias úteis)
+**Progresso Real**: Estágio final da Semana 3 (Relatórios concluídos, Alertas pendentes).
 
 ## 🚀 Como Executar
 

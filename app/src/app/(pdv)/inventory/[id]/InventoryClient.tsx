@@ -26,7 +26,7 @@ export default function InventoryClient({ initialProduct }: { initialProduct: Pr
         }
 
         let newStock: number;
-        let sessionType: string;
+        let sessionType: 'entrada' | 'saida';
         let quantity: number;
 
         if (mode === 'entry') {
@@ -37,8 +37,8 @@ export default function InventoryClient({ initialProduct }: { initialProduct: Pr
         } else {
             // Ajuste: valor informado é o novo total (contagem física)
             newStock = value;
-            sessionType = 'ajuste';
-            quantity = Math.abs(value - currentStock);
+            quantity = Math.abs(newStock - currentStock);
+            sessionType = newStock >= currentStock ? 'entrada' : 'saida';
         }
 
         startTransition(async () => {
@@ -152,7 +152,7 @@ export default function InventoryClient({ initialProduct }: { initialProduct: Pr
                     type="submit"
                     disabled={isPending || !amount}
                     className={`w-full py-4 rounded-lg font-bold text-lg transition-colors ${isPending ? 'bg-gray-600 cursor-not-allowed' :
-                            mode === 'entry' ? 'bg-green-600 hover:bg-green-700' : 'bg-yellow-600 hover:bg-yellow-700'
+                        mode === 'entry' ? 'bg-green-600 hover:bg-green-700' : 'bg-yellow-600 hover:bg-yellow-700'
                         }`}
                 >
                     {isPending ? 'Salvando...' : mode === 'entry' ? 'Confirmar Entrada' : 'Confirmar Ajuste'}

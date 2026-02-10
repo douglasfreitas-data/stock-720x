@@ -27,6 +27,15 @@ export default function HomeScreen() {
                 <p className="menu-card-subtitle">Conferir e ajustar estoque</p>
             </Link>
 
+            {/* Entrada de Estoque */}
+            <Link href="/stock/entry" className="menu-card decoration-none">
+                <div className="menu-card-row">
+                    <span className="menu-card-icon">📥</span>
+                    <h2 className="menu-card-title">Entrada</h2>
+                </div>
+                <p className="menu-card-subtitle">Compra, Devolução e Ajuste</p>
+            </Link>
+
             {/* Produtos */}
             <Link href="/products" className="menu-card decoration-none">
                 <div className="menu-card-row">
@@ -36,14 +45,24 @@ export default function HomeScreen() {
                 <p className="menu-card-subtitle">Cadastro e etiquetas QR</p>
             </Link>
 
-            {/* Financeiro */}
-            <Link href="/finance" className="menu-card decoration-none">
+            {/* Relatórios */}
+            <Link href="/reports" className="menu-card decoration-none">
+                <div className="menu-card-row">
+                    <span className="menu-card-icon">📊</span>
+                    <h2 className="menu-card-title">Relatórios</h2>
+                </div>
+                <p className="menu-card-subtitle">Movimentação e Vendas</p>
+            </Link>
+
+            {/* Financeiro (Broken/Future) */}
+            <div className="menu-card decoration-none opacity-40">
                 <div className="menu-card-row">
                     <span className="menu-card-icon">💰</span>
                     <h2 className="menu-card-title">Financeiro</h2>
                 </div>
-                <p className="menu-card-subtitle">Controle de pagamentos</p>
-            </Link>
+                <p className="menu-card-subtitle">Em breve...</p>
+            </div>
+
 
             {/* Link Sair (mock) */}
             <button

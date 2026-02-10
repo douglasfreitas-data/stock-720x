@@ -11,10 +11,11 @@ interface StockUpdateParams {
     operation: string;    // 'compra','devolucao','venda','pregao','doacao','consumo','contagem','perda','roubo'
     quantity: number;     // Quantidade movimentada (sempre positivo)
     observation?: string;
+    sessionId?: string;   // Opcional: ID de uma sessão existente (para vendas em lote)
 }
 
 export async function updateStockAction(params: StockUpdateParams) {
-    const { variantId, newStock, sessionType, operation, quantity, observation } = params;
+    const { variantId, newStock, sessionType, operation, quantity, observation, sessionId } = params;
 
     if (newStock < 0) {
         return { success: false, message: 'O estoque não pode ser negativo.' };
@@ -63,28 +64,35 @@ export async function updateStockAction(params: StockUpdateParams) {
 
         if (updateError) throw updateError;
 
-        // 4. Criar sessão de movimentação
-        const { data: session, error: sessionError } = await supabaseAdmin
-            .from('stock_sessions')
-            .insert({
-                type: sessionType,
-                operation: operation,
-                status: 'closed', // Sessão unitária, já fecha
-                notes: observation || null,
-            })
-            .select('id')
-            .single();
+        // 4. Gerenciar Sessão (Usar existente ou criar nova)
+        let targetSessionId = sessionId;
 
-        if (sessionError) {
-            console.error('[Stock] Erro ao criar sessão:', sessionError);
+        if (!targetSessionId) {
+            const { data: session, error: sessionError } = await supabaseAdmin
+                .from('stock_sessions')
+                .insert({
+                    type: sessionType,
+                    operation: operation,
+                    status: 'closed', // Sessão unitária, já fecha
+                    notes: observation || null,
+                })
+                .select('id')
+                .single();
+
+            if (sessionError) {
+                console.error('[Stock] Erro ao criar sessão:', sessionError);
+            } else {
+                targetSessionId = session.id;
+            }
         }
 
         // 5. Registrar movimentação
-        if (session) {
+        if (targetSessionId) {
             const { error: movError } = await supabaseAdmin
                 .from('stock_movements')
                 .insert({
-                    session_id: session.id,
+                    session_id: targetSessionId,
+
                     variant_id: variantId,
                     quantity: sessionType === 'saida' ? -quantity : quantity,
                     old_stock: oldStock,

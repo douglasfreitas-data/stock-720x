@@ -42,6 +42,7 @@ Nuvemshop ──sync──► Supabase (products, product_variants)
 - ✅ `timesheet_management` - Time tracking in TIMESHEET.md
 - ✅ `project_context` - Session continuity via SUMMARY.md
 - ✅ `nuvemshop_integration` - Nuvemshop API patterns for Stock-720x
+- ✅ `ai_team_roles` - Model selection strategy for token optimization
 
 ## Active Tasks
 - [x] Fix Vercel 404 (Deployed from `app/`)
@@ -49,10 +50,10 @@ Nuvemshop ──sync──► Supabase (products, product_variants)
 - [x] Fix Sync Pagination Bug (404 on last page)
 - [x] Implement Dual-Write (Nuvemshop + Supabase)
 - [x] Create `/api/products/barcode` server-side route
-- [ ] Checkout: adicionar código de operação junto com seleção de cliente
-- [ ] Tela de Sessão de Entrada (compra, devolução)
-- [ ] Tela de Sessão de Saída (pregão, doação, consumo)
-- [ ] Dashboard de relatórios (Finanças/Vendas)
+- [x] Checkout: adicionar código de operação junto com seleção de cliente ✅
+- [x] Tela de Sessão de Entrada (compra, devolução) ✅
+- [x] Tela de Sessão de Saída (pregão, doação, consumo) ✅
+- [x] Dashboard de relatórios (Movimentações) ✅
 
 ## Known Issues
 - **inventory_logs table:** Deve ser removida do Supabase (substituída por `stock_sessions`/`stock_movements`)

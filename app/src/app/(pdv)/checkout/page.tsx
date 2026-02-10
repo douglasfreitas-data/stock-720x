@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { processSessionAction } from '@/app/actions/session';
 import { useCart } from '@/components/providers/CartProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 
@@ -15,6 +16,13 @@ const paymentMethods = [
     { id: 'other', icon: '📋', label: 'Outro' }
 ];
 
+const operations = [
+    { id: 'venda', label: 'Venda ao Consumidor' },
+    { id: 'consumo', label: 'Consumo Interno' },
+    { id: 'doacao', label: 'Doação' },
+    { id: 'pregao', label: 'Saída para Pregão' }
+];
+
 export default function CheckoutPage() {
     const router = useRouter();
     const { cart, clearCart, cartTotal, cartCount } = useCart();
@@ -22,6 +30,7 @@ export default function CheckoutPage() {
 
     const [customer, setCustomer] = useState('');
     const [selectedPayment, setSelectedPayment] = useState('pix');
+    const [selectedOperation, setSelectedOperation] = useState('venda');
     const [isProcessing, setIsProcessing] = useState(false);
 
     // Redirect if cart is empty
@@ -33,33 +42,20 @@ export default function CheckoutPage() {
     const handleConfirmSale = async () => {
         setIsProcessing(true);
         try {
-            // Processing logic...
-            const errors = [];
-            for (const item of cart) {
-                if (!item.product?.barcode) continue;
-                try {
-                    const response = await fetch('/api/stock', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            barcode: item.product.barcode,
-                            quantity: item.quantity
-                        })
-                    });
-                    if (!response.ok) errors.push(item.product.name);
-                } catch (err) {
-                    errors.push(item.product.name);
-                }
-            }
+            const result = await processSessionAction({
+                items: cart,
+                type: 'saida',
+                operation: selectedOperation,
+                notes: `Cliente: ${customer} | Pagamento: ${selectedPayment}`
+            });
 
-            if (errors.length > 0) {
-                showToast(`Erro ao baixar estoque de: ${errors.join(', ')}`, 'error');
+            if (result.success) {
+                showToast('Operação realizada com sucesso!', 'success');
+                clearCart();
+                router.push('/success');
             } else {
-                showToast('Venda realizada com sucesso!', 'success');
+                showToast(result.message || 'Erro ao processar operação', 'error');
             }
-
-            clearCart();
-            router.push('/success');
         } catch (error) {
             console.error('Erro geral na venda:', error);
             showToast('Erro ao processar venda', 'error');
@@ -72,14 +68,14 @@ export default function CheckoutPage() {
         <div className="modal-overlay">
             <div className="modal-header">
                 <button onClick={() => router.back()} className="modal-close">←</button>
-                <h3 className="modal-title">Finalizar Venda</h3>
+                <h3 className="modal-title">Finalizar Operação</h3>
                 <div style={{ width: 40 }}></div>
             </div>
 
             <div className="modal-body">
                 {/* Order Summary */}
                 <div className="checkout-summary">
-                    <h4 className="checkout-section-title">Resumo do Pedido</h4>
+                    <h4 className="checkout-section-title">Resumo</h4>
                     <div className="checkout-items">
                         {cart.map(item => (
                             <div key={item.productId} className="checkout-item">
@@ -97,9 +93,28 @@ export default function CheckoutPage() {
                     </div>
                 </div>
 
+                {/* Operation Type */}
+                <div className="form-section">
+                    <label className="form-label">Tipo de Operação</label>
+                    <div className="grid grid-cols-2 gap-2">
+                        {operations.map(op => (
+                            <div
+                                key={op.id}
+                                className={`p-3 border rounded cursor-pointer text-center text-sm transition-colors ${selectedOperation === op.id
+                                    ? 'bg-[var(--accent)] text-white border-[var(--accent)]'
+                                    : 'bg-[var(--surface)] text-[var(--foreground)] border-[var(--border)] hover:border-[var(--accent)]'
+                                    }`}
+                                onClick={() => setSelectedOperation(op.id)}
+                            >
+                                {op.label}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 {/* Customer name */}
                 <div className="form-section">
-                    <label className="form-label">Nome do cliente (opcional)</label>
+                    <label className="form-label">Nome / Observação (Opcional)</label>
                     <input
                         type="text"
                         className="form-input"
@@ -110,21 +125,23 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Payment Method */}
-                <div className="form-section">
-                    <label className="form-label">Forma de pagamento</label>
-                    <div className="payment-options">
-                        {paymentMethods.map(p => (
-                            <div
-                                key={p.id}
-                                className={`payment-option ${selectedPayment === p.id ? 'selected' : ''}`}
-                                onClick={() => setSelectedPayment(p.id)}
-                            >
-                                <div className="payment-icon">{p.icon}</div>
-                                <div className="payment-label">{p.label}</div>
-                            </div>
-                        ))}
+                {selectedOperation === 'venda' && (
+                    <div className="form-section">
+                        <label className="form-label">Forma de Pagamento</label>
+                        <div className="payment-options">
+                            {paymentMethods.map(p => (
+                                <div
+                                    key={p.id}
+                                    className={`payment-option ${selectedPayment === p.id ? 'selected' : ''}`}
+                                    onClick={() => setSelectedPayment(p.id)}
+                                >
+                                    <div className="payment-icon">{p.icon}</div>
+                                    <div className="payment-label">{p.label}</div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Confirm Button */}
                 <button
@@ -132,7 +149,7 @@ export default function CheckoutPage() {
                     onClick={handleConfirmSale}
                     disabled={isProcessing}
                 >
-                    {isProcessing ? '✓ Processando...' : '✓ Confirmar Venda'}
+                    {isProcessing ? 'Processando...' : '✓ Confirmar'}
                 </button>
             </div>
         </div>

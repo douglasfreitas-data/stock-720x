@@ -1,22 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { CartProvider, useCart } from '@/components/providers/CartProvider';
+import { CartProvider } from '@/components/providers/CartProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
-
-function HeaderCartButton() {
-    const { cartCount } = useCart();
-
-    return (
-        <div className="header-menu">
-            <Link href="/cart" className="cart-header-btn">
-                🛒
-                {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-            </Link>
-        </div>
-    );
-}
 
 export default function PDVLayout({
     children,
@@ -31,7 +17,10 @@ export default function PDVLayout({
                     <header className="header">
                         {/* Logo corrigido para path absoluto do public */}
                         <img src="/logo.png" alt="720x" className="logo" />
-                        <HeaderCartButton />
+                        <div className="header-menu">
+                            {/* Menu dropdown logic here if needed */}
+                            <button className="menu-dots">⋮</button>
+                        </div>
                     </header>
 
                     <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>

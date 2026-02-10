@@ -100,8 +100,8 @@ function ScanContent() {
                 )}
 
                 {mode === 'sale' && cartCount > 0 && !isLoading && (
-                    <div style={{ padding: '24px 16px', marginTop: 'auto', textAlign: 'center' }}>
-                        <Link href="/cart" className="btn-view-cart" style={{ margin: '0 auto', maxWidth: '320px' }}>
+                    <div style={{ position: 'sticky', bottom: 0, padding: '16px', background: 'var(--bg-primary)' }}>
+                        <Link href="/cart" className="btn-view-cart" style={{ margin: 0 }}>
                             🛒 Ver Carrinho ({cartCount} {cartCount === 1 ? 'item' : 'itens'})
                         </Link>
                     </div>

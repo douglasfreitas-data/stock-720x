@@ -10,7 +10,6 @@ interface ScannerProps {
 
 export default function Scanner({ onScan, onError }: ScannerProps) {
     const [error, setError] = useState<string | null>(null);
-    const [isActive, setIsActive] = useState(false);
     const scannerRef = useRef<Html5Qrcode | null>(null);
     const containerId = 'scanner-container';
 
@@ -45,7 +44,7 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
             } catch (mediaErr: unknown) {
                 const msg = mediaErr instanceof Error ? mediaErr.message : '';
                 if (msg.includes('NotFoundError') || msg.includes('device not found') || msg.includes('Requested device not found')) {
-                    setError('📷 Câmera não encontrada. Conecte uma câmera e tente novamente.');
+                    setError('📷 Câmera não encontrada. Use os botões de teste rápido ou conecte uma câmera.');
                 } else if (msg.includes('NotAllowedError') || msg.includes('Permission denied')) {
                     setError('🔒 Acesso à câmera negado. Permita o uso da câmera nas configurações do navegador.');
                 } else {
@@ -70,8 +69,6 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
                 return;
             }
 
-            setIsActive(true);
-
             await scannerRef.current.start(
                 { facingMode: "environment" },
                 {
@@ -81,13 +78,13 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
                 },
                 (decodedText) => {
                     // Success callback
+                    // Stop scanning automatically? Or keep scanning?
+                    // For now, let's stop to avoid multiple rapid fires
                     if (scannerRef.current) {
                         scannerRef.current.stop().then(() => {
-                            setIsActive(false);
                             onScan(decodedText);
                         }).catch(err => {
                             console.error('Error stopping after scan:', err);
-                            setIsActive(false);
                             onScan(decodedText); // Send anyway
                         });
                     } else {
@@ -101,12 +98,11 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
             );
         } catch (err: unknown) {
             console.error('Error starting scanner:', err);
-            setIsActive(false);
             const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
 
             // Handle common camera errors gracefully
             if (errorMessage.includes('NotFoundError') || errorMessage.includes('device not found')) {
-                setError('📷 Câmera não encontrada. Conecte uma câmera e tente novamente.');
+                setError('📷 Câmera não encontrada. Use os botões de teste rápido ou conecte uma câmera.');
             } else if (errorMessage.includes('NotAllowedError') || errorMessage.includes('Permission denied')) {
                 setError('🔒 Acesso à câmera negado. Permita o uso da câmera nas configurações do navegador.');
             } else {
@@ -121,16 +117,10 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
                 id={containerId}
                 className="w-full max-w-[400px] aspect-square bg-black rounded-lg overflow-hidden relative"
             >
-                {/* Placeholder / Activate Camera overlay */}
-                {!isActive && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                        <p className="text-white/50 text-sm">Toque para ativar a câmera</p>
-                        <button
-                            onClick={startScanner}
-                            className="px-10 py-5 bg-[var(--accent)] text-white rounded-xl font-semibold text-xl hover:bg-[var(--accent-hover)] transition-colors shadow-lg"
-                        >
-                            📷 Ativar Câmera
-                        </button>
+                {/* Placeholder before start */}
+                {!scannerRef.current && (
+                    <div className="absolute inset-0 flex items-center justify-center text-white/50">
+                        Iniciando câmera...
                     </div>
                 )}
             </div>
@@ -140,6 +130,13 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
                     {error}
                 </div>
             )}
+
+            <button
+                onClick={startScanner}
+                className="mt-4 px-8 py-4 bg-[var(--accent)] text-white rounded-lg font-medium text-lg hover:bg-[var(--accent-hover)] transition-colors shadow-lg"
+            >
+                📷 Ativar Câmera
+            </button>
         </div>
     );
 }

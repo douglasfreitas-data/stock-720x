@@ -116,18 +116,55 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
     };
 
     return (
-        <div className="scanner-wrapper w-full flex flex-col items-center">
-            <div
-                id={containerId}
-                className="w-full max-w-[400px] aspect-square bg-black rounded-lg overflow-hidden relative"
-            >
-                {/* Overlay: Ativar Câmera (visible only when not active) */}
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Wrapper: position relative so overlay can sit on top */}
+            <div style={{ position: 'relative', width: '100%', maxWidth: '400px', aspectRatio: '1/1' }}>
+                {/* Scanner container — Html5Qrcode manages this div, keep it clean */}
+                <div
+                    id={containerId}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        background: '#000',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                    }}
+                />
+                {/* Overlay: sits ON TOP of scanner container as a sibling */}
                 {!isActive && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
-                        <p className="text-white/50 text-sm">Toque para ativar a câmera</p>
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '16px',
+                            zIndex: 10,
+                            borderRadius: '12px',
+                            background: 'rgba(0,0,0,0.7)',
+                        }}
+                    >
+                        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem', margin: 0 }}>
+                            Toque para ativar a câmera
+                        </p>
                         <button
                             onClick={startScanner}
-                            className="px-10 py-5 bg-[var(--accent)] text-white rounded-xl font-semibold text-xl hover:bg-[var(--accent-hover)] transition-colors shadow-lg"
+                            style={{
+                                padding: '20px 40px',
+                                background: 'var(--accent)',
+                                color: '#fff',
+                                borderRadius: '12px',
+                                fontWeight: 600,
+                                fontSize: '1.25rem',
+                                border: 'none',
+                                cursor: 'pointer',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                            }}
                         >
                             📷 Ativar Câmera
                         </button>
@@ -136,7 +173,16 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
             </div>
 
             {error && (
-                <div className="mt-4 p-3 bg-red-100/10 border border-red-500/50 text-red-500 rounded-lg text-center text-sm">
+                <div style={{
+                    marginTop: '16px',
+                    padding: '12px',
+                    background: 'rgba(255,0,0,0.1)',
+                    border: '1px solid rgba(255,0,0,0.5)',
+                    color: '#ef4444',
+                    borderRadius: '8px',
+                    textAlign: 'center',
+                    fontSize: '0.875rem',
+                }}>
                     {error}
                 </div>
             )}

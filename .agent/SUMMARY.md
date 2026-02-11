@@ -63,6 +63,9 @@ Nuvemshop ──sync──► Supabase (products, product_variants)
 
 **Filosofia:** Integração funcionando perfeitamente primeiro, UX/limpeza depois.
 
+### 🐛 Bug Pendente
+- **Autocomplete na Entrada de Estoque**: O campo "busque por nome" não está funcionando em produção. Precisa debugar (verificar se a API `/api/products?search=` responde e se o dropdown renderiza).
+
 ### Prioridade 1: Sync Automático (Cron)
 - Configurar Vercel Cron Job para `POST /api/sync` a cada 4-6h
 - Garantir que o cache Supabase sempre reflete o estoque real da Nuvemshop

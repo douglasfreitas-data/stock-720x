@@ -59,9 +59,27 @@ Nuvemshop ──sync──► Supabase (products, product_variants)
 - [x] UX Fixes Round 2: 5 bugs corrigidos (Recuperação limpa) ✅
 - [x] Entry Page UX: Modal de Quantidade + Busca Autocomplete ✅
 
-## Known Issues
-- **inventory_logs table:** Deve ser removida do Supabase (substituída por `stock_sessions`/`stock_movements`) - Ver ROADMAP F3.1.1
-- **Sync manual:** Sync precisa ser rodado manualmente via `POST /api/sync`. Futuro: automatizar com cron - Ver ROADMAP F3.4.1
+## 🎯 Próxima Sessão — Prioridade: Integração Sólida
+
+**Filosofia:** Integração funcionando perfeitamente primeiro, UX/limpeza depois.
+
+### Prioridade 1: Sync Automático (Cron)
+- Configurar Vercel Cron Job para `POST /api/sync` a cada 4-6h
+- Garantir que o cache Supabase sempre reflete o estoque real da Nuvemshop
+
+### Prioridade 2: Webhook de Orders (Sync em tempo real)
+- Completar o `TODO` em `api/webhooks/orders/route.ts` (linha 48)
+- Quando venda online acontece → atualizar estoque no Supabase
+
+### Prioridade 3: Teste End-to-End da Integração
+- Venda pelo PDV → estoque baixa na Nuvemshop + Supabase
+- Entrada pelo PDV → estoque sobe na Nuvemshop + Supabase
+- Venda no site → Supabase reflete automaticamente
+
+### Depois (Baixa prioridade)
+- Remover tabela `inventory_logs` do Supabase
+- Limpeza de código morto
+- UX polish e relatórios avançados
 
 ## Tabelas no Supabase
 | Tabela | Status | Uso |

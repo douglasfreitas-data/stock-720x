@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
 import Scanner from '@/components/Scanner';
+import SearchModal from '@/components/SearchModal';
 import { updateStockAction } from '@/app/actions/stock';
 import { useToast } from '@/components/providers/ToastProvider';
 import { Product } from '@/lib/types';
@@ -25,15 +25,7 @@ async function fetchProductByBarcode(barcode: string): Promise<Product | null> {
     return data.product || null;
 }
 
-async function searchProducts(query: string): Promise<Product[]> {
-    const res = await fetch(`/api/products?search=${encodeURIComponent(query)}`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.products || [];
-}
-
 function InventoryContent() {
-    const router = useRouter();
     const { showToast } = useToast();
 
     // Estado do scanner
@@ -47,12 +39,6 @@ function InventoryContent() {
     const [isProcessing, setIsProcessing] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Autocomplete
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<Product[]>([]);
-    const [isSearching, setIsSearching] = useState(false);
-    const [showDropdown, setShowDropdown] = useState(false);
-
     // Histórico da sessão (produtos ajustados nesta sessão)
     const [adjustedItems, setAdjustedItems] = useState<Array<{
         product: Product;
@@ -60,28 +46,6 @@ function InventoryContent() {
         newStock: number;
         reason: string;
     }>>([]);
-
-    // Debounce search
-    useEffect(() => {
-        if (searchQuery.length < 2) {
-            setSearchResults([]);
-            setShowDropdown(false);
-            return;
-        }
-        const timer = setTimeout(async () => {
-            setIsSearching(true);
-            try {
-                const results = await searchProducts(searchQuery);
-                setSearchResults(results);
-                setShowDropdown(results.length > 0);
-            } catch {
-                setSearchResults([]);
-            } finally {
-                setIsSearching(false);
-            }
-        }, 300);
-        return () => clearTimeout(timer);
-    }, [searchQuery]);
 
     // Foca no input quando modal abre
     useEffect(() => {
@@ -119,12 +83,9 @@ function InventoryContent() {
         }
     };
 
-    // Autocomplete select handler
+    // SearchModal select handler
     const handleSearchSelect = (product: Product) => {
         openAdjustModal(product);
-        setSearchQuery('');
-        setSearchResults([]);
-        setShowDropdown(false);
     };
 
     // Confirmar ajuste de estoque
@@ -313,55 +274,13 @@ function InventoryContent() {
                             <Scanner onScan={handleScan} />
                         )}
 
-                        {/* Busca por nome */}
-                        <p style={{ textAlign: 'center', color: 'var(--text-muted)', margin: '16px 0 8px', fontSize: '0.875rem' }}>
-                            Ou busque por nome:
-                        </p>
-                        <div style={{ padding: '0 16px', position: 'relative' }}>
-                            <input
-                                type="text"
+                        {/* Busca por nome — SearchModal (popup fullscreen) */}
+                        <div style={{ padding: '0 16px', marginTop: '12px' }}>
+                            <SearchModal
+                                onSelect={handleSearchSelect}
+                                label="Ou busque por nome:"
                                 placeholder="Digite o nome do produto..."
-                                className="form-input"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                style={{ marginBottom: showDropdown ? 0 : '16px' }}
                             />
-                            {isSearching && (
-                                <div style={{ textAlign: 'center', padding: 8, color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                                    Buscando...
-                                </div>
-                            )}
-                            {showDropdown && (
-                                <div style={{
-                                    background: 'var(--surface)',
-                                    borderRadius: '0 0 8px 8px',
-                                    border: '1px solid var(--border)',
-                                    borderTop: 'none',
-                                    maxHeight: 200,
-                                    overflowY: 'auto',
-                                    marginBottom: 16,
-                                }}>
-                                    {searchResults.map(p => (
-                                        <div
-                                            key={p.id}
-                                            onClick={() => handleSearchSelect(p)}
-                                            style={{
-                                                padding: '10px 12px',
-                                                borderBottom: '1px solid var(--border)',
-                                                cursor: 'pointer',
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                            }}
-                                        >
-                                            <span style={{ fontSize: '0.9rem' }}>{p.name}</span>
-                                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                                Est: {p.stock}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
                         </div>
 
                         {/* Histórico da sessão */}

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Scanner from '@/components/Scanner';
+import SearchModal from '@/components/SearchModal';
 import { processSessionAction } from '@/app/actions/session';
 import { useToast } from '@/components/providers/ToastProvider';
 import { Product, CartItem } from '@/lib/types';
@@ -20,13 +21,6 @@ async function fetchProductByBarcode(barcode: string): Promise<Product | null> {
     if (!res.ok) return null;
     const data = await res.json();
     return data.product || null;
-}
-
-async function searchProducts(query: string): Promise<Product[]> {
-    const res = await fetch(`/api/products?search=${encodeURIComponent(query)}`);
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.products || [];
 }
 
 function EntryContent() {
@@ -48,34 +42,6 @@ function EntryContent() {
     const [editingItem, setEditingItem] = useState<CartItem | null>(null);
     const [editQuantity, setEditQuantity] = useState(1);
     const editRef = useRef<HTMLInputElement>(null);
-
-    // Autocomplete
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<Product[]>([]);
-    const [isSearching, setIsSearching] = useState(false);
-    const [showDropdown, setShowDropdown] = useState(false);
-
-    // Debounce search (300ms)
-    useEffect(() => {
-        if (searchQuery.length < 2) {
-            setSearchResults([]);
-            setShowDropdown(false);
-            return;
-        }
-        const timer = setTimeout(async () => {
-            setIsSearching(true);
-            try {
-                const results = await searchProducts(searchQuery);
-                setSearchResults(results);
-                setShowDropdown(results.length > 0);
-            } catch {
-                setSearchResults([]);
-            } finally {
-                setIsSearching(false);
-            }
-        }, 300);
-        return () => clearTimeout(timer);
-    }, [searchQuery]);
 
     // Foca no input de quantidade quando o modal abre
     useEffect(() => {
@@ -143,12 +109,9 @@ function EntryContent() {
         }
     };
 
-    // Autocomplete: ao selecionar, abre modal de quantidade
+    // SearchModal: ao selecionar, abre modal de quantidade
     const handleSearchSelect = (product: Product) => {
         openQuantityModal(product);
-        setSearchQuery('');
-        setSearchResults([]);
-        setShowDropdown(false);
     };
 
     // Remover item da lista
@@ -228,7 +191,7 @@ function EntryContent() {
                     </p>
                 </div>
 
-                {/* Bug 7 FIX: Tipo de Operação ANTES da busca */}
+                {/* Tipo de Operação (ANTES da busca) */}
                 <div className="form-section">
                     <label className="form-label">Tipo de Operação</label>
                     <div className="payment-options">
@@ -244,64 +207,14 @@ function EntryContent() {
                     </div>
                 </div>
 
-                {/* Busca por nome (autocomplete) */}
-                <div className="form-section" style={{ position: 'relative' }}>
-                    <label className="form-label">Ou busque por nome:</label>
-                    <input
-                        type="text"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
-                        placeholder="Digite o nome do produto..."
-                        className="form-input"
-                    />
-                    {isSearching && (
-                        <div style={{ textAlign: 'center', padding: 'var(--space-sm)', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                            Buscando...
-                        </div>
-                    )}
-                    {showDropdown && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '100%',
-                            left: 0,
-                            right: 0,
-                            zIndex: 50,
-                            background: 'var(--surface)',
-                            border: '1px solid var(--border)',
-                            borderRadius: 'var(--radius)',
-                            maxHeight: 200,
-                            overflowY: 'auto',
-                            boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
-                        }}>
-                            {searchResults.map(product => (
-                                <button
-                                    key={product.id}
-                                    onClick={() => handleSearchSelect(product)}
-                                    style={{
-                                        display: 'block',
-                                        width: '100%',
-                                        textAlign: 'left',
-                                        padding: 'var(--space-sm) var(--space-md)',
-                                        background: 'none',
-                                        border: 'none',
-                                        borderBottom: '1px solid var(--border)',
-                                        color: 'var(--text-primary)',
-                                        cursor: 'pointer',
-                                        fontSize: '0.9rem'
-                                    }}
-                                >
-                                    <div style={{ fontWeight: 600 }}>{product.name}</div>
-                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                        Est: {product.stock} | {product.barcode || product.sku || '—'}
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                {/* Busca por nome — SearchModal (popup fullscreen) */}
+                <SearchModal
+                    onSelect={handleSearchSelect}
+                    label="Ou busque por nome:"
+                    placeholder="Digite o nome do produto..."
+                />
 
-                {/* Bug 8 FIX: Itens na Sessão — layout compacto, clique para editar */}
+                {/* Itens na Sessão — layout compacto, clique para editar */}
                 <div className="form-section">
                     <label className="form-label">Itens na Sessão ({items.length})</label>
                     {items.length === 0 ? (
@@ -487,7 +400,7 @@ function EntryContent() {
                 </div>
             )}
 
-            {/* Bug 8: Modal de Edição (item existente) */}
+            {/* Modal de Edição (item existente) */}
             {editingItem && (
                 <div style={{
                     position: 'fixed',

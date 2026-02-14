@@ -34,7 +34,7 @@ export default function CheckoutPage() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
 
-    // Redirect if cart is empty
+    // Redirect if cart is empty (only if wasn't just completed)
     if (cart.length === 0 && !isCompleted) {
         if (typeof window !== 'undefined') router.push('/cart');
         return null;
@@ -51,10 +51,12 @@ export default function CheckoutPage() {
             });
 
             if (result.success) {
-                showToast('Operação realizada com sucesso!', 'success');
                 setIsCompleted(true);
-                clearCart();
-                router.push('/success');
+                showToast('Operação realizada com sucesso!', 'success');
+                // Navegar PRIMEIRO, depois limpar carrinho
+                router.replace('/success');
+                // Delay clearCart para não disparar guard antes da navegação
+                setTimeout(() => clearCart(), 500);
             } else {
                 showToast(result.message || 'Erro ao processar operação', 'error');
             }

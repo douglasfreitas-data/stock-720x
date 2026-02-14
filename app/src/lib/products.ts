@@ -33,6 +33,7 @@ export async function getProductByBarcode(barcode: string): Promise<Product | nu
 }
 
 export async function getProductById(id: number): Promise<Product | null> {
+    console.log(`[getProductById] Buscando id=${id}, typeof=${typeof id}`);
     const { data, error } = await supabaseAdmin
         .from('product_variants')
         .select(`
@@ -46,7 +47,7 @@ export async function getProductById(id: number): Promise<Product | null> {
         .single();
 
     if (error || !data) {
-        console.error('Error fetching product by id:', error);
+        console.error(`[getProductById] FALHA id=${id}:`, JSON.stringify(error));
         return null;
     }
 

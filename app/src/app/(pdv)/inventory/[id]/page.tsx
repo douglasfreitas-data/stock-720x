@@ -6,6 +6,7 @@ import Link from 'next/link';
 export default async function InventoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: idStr } = await params;
     const id = parseInt(idStr);
+    console.log(`[InventoryPage] idStr="${idStr}", parsed id=${id}, isNaN=${isNaN(id)}`);
     const product = await getProductById(id);
 
     if (!product) {

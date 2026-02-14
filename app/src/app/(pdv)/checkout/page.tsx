@@ -32,9 +32,10 @@ export default function CheckoutPage() {
     const [selectedPayment, setSelectedPayment] = useState('pix');
     const [selectedOperation, setSelectedOperation] = useState('venda');
     const [isProcessing, setIsProcessing] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(false);
 
     // Redirect if cart is empty
-    if (cart.length === 0) {
+    if (cart.length === 0 && !isCompleted) {
         if (typeof window !== 'undefined') router.push('/cart');
         return null;
     }
@@ -51,6 +52,7 @@ export default function CheckoutPage() {
 
             if (result.success) {
                 showToast('Operação realizada com sucesso!', 'success');
+                setIsCompleted(true);
                 clearCart();
                 router.push('/success');
             } else {
@@ -96,17 +98,14 @@ export default function CheckoutPage() {
                 {/* Operation Type */}
                 <div className="form-section">
                     <label className="form-label">Tipo de Operação</label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="payment-options">
                         {operations.map(op => (
                             <div
                                 key={op.id}
-                                className={`p-3 border rounded cursor-pointer text-center text-sm transition-colors ${selectedOperation === op.id
-                                    ? 'bg-[var(--accent)] text-white border-[var(--accent)]'
-                                    : 'bg-[var(--surface)] text-[var(--foreground)] border-[var(--border)] hover:border-[var(--accent)]'
-                                    }`}
+                                className={`payment-option ${selectedOperation === op.id ? 'selected' : ''}`}
                                 onClick={() => setSelectedOperation(op.id)}
                             >
-                                {op.label}
+                                <div className="payment-label">{op.label}</div>
                             </div>
                         ))}
                     </div>

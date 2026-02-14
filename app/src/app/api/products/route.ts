@@ -3,8 +3,29 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { NuvemshopAPI } from '@/lib/nuvemshop';
+import { NuvemshopAPI, NuvemshopProduct } from '@/lib/nuvemshop';
+import { Product } from '@/lib/types';
 import { cookies } from 'next/headers';
+
+function mapNuvemshopToProducts(nuvemProducts: NuvemshopProduct[]): Product[] {
+    const results: Product[] = [];
+    for (const p of nuvemProducts) {
+        for (const v of p.variants) {
+            results.push({
+                id: v.id,
+                name: p.name?.pt || 'Sem nome',
+                sku: v.sku || '',
+                barcode: v.barcode || '',
+                price: parseFloat(v.price) || 0,
+                stock: v.stock || 0,
+                minStock: 5,
+                image: p.images?.[0]?.src || '',
+                nuvemshopId: String(p.id),
+            });
+        }
+    }
+    return results;
+}
 
 interface TokenData {
     access_token: string;
@@ -50,7 +71,7 @@ export async function GET(request: NextRequest) {
         // Busca por nome (search)
         if (search) {
             const products = await api.searchProducts(search, page);
-            return NextResponse.json({ products, page });
+            return NextResponse.json({ products: mapNuvemshopToProducts(products), page });
         }
 
         // Busca por código de barras

@@ -58,6 +58,8 @@
 | 10/02/2026 | 1.0h | **UX Fixes Round 2 (Recovery)**: Revert de commit problemático, reaplicação limpa de 5 fixes (Header, Scanner overlay, Cart position, 404, Crash). |
 | 10/02/2026 | 0.5h | **Backend Search**: `searchProducts()` em `api.ts`, suporte a `?search=` em `route.ts`. |
 | 10/02/2026 | 0.5h | **Fix Entrada de Estoque**: Modal de Quantidade + Busca Autocomplete em `entry/page.tsx`. |
+| 10/02/2026 | 1.0h | **Gestão de Projeto & Planejamento**: Brainstorming, definição de roadmap e organização de tarefas entre sessões. |
+| 11/02/2026 | 1.0h | **Organização Geral**: Reestruturação da documentação em `docs/`, criação do `BUG_TRACKER.md` + workflow `/bug`, atualização de Skills (Roles, Bug Triage) e reescrita completa do `README.md`. |
 
 ---
 

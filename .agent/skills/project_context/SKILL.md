@@ -60,3 +60,12 @@ Maintain continuity between agent sessions by using SUMMARY.md, drastically redu
 - "End session"
 - "Update summary"
 - "What's the project status?"
+
+## Bug Triage Standards
+When a bug is reported (via `/bug` or manually), the agent must:
+1. **Locate the Code**: Identify the specific file(s) and function(s) likely responsible.
+2. **Define the Path**: Create a mini-plan in the `Action` field of `BUG_TRACKER.md`.
+   - **BAD**: "Fix scanner error"
+   - **GOOD**: "Inspect `app/src/components/Scanner.tsx` for `onScanSuccess` callback. Verify `/api/products` return shape matches expectation."
+3. **Prioritize**: Assign priority based on user impact (Blocked vs Annoyed).
+

@@ -2,26 +2,29 @@
 description: Automatically update project documentation, commit and push changes.
 ---
 
-**CRITICAL**: This workflow MUST be followed strictly and in order. Do not skip any documentation steps.
+# Update Session Automation (/atualize)
+
+**CRITICAL**: This workflow MUST be followed strictly to maintain the centralized documentation integrity.
 
 1. **Analyze Session Work**
    - Review all modified files and the task history.
-   - Calculate total time spent (current time vs. session start).
+   - Calculate total time spent.
 
-2. **Update Detailed Documentation**
-   - **Walkthrough**: Update the current `walkthrough.md` in the brain.
-   - **Dev Log**: Append/Update entry in `docs/dev/YYYY-MM.md`.
-   - **Timesheet**: Update/Add entry in `TIMESHEET.md`.
+2. **Update Centralized Docs**
+   - **Sprint Status**: Update `docs/planejamento/02_FASE_ATUAL.md` marking completed tasks with `[x]`.
+   - **Bugs**: Update `docs/rastreamento/BUG_TRACKER.md` if any bugs were fixed or found.
+   - **Timesheet**: Append entry to `docs/rastreamento/TIMESHEET.md`.
+   - **History**: Append session log to `docs/historico/YYYY-MM.md`.
 
 3. **Project Synchronization**
-   - **Summary**: Update `.agent/SUMMARY.md` tasks and known issues.
-   - **Changelog**: Update `docs/CHANGELOG.md` with new features/fixes.
+   - Update `docs/00_PROJETO_MASTER.md` if the Phase or Status changed.
+   - Update `docs/CHANGELOG.md` with new features/fixes.
 
 4. **Git Sync**
    - `git add .`
    - `git commit -m "[type]: [description]"`
    - `git push`
 
-5. **Mandatory Validation Checklist**
-   - BEFORE notifying the user, the agent MUST verify internally that steps 1, 2, 3, and 4 were fully executed.
-   - The final notification MUST list the updated files and the commit hash.
+5. **Mandatory Validation**
+   - Verify that updates were made in `docs/` and NOT in root files.
+   - Notify user with the commit hash.

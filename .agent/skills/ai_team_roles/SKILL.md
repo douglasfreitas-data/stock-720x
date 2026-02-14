@@ -78,7 +78,31 @@ Para features simples (1 arquivo, sem decisão de arquitetura):
 1. [Sonnet 4]  /iniciar → Implementa direto → /atualize
 ```
 
+
 ---
+
+## 🐛 Fluxo de Resolução de Bugs
+
+O workflow `/bug` é apenas a **TRIAGEM**. A resolução segue este fluxo hierárquico:
+
+1. **Ingestão (Qualquer Modelo)**
+   - Executa `/bug` para importar do arquivo diário.
+   - Resultado: Bug aparece no `BUG_TRACKER.md` como "Aberto".
+
+2. **Análise & Estratégia (Arquiteto/Opus 4)**
+   - Lê o bug e os arquivos suspeitos.
+   - **NÃO CORRIGE O CÓDIGO AINDA.**
+   - Atualiza o `BUG_TRACKER.md` com um plano técnico detalhado na seção "Ação".
+   - Cria um `implementation_plan.md` se a correção for complexa/arriscada.
+
+3. **Execução (Dev Senior/Sonnet 4)**
+   - Lê o plano do Arquiteto.
+   - Aplica a correção.
+   - Verifica (Build/Teste).
+   - Atualiza status para "Resolvido".
+
+---
+
 
 ## 📂 Documentos-Chave (Contexto Mínimo)
 

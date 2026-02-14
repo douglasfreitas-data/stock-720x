@@ -45,7 +45,7 @@ function ScanContent() {
                     router.push('/cart');
                 } else {
                     showToast(`Produto encontrado: ${product.name}`, 'info');
-                    router.push(`/inventory/${product.id}`);
+                    router.push('/stock/inventory');
                 }
             } else {
                 showToast('Produto não encontrado no sistema', 'error');

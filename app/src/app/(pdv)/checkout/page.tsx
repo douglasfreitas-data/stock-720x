@@ -53,10 +53,8 @@ export default function CheckoutPage() {
             if (result.success) {
                 setIsCompleted(true);
                 showToast('Operação realizada com sucesso!', 'success');
-                // Navegar PRIMEIRO, depois limpar carrinho
+                // Não limpa carrinho aqui — será limpo na página /success
                 router.replace('/success');
-                // Delay clearCart para não disparar guard antes da navegação
-                setTimeout(() => clearCart(), 500);
             } else {
                 showToast(result.message || 'Erro ao processar operação', 'error');
             }

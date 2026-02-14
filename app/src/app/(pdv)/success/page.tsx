@@ -1,9 +1,19 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import { useCart } from '@/components/providers/CartProvider';
 
 export default function SuccessPage() {
+    const { clearCart } = useCart();
+
+    // Limpa o carrinho ao montar a página de sucesso
+    // Isso resolve a race condition: o checkout navega pra cá,
+    // e SÓ ENTÃO o carrinho é limpo.
+    useEffect(() => {
+        clearCart();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
     return (
         <div className="success-screen">
             <div className="success-icon">✅</div>

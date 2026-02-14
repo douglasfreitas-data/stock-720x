@@ -19,7 +19,7 @@ export default function HomeScreen() {
             </Link>
 
             {/* Inventário */}
-            <Link href="/scan?mode=inventory" className="menu-card decoration-none">
+            <Link href="/stock/inventory" className="menu-card decoration-none">
                 <div className="menu-card-row">
                     <span className="menu-card-icon">📦</span>
                     <h2 className="menu-card-title">Inventário</h2>

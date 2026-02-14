@@ -7,9 +7,9 @@
 ## 🚨 Prioridade 0: Bugs Críticos (Bloqueantes)
 > **Origem:** BUG_TRACKER.md
 
-- [ ] **Scanner Inventário 404**: Erro ao escanear produtos no inventário.
-- [ ] **Checkout Travado**: Tela de sucesso não carrega após venda.
-- [ ] **Autocomplete Entrada**: Busca por nome não funciona na entrada de estoque.
+- [x] **Scanner Inventário 404**: Reconstruído como `/stock/inventory` (sem rotas dinâmicas).
+- [ ] **Checkout Travado**: Bug de redirect persistente (Investigação em andamento).
+- [x] **Autocomplete Entrada**: Implementado `SearchModal` fullscreen.
 
 ---
 

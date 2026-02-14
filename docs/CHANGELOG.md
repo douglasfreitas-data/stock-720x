@@ -4,6 +4,18 @@ Todas as mudanças notáveis do projeto são documentadas aqui.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [0.2.3] - 2026-02-14
+
+### Adicionado
+- **SearchModal**: Componente de busca fullscreen para mobile (Scan, Entrada, Inventário).
+- **Módulo Inventário**: Nova página `/stock/inventory` estática com scanner e ajuste de estoque.
+- **Layout Entrada**: Lista de itens compacta e botões de operação reposicionados.
+
+### Corrigido
+- **Race Condition Checkout**: Refatoração com `useRef` e limpeza antecipada de carrinho (parcialmente resolvido).
+
+---
+
 ## [0.2.2] - 2026-02-10
 
 ### Adicionado

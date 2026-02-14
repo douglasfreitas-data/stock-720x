@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 23.0h | 🔄 Em andamento |
-| **Total** | **41.0h** | - |
+| Desenvolvimento | 24.5h | 🔄 Em andamento |
+| **Total** | **42.5h** | - |
 
 ---
 
@@ -60,6 +60,7 @@
 | 10/02/2026 | 0.5h | **Fix Entrada de Estoque**: Modal de Quantidade + Busca Autocomplete em `entry/page.tsx`. |
 | 10/02/2026 | 1.0h | **Gestão de Projeto & Planejamento**: Brainstorming, definição de roadmap e organização de tarefas entre sessões. |
 | 11/02/2026 | 1.0h | **Organização Geral**: Reestruturação da documentação em `docs/`, criação do `BUG_TRACKER.md` + workflow `/bug`, atualização de Skills (Roles, Bug Triage) e reescrita completa do `README.md`. |
+| 14/02/2026 | 1.5h | **Fix Bugs 1402**: Reconstrução Inventário, Componente SearchModal (Scan/Entry/Inv), Layout Entrada e Melhorias Checkout. |
 
 ---
 

@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { processSessionAction } from '@/app/actions/session';
 import { useCart } from '@/components/providers/CartProvider';
 import { useToast } from '@/components/providers/ToastProvider';
@@ -31,18 +30,24 @@ export default function CheckoutPage() {
     const [customer, setCustomer] = useState('');
     const [selectedPayment, setSelectedPayment] = useState('pix');
     const [selectedOperation, setSelectedOperation] = useState('venda');
-    const [isProcessing, setIsProcessing] = useState(false);
-    // useRef não reseta com re-renders do contexto — resolve a race condition
-    const isCompletedRef = useRef(false);
+    const [checkoutState, setCheckoutState] = useState<'idle' | 'processing' | 'completed'>('idle');
+    const isProcessing = checkoutState === 'processing';
 
-    // Redirect if cart is empty (only if wasn't just completed)
-    if (cart.length === 0 && !isCompletedRef.current) {
-        if (typeof window !== 'undefined') router.push('/cart');
+    // Redirect apenas quando checkout está realmente ocioso e sem itens.
+    // Evita side-effect no render e elimina corrida com clearCart + navegação.
+    useEffect(() => {
+        if (checkoutState === 'idle' && cart.length === 0) {
+            router.replace('/cart');
+        }
+    }, [checkoutState, cart.length, router]);
+
+    if (checkoutState === 'idle' && cart.length === 0) {
         return null;
     }
 
     const handleConfirmSale = async () => {
-        setIsProcessing(true);
+        if (isProcessing) return;
+        setCheckoutState('processing');
         try {
             const result = await processSessionAction({
                 items: cart,
@@ -52,19 +57,18 @@ export default function CheckoutPage() {
             });
 
             if (result.success) {
-                isCompletedRef.current = true;
+                setCheckoutState('completed');
                 showToast('Operação realizada com sucesso!', 'success');
-                // Limpa carrinho ANTES de navegar — ref protege o guard
                 clearCart();
                 router.replace('/success');
             } else {
+                setCheckoutState('idle');
                 showToast(result.message || 'Erro ao processar operação', 'error');
             }
         } catch (error) {
+            setCheckoutState('idle');
             console.error('Erro geral na venda:', error);
             showToast('Erro ao processar venda', 'error');
-        } finally {
-            setIsProcessing(false);
         }
     };
 

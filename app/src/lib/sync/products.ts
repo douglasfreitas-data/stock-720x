@@ -55,7 +55,7 @@ export async function syncAllProducts(storeId: string, accessToken: string) {
 /**
  * Salva ou atualiza um único produto e suas variantes no Supabase
  */
-async function upsertProduct(storeId: string, product: NuvemshopProduct) {
+export async function upsertProduct(storeId: string, product: NuvemshopProduct) {
     // 1. Salvar Produto
     const { error: prodError } = await supabaseAdmin
         .from('products')

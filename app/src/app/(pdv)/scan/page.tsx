@@ -29,9 +29,13 @@ function ScanContent() {
     // Ao selecionar produto do SearchModal
     const handleSearchSelect = (product: Product) => {
         if (mode === 'sale') {
-            addToCart(product);
-            showToast(`${product.name} adicionado!`, 'success');
-            router.push('/cart');
+            const success = addToCart(product);
+            if (success) {
+                showToast(`${product.name} adicionado!`, 'success');
+                router.push('/cart');
+            } else {
+                showToast(`Estoque insuficiente para ${product.name}`, 'error');
+            }
         } else {
             showToast(`Produto encontrado: ${product.name}`, 'info');
             router.push('/stock/inventory');
@@ -49,9 +53,13 @@ function ScanContent() {
 
             if (product) {
                 if (mode === 'sale') {
-                    addToCart(product);
-                    showToast(`${product.name} adicionado!`, 'success');
-                    router.push('/cart');
+                    const success = addToCart(product);
+                    if (success) {
+                        showToast(`${product.name} adicionado!`, 'success');
+                        router.push('/cart');
+                    } else {
+                        showToast(`Estoque insuficiente para ${product.name}`, 'error');
+                    }
                 } else {
                     showToast(`Produto encontrado: ${product.name}`, 'info');
                     router.push('/stock/inventory');

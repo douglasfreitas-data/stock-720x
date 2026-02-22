@@ -86,6 +86,7 @@ export default function CartPage() {
                                         <button
                                             className="cart-qty-btn"
                                             onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
+                                            disabled={item.quantity >= (item.product?.stock ?? 9999)}
                                         >
                                             +
                                         </button>

@@ -83,14 +83,31 @@ export async function GET(request: NextRequest) {
             // O App URL não deve terminar com barra no Webhook
             const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stock720x.vercel.app';
             const webhookUrl = `${baseUrl}/api/webhooks/orders`;
+            const productWebhookUrl = `${baseUrl}/api/webhooks/products`;
 
             const hasOrderPaid = existingWebhooks.some(w => w.event === 'order/paid' && w.url === webhookUrl);
+            const hasProductUpdated = existingWebhooks.some(w => w.event === 'product/updated' && w.url === productWebhookUrl);
+            const hasProductCreated = existingWebhooks.some(w => w.event === 'product/created' && w.url === productWebhookUrl);
+            const hasProductDeleted = existingWebhooks.some(w => w.event === 'product/deleted' && w.url === productWebhookUrl);
 
             if (!hasOrderPaid) {
                 console.log('Registrando webhook order/paid...');
                 await api.createWebhook('order/paid', webhookUrl);
-                console.log('Webhook order/paid registrado com sucesso!');
             }
+            if (!hasProductUpdated) {
+                console.log('Registrando webhook product/updated...');
+                await api.createWebhook('product/updated', productWebhookUrl);
+            }
+            if (!hasProductCreated) {
+                console.log('Registrando webhook product/created...');
+                await api.createWebhook('product/created', productWebhookUrl);
+            }
+            if (!hasProductDeleted) {
+                console.log('Registrando webhook product/deleted...');
+                await api.createWebhook('product/deleted', productWebhookUrl);
+            }
+
+            console.log('Webhooks verificados/registrados com sucesso!');
         } catch (webhookError) {
             console.error('Falha ao registrar webhooks:', webhookError);
             // Continua o login mesmo se o webhook falhar (para debug posterior)

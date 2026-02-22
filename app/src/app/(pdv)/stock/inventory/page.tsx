@@ -34,6 +34,7 @@ function InventoryContent() {
     // Modal de ajuste
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [newStockInput, setNewStockInput] = useState('');
+    const [newMinStockInput, setNewMinStockInput] = useState('');
     const [selectedReason, setSelectedReason] = useState('contagem');
     const [observation, setObservation] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
@@ -58,6 +59,7 @@ function InventoryContent() {
     const openAdjustModal = (product: Product) => {
         setSelectedProduct(product);
         setNewStockInput('');
+        setNewMinStockInput(product.minStock?.toString() || '0');
         setSelectedReason('contagem');
         setObservation('');
     };
@@ -93,15 +95,23 @@ function InventoryContent() {
         if (!selectedProduct) return;
 
         const newStockValue = parseInt(newStockInput);
+        const newMinStockValue = parseInt(newMinStockInput);
+
         if (isNaN(newStockValue) || newStockValue < 0) {
             showToast('Digite uma quantidade válida (≥ 0)', 'error');
             return;
         }
 
+        if (isNaN(newMinStockValue) || newMinStockValue < 0) {
+            showToast('Estoque mínimo inválido (≥ 0)', 'error');
+            return;
+        }
+
         const oldStock = selectedProduct.stock;
         const delta = newStockValue - oldStock;
+        const minStockChanged = newMinStockValue !== selectedProduct.minStock;
 
-        if (delta === 0) {
+        if (delta === 0 && !minStockChanged) {
             showToast('O estoque não foi alterado', 'info');
             setSelectedProduct(null);
             return;
@@ -113,7 +123,8 @@ function InventoryContent() {
             const result = await updateStockAction({
                 variantId: selectedProduct.id,
                 newStock: newStockValue,
-                sessionType: delta > 0 ? 'entrada' : 'saida',
+                minStock: newMinStockValue,
+                sessionType: delta > 0 ? 'entrada' : delta < 0 ? 'saida' : 'ajuste', // trata caso onde delta === 0 mas minStock mudou
                 operation: selectedReason,
                 quantity: Math.abs(delta),
                 observation: observation || `Ajuste de inventário: ${adjustReasons.find(r => r.id === selectedReason)?.label}`,
@@ -177,7 +188,23 @@ function InventoryContent() {
                                     SKU: {selectedProduct.sku} | Código: {selectedProduct.barcode}
                                 </div>
                                 <div style={{ marginTop: 4, fontSize: '1.1rem' }}>
-                                    Estoque atual: <strong style={{ color: 'var(--accent)' }}>{selectedProduct.stock}</strong>
+                                    {(() => {
+                                        const margin = Math.ceil((selectedProduct.minStock || 0) * 0.2); // 20% margin
+                                        let color = '#4ade80'; // Green
+
+                                        if (selectedProduct.stock <= (selectedProduct.minStock || 0)) {
+                                            color = '#f87171'; // Red
+                                        } else if (selectedProduct.stock <= (selectedProduct.minStock || 0) + margin) {
+                                            color = '#facc15'; // Yellow
+                                        }
+
+                                        return (
+                                            <>Estoque atual: <strong style={{ color }}>{selectedProduct.stock}</strong></>
+                                        );
+                                    })()}
+                                </div>
+                                <div style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: 2 }}>
+                                    Mín. Ideal: {selectedProduct.minStock || 0}
                                 </div>
                             </div>
                         </div>
@@ -215,6 +242,20 @@ function InventoryContent() {
                                     })()}
                                 </div>
                             )}
+                        </div>
+
+                        {/* Estoque Mínimo Input */}
+                        <div className="form-section">
+                            <label className="form-label">Estoque Mínimo Ideal</label>
+                            <input
+                                type="number"
+                                className="form-input"
+                                value={newMinStockInput}
+                                onChange={(e) => setNewMinStockInput(e.target.value)}
+                                placeholder="Ex: 5"
+                                min="0"
+                                style={{ fontSize: '1.2rem', fontFamily: 'monospace' }}
+                            />
                         </div>
 
                         <div className="form-section">
@@ -255,7 +296,7 @@ function InventoryContent() {
                             <button
                                 onClick={handleConfirmAdjust}
                                 className="btn-confirm"
-                                disabled={isProcessing || !newStockInput}
+                                disabled={isProcessing || !newStockInput || !newMinStockInput}
                                 style={{ flex: 2 }}
                             >
                                 {isProcessing ? 'Salvando...' : '✓ Confirmar Ajuste'}

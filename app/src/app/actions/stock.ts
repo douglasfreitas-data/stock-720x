@@ -10,12 +10,13 @@ interface StockUpdateParams {
     sessionType: string;  // 'entrada' | 'saida' | 'ajuste'
     operation: string;    // 'compra','devolucao','venda','pregao','doacao','consumo','contagem','perda','roubo'
     quantity: number;     // Quantidade movimentada (sempre positivo)
+    minStock?: number;    // Opcional: Estoque Mínimo Ideal
     observation?: string;
     sessionId?: string;   // Opcional: ID de uma sessão existente (para vendas em lote)
 }
 
 export async function updateStockAction(params: StockUpdateParams) {
-    const { variantId, newStock, sessionType, operation, quantity, observation, sessionId } = params;
+    const { variantId, newStock, minStock, sessionType, operation, quantity, observation, sessionId } = params;
 
     if (newStock < 0) {
         return { success: false, message: 'O estoque não pode ser negativo.' };
@@ -54,12 +55,18 @@ export async function updateStockAction(params: StockUpdateParams) {
         }
 
         // 3. Atualizar estoque no Supabase (cache local)
+        const updatePayload: any = {
+            stock: newStock,
+            updated_at: new Date().toISOString()
+        };
+
+        if (minStock !== undefined) {
+            updatePayload.min_stock = minStock;
+        }
+
         const { error: updateError } = await supabaseAdmin
             .from('product_variants')
-            .update({
-                stock: newStock,
-                updated_at: new Date().toISOString()
-            })
+            .update(updatePayload)
             .eq('id', variantId);
 
         if (updateError) throw updateError;

@@ -68,7 +68,7 @@ function mapVariantToProduct(data: any): Product {
         barcode: data.barcode || '',
         price: data.price || 0,
         stock: data.stock || 0,
-        minStock: 5,
+        minStock: data.min_stock ?? 5,
         image: image,
         nuvemshopId: String(data.product_id)
     };

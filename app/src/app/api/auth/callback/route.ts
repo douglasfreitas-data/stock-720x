@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { exchangeCodeForToken } from '@/lib/nuvemshop';
 import { supabaseAdmin } from '@/lib/supabase/client';
+import { NuvemshopAPI } from '@/lib/nuvemshop/api';
 
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
@@ -72,6 +73,27 @@ export async function GET(request: NextRequest) {
         if (dbError) {
             console.error('Erro ao salvar no Supabase:', dbError);
             // Não bloqueia o fluxo, mas loga o erro (provavelmente falta criar tabela)
+        }
+
+        // Registrar Webhooks da Nuvemshop
+        try {
+            const api = new NuvemshopAPI(tokenData.user_id.toString(), tokenData.access_token);
+            const existingWebhooks = await api.getWebhooks();
+
+            // O App URL não deve terminar com barra no Webhook
+            const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://stock720x.vercel.app';
+            const webhookUrl = `${baseUrl}/api/webhooks/orders`;
+
+            const hasOrderPaid = existingWebhooks.some(w => w.event === 'order/paid' && w.url === webhookUrl);
+
+            if (!hasOrderPaid) {
+                console.log('Registrando webhook order/paid...');
+                await api.createWebhook('order/paid', webhookUrl);
+                console.log('Webhook order/paid registrado com sucesso!');
+            }
+        } catch (webhookError) {
+            console.error('Falha ao registrar webhooks:', webhookError);
+            // Continua o login mesmo se o webhook falhar (para debug posterior)
         }
 
         const response = NextResponse.redirect(

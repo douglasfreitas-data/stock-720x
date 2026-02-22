@@ -10,6 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase/client';
 
 interface OrderProduct {
     product_id: number;
@@ -50,8 +51,33 @@ export async function POST(request: NextRequest) {
             // Aqui precisamos atualizar nosso cache local se tivermos um
 
             for (const product of body.products || []) {
-                console.log(`  - Produto ${product.product_id}: -${product.quantity} unidades`);
-                // await syncLocalStock(product.product_id, product.variant_id);
+                console.log(`  - Produto ${product.product_id}: -${product.quantity} unidades (variante ${product.variant_id})`);
+                
+                // 1. Busca estoque atual e ID interno
+                const { data: variant, error: getError } = await supabaseAdmin
+                    .from('product_variants')
+                    .select('id, stock')
+                    .eq('id', product.variant_id.toString())
+                    .single();
+
+                if (getError || !variant) {
+                    console.error(`    ↳ Variante ${product.variant_id} não encontrada no banco local. Error:`, getError);
+                    continue;
+                }
+
+                // 2. Decrementa
+                const newStock = Math.max(0, (variant.stock || 0) - product.quantity);
+                
+                const { error: updateError } = await supabaseAdmin
+                    .from('product_variants')
+                    .update({ stock: newStock, updated_at: new Date().toISOString() })
+                    .eq('id', variant.id);
+
+                if (updateError) {
+                    console.error(`    ↳ Falha ao dar baixa de estoque na variante ${variant.id}:`, updateError);
+                } else {
+                    console.log(`    ↳ Estoque atualizado no Supabase: antes ${variant.stock} -> agora ${newStock}`);
+                }
             }
         }
 

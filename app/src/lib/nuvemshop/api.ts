@@ -35,6 +35,15 @@ export interface NuvemshopOrder {
     }[];
 }
 
+export interface NuvemshopWebhook {
+    id: number;
+    store_id: number;
+    event: string;
+    url: string;
+    created_at: string;
+    updated_at: string;
+}
+
 /**
  * Classe cliente para API Nuvemshop
  */
@@ -162,5 +171,26 @@ export class NuvemshopAPI {
      */
     async getOrder(orderId: number): Promise<NuvemshopOrder> {
         return this.request<NuvemshopOrder>(`/orders/${orderId}`);
+    }
+
+    // ================================
+    // WEBHOOKS
+    // ================================
+
+    /**
+     * Lista webhooks registrados
+     */
+    async getWebhooks(): Promise<NuvemshopWebhook[]> {
+        return this.request<NuvemshopWebhook[]>('/webhooks');
+    }
+
+    /**
+     * Registra um novo webhook
+     */
+    async createWebhook(event: string, url: string): Promise<NuvemshopWebhook> {
+        return this.request<NuvemshopWebhook>('/webhooks', {
+            method: 'POST',
+            body: JSON.stringify({ event, url }),
+        });
     }
 }

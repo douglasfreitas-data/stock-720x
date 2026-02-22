@@ -24,7 +24,7 @@ const operations = [
 
 export default function CheckoutPage() {
     const router = useRouter();
-    const { cart, clearCart, cartTotal, cartCount } = useCart();
+    const { cart, clearCart, cartTotal, cartCount, isInitialized } = useCart();
     const { showToast } = useToast();
 
     const [customer, setCustomer] = useState('');
@@ -36,12 +36,12 @@ export default function CheckoutPage() {
     // Redirect apenas quando checkout está realmente ocioso e sem itens.
     // Evita side-effect no render e elimina corrida com clearCart + navegação.
     useEffect(() => {
-        if (checkoutState === 'idle' && cart.length === 0) {
+        if (isInitialized && checkoutState === 'idle' && cart.length === 0) {
             router.replace('/cart');
         }
-    }, [checkoutState, cart.length, router]);
+    }, [checkoutState, cart.length, router, isInitialized]);
 
-    if (checkoutState === 'idle' && cart.length === 0) {
+    if (!isInitialized || (checkoutState === 'idle' && cart.length === 0)) {
         return null;
     }
 

@@ -8,7 +8,7 @@ import { useToast } from '@/components/providers/ToastProvider';
 
 export default function CartPage() {
     const router = useRouter();
-    const { cart, removeFromCart, updateCartQuantity, clearCart, cartTotal, cartCount } = useCart();
+    const { cart, removeFromCart, updateCartQuantity, clearCart, cartTotal, cartCount, isInitialized } = useCart();
     const { showToast } = useToast();
 
     const handleCheckout = () => {
@@ -18,6 +18,8 @@ export default function CartPage() {
         }
         router.push('/checkout');
     };
+
+    if (!isInitialized) return null;
 
     if (cart.length === 0) {
         return (

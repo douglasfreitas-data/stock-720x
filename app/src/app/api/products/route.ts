@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
                     price,
                     stock,
                     stock_management,
+                    min_stock,
                     products (name, images)
                 `)
                 .ilike('products.name->>pt', `%${search}%`)
@@ -48,7 +49,7 @@ export async function GET(request: NextRequest) {
                 barcode: row.barcode || '',
                 price: parseFloat(row.price) || 0,
                 stock: row.stock || 0,
-                minStock: 5,
+                minStock: row.min_stock ?? 5,
                 image: row.products?.images?.[0]?.src || '',
                 nuvemshopId: '',
             }));

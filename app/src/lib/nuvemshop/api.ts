@@ -66,23 +66,39 @@ export class NuvemshopAPI {
         return this.accessToken;
     }
 
-    private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-        const response = await fetch(`${this.baseUrl}${endpoint}`, {
-            ...options,
-            headers: {
-                'Authentication': `bearer ${this.accessToken}`,
-                'Content-Type': 'application/json',
-                'User-Agent': 'Stock720x (stock720x@example.com)',
-                ...options.headers,
-            },
-        });
+    private async request<T>(endpoint: string, options: RequestInit & { timeout?: number } = {}): Promise<T> {
+        const { timeout = 8000, ...fetchOptions } = options;
 
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(`Nuvemshop API Error: ${response.status} - ${error}`);
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+
+        try {
+            const response = await fetch(`${this.baseUrl}${endpoint}`, {
+                ...fetchOptions,
+                signal: controller.signal,
+                headers: {
+                    'Authentication': `bearer ${this.accessToken}`,
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'Stock720x (stock720x@example.com)',
+                    ...fetchOptions.headers,
+                },
+            });
+
+            clearTimeout(id);
+
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(`Nuvemshop API Error: ${response.status} - ${error}`);
+            }
+
+            return response.json();
+        } catch (error: unknown) {
+            clearTimeout(id);
+            if (error instanceof Error && error.name === 'AbortError') {
+                throw new Error(`Nuvemshop API Timeout (${timeout}ms) ao acessar ${endpoint}`);
+            }
+            throw error;
         }
-
-        return response.json();
     }
 
     // ================================

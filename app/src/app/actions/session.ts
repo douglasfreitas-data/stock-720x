@@ -40,6 +40,8 @@ export async function processSessionAction(params: SessionParams) {
         const errors: string[] = [];
         let successCount = 0;
 
+        console.log(`[Checkout] Sessão ${session.id} criada. Processando ${items.length} itens...`);
+
         // 2. Processar cada item
         for (const item of items) {
             if (!item.product) continue;
@@ -70,20 +72,25 @@ export async function processSessionAction(params: SessionParams) {
             }
 
             // Chama a action de update (que faz dual-write na Nuvemshop)
-            const result = await updateStockAction({
-                variantId: item.product.id,
-                newStock: newStock,
-                sessionType: type,
-                operation: operation,
-                quantity: item.quantity, // Quantidade absoluta movimentada
-                sessionId: session.id,   // Linka com a sessão criada acima
-                observation: `Movimentação via App - ${operation}`
-            });
+            try {
+                const result = await updateStockAction({
+                    variantId: item.product.id,
+                    newStock: newStock,
+                    sessionType: type,
+                    operation: operation,
+                    quantity: item.quantity, // Quantidade absoluta movimentada
+                    sessionId: session.id,   // Linka com a sessão criada acima
+                    observation: `Movimentação via App - ${operation}`
+                });
 
-            if (!result.success) {
-                errors.push(`${item.product.name} (${result.message})`);
-            } else {
-                successCount++;
+                if (!result.success) {
+                    errors.push(`${item.product.name} (${result.message})`);
+                } else {
+                    successCount++;
+                }
+            } catch (actionErr) {
+                console.error(`Erro ao chamar updateStockAction para ${item.product.name}:`, actionErr);
+                errors.push(`${item.product.name} (Erro interno)`);
             }
         }
 

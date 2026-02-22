@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 30.5h | 🔄 Em andamento |
-| **Total** | **48.5h** | - |
+| Desenvolvimento | 32.0h | 🔄 Em andamento |
+| **Total** | **50.0h** | - |
 
 ---
 
@@ -62,6 +62,7 @@
 | 11/02/2026 | 1.0h | **Organização Geral**: Reestruturação da documentação em `docs/`, criação do `BUG_TRACKER.md` + workflow `/bug`, atualização de Skills (Roles, Bug Triage) e reescrita completa do `README.md`. |
 | 14/02/2026 | 3.0h | **Fix Bugs 1402**: Reconstrução Inventário, Componente SearchModal (Scan/Entry/Inv), Layout Entrada e Melhorias Checkout. |
 | 22/02/2026 | 2.5h | **Estabilização & Webhooks**: Fix checkout redirect (isInitialized), fix checkout freeze (timeouts/try-catch), bloqueio de estoque no carrinho (PDV) e implementação de webhooks bidirecionais de produtos. |
+| 22/02/2026 | 1.5h | **Recuperação de Estoque Mínimo**: Implementado F3.1.3 com edição de UI, indicadores visuais de margem (Verde/Amarelo/Vermelho) e correções críticas no dual-write (Webhook race condition) e API de busca. |
 
 ---
 

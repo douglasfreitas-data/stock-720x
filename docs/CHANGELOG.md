@@ -7,11 +7,15 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 ## [0.2.4] - 2026-02-22
 
 ### Adicionado
+- **Indicadores de Estoque**: Cores (Verde/Amarelo/Vermelho) no Inventário para alertar sobre o nível em relação ao Mínimo Ideal.
+- **Edição de Estoque Mínimo**: Interface na tela de Inventário para ajustar a meta de `min_stock` independentemente da contagem física.
 - **Webhooks de Produto**: Sync reverso em tempo real Nuvemshop -> Supabase.
 - **Validação de Estoque**: Bloqueio de itens sem saldo no PDV (Scan e Carrinho).
 - **Timeouts de API**: Proteção de 8 segundos contra travamentos em requisições externas.
 
 ### Corrigido
+- **Sync Overwrite**: Previne que o webhook da Nuvemshop zere o `min_stock` local restaurando configs de race condition.
+- **Search API**: Correção da rota de pesquisa que retornava dados ignorando o estoque mínimo real do banco (Bug 14).
 - **Checkout Redirect**: Fim do "ejetar usuário" ao carregar a página via guard de inicialização.
 - **Freeze no Checkout**: Tratamento de erro robusto no fluxo de finalização de venda.
 

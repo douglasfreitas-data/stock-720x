@@ -10,6 +10,10 @@
 ---
 > Histórico de bugs corrigidos nas últimas sessões.
 
+- (22/02) **Bug 12: Edição de Estoque Mínimo Bloqueada** — Resolvido destravando validação de input vazio na UI de Inventário.
+- (22/02) **Bug 13: Overwrite de Estoque Mínimo no Sync** — Resolvido omitindo `min_stock` local do payload de upsert (evita race condition).
+- (22/02) **Bug 14: Busca Retornando Valores Mockados** — Corrigida API `/api/products` para consultar a coluna verdadeira do Supabase em vez de injetar o valor 5.
+
 - (22/02) **Bug 5: Checkout Travado/Redirect** — Resolvido via `isInitialized` guard + Timeouts/Try-catch na Server Action.
 - (22/02) **Bug 10: Venda sem Estoque** — Bloqueio visual e lógico no `addToCart` e `updateCartQuantity`.
 - (22/02) **Bug 11: Sync Reverso (NS -> App)** — Implementado via Webhook `product/*` para estoque global.

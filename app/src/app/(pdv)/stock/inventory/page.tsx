@@ -94,10 +94,12 @@ function InventoryContent() {
     const handleConfirmAdjust = async () => {
         if (!selectedProduct) return;
 
-        const newStockValue = parseInt(newStockInput);
-        const newMinStockValue = parseInt(newMinStockInput);
+        // Se o input de estoque estiver vazio, assumimos que não houve mudança no estoque físico
+        const currentStockValue = selectedProduct.stock;
+        const newStockValue = newStockInput.trim() === '' ? currentStockValue : parseInt(newStockInput);
+        const newMinStockValue = newMinStockInput.trim() === '' ? (selectedProduct.minStock || 0) : parseInt(newMinStockInput);
 
-        if (isNaN(newStockValue) || newStockValue < 0) {
+        if (newStockInput.trim() !== '' && (isNaN(newStockValue) || newStockValue < 0)) {
             showToast('Digite uma quantidade válida (≥ 0)', 'error');
             return;
         }
@@ -107,12 +109,11 @@ function InventoryContent() {
             return;
         }
 
-        const oldStock = selectedProduct.stock;
-        const delta = newStockValue - oldStock;
+        const delta = newStockValue - currentStockValue;
         const minStockChanged = newMinStockValue !== selectedProduct.minStock;
 
         if (delta === 0 && !minStockChanged) {
-            showToast('O estoque não foi alterado', 'info');
+            showToast('Nenhuma alteração detectada', 'info');
             setSelectedProduct(null);
             return;
         }
@@ -125,20 +126,20 @@ function InventoryContent() {
                 newStock: newStockValue,
                 minStock: newMinStockValue,
                 sessionType: delta > 0 ? 'entrada' : delta < 0 ? 'saida' : 'ajuste', // trata caso onde delta === 0 mas minStock mudou
-                operation: selectedReason,
+                operation: delta !== 0 ? selectedReason : 'ajuste', // se apenas o minStock mudou, não é contagem/perda necessariamente
                 quantity: Math.abs(delta),
-                observation: observation || `Ajuste de inventário: ${adjustReasons.find(r => r.id === selectedReason)?.label}`,
+                observation: observation || (delta !== 0 ? `Ajuste de inventário: ${adjustReasons.find(r => r.id === selectedReason)?.label}` : 'Atualização de Estoque Mínimo'),
             });
 
             if (result.success) {
-                showToast(`Estoque atualizado: ${oldStock} → ${newStockValue} (${delta > 0 ? '+' : ''}${delta})`, 'success');
+                showToast(`Estoque atualizado: ${currentStockValue} → ${newStockValue} (${delta > 0 ? '+' : ''}${delta})`, 'success');
 
                 // Adicionar ao histórico da sessão
                 setAdjustedItems(prev => [{
                     product: selectedProduct,
-                    oldStock,
+                    oldStock: currentStockValue,
                     newStock: newStockValue,
-                    reason: adjustReasons.find(r => r.id === selectedReason)?.label || selectedReason,
+                    reason: delta !== 0 ? (adjustReasons.find(r => r.id === selectedReason)?.label || selectedReason) : 'Ajuste de Mínimo Ideal',
                 }, ...prev]);
 
                 setSelectedProduct(null);
@@ -296,7 +297,7 @@ function InventoryContent() {
                             <button
                                 onClick={handleConfirmAdjust}
                                 className="btn-confirm"
-                                disabled={isProcessing || !newStockInput || !newMinStockInput}
+                                disabled={isProcessing}
                                 style={{ flex: 2 }}
                             >
                                 {isProcessing ? 'Salvando...' : '✓ Confirmar Ajuste'}

@@ -76,6 +76,14 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
 
     // 2. Salvar Variantes
     if (product.variants && product.variants.length > 0) {
+        // Fetch current variants to preserve local-only columns like min_stock
+        const { data: existingVariants } = await supabaseAdmin
+            .from('product_variants')
+            .select('id, min_stock')
+            .in('id', product.variants.map(v => v.id));
+
+        const existingVariantsMap = new Map(existingVariants?.map(v => [v.id, v.min_stock]) || []);
+
         const variantsToUpsert = product.variants.map(variant => ({
             id: variant.id,
             product_id: product.id,
@@ -85,6 +93,7 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
             price: parseFloat(variant.price),
             stock: variant.stock,
             stock_management: variant.stock_management,
+            min_stock: existingVariantsMap.has(variant.id) ? existingVariantsMap.get(variant.id) : 5, // Preserve or set default
             updated_at: new Date().toISOString()
         }));
 

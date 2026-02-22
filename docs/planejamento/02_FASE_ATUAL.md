@@ -8,7 +8,7 @@
 > **Origem:** BUG_TRACKER.md
 
 - [x] **Scanner Inventário 404**: Reconstruído como `/stock/inventory` (sem rotas dinâmicas).
-- [ ] **Checkout Travado**: Bug de redirect persistente (Investigação em andamento).
+- [x] **Checkout Travado**: Resolvido com isInitialized guard e timeouts em Server Actions.
 - [x] **Autocomplete Entrada**: Implementado `SearchModal` fullscreen.
 
 ---
@@ -17,9 +17,9 @@
 - [ ] **F3.1.1** Remover tabela `inventory_logs` do Supabase.
 - [ ] **F3.1.2** Limpar imports não utilizados e código morto.
 
-## 🔄 Bloco 3.4: Automação de Sync
 - [ ] **F3.4.1** Vercel Cron Job para `POST /api/sync` (a cada 4-6h).
-- [ ] **F3.4.2** Webhook de produtos (atualização em tempo real Nuvemshop -> Supabase).
+- [x] **F3.4.2** Webhook de produtos (atualização em tempo real Nuvemshop -> Supabase).
+- [x] **Validação de Estoque**: Bloqueio de adição ao carrinho se `stock <= 0` no PDV.
 
 ## 🎨 Bloco 3.2: UX & Design
 - [ ] **F3.2.1** Revisão visual (Entrada/Saída/Ajuste) - espaçamentos e feedback.

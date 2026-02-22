@@ -1,31 +1,18 @@
 # 🐛 Bug Tracker
 
 **Resumo:**
-- 🔴 Crítico (Bloqueia uso): 1 (checkout)
+- 🔴 Crítico (Bloqueia uso): 0
 - 🟡 Importante (Prejudica UX): 0
 - 🟢 Baixa (Melhoria): 0
 
 ---
 
-## 🔴 Críticos (Prioridade Alta)
-
-### 5. Checkout Redireciona para Carrinho (14/02) — PERSISTENTE
-- **Descrição**: Ao finalizar venda, tela de sucesso carrega brevemente e volta para carrinho. Botão voltar do Android mostra "Finalizar Operação" (checkout). Tentativas anteriores com `useRef` e `clearCart()` antes de navegar NÃO resolveram.
-- **Origem**: `1402_lista bugs.md`
-- **Status**: 🔲 Aberto (próxima sessão)
-- **Tentativas anteriores**:
-  1. `clearCart()` no success page via useEffect → não resolveu
-  2. `history.replaceState` + `popstate` listener → não resolveu
-  3. `isCompleted` como `useRef` + `clearCart()` antes de `router.replace` → não resolveu
-- **Ação próxima sessão**:
-  - Investigar se `router.replace('/success')` está realmente fazendo client-side navigation ou se há full page reload no Android
-  - Adicionar `console.log` no guard do checkout para confirmar se o redirect vem de lá
-  - Testar com `window.location.href = '/success'` ao invés de `router.replace`
-  - Verificar se o `processSessionAction` está retornando `success: true` corretamente
-  - Testar remover completamente o guard `if (cart.length === 0)` e substituir por UI condicional
-
 ---
 > Histórico de bugs corrigidos nas últimas sessões.
+
+- (22/02) **Bug 5: Checkout Travado/Redirect** — Resolvido via `isInitialized` guard + Timeouts/Try-catch na Server Action.
+- (22/02) **Bug 10: Venda sem Estoque** — Bloqueio visual e lógico no `addToCart` e `updateCartQuantity`.
+- (22/02) **Bug 11: Sync Reverso (NS -> App)** — Implementado via Webhook `product/*` para estoque global.
 
 - (14/02) **Bug 5: Checkout Redireciona** — `isCompleted` trocado de `useState` para `useRef` + `clearCart()` antes de navegar
 - (14/02) **Bug 6: Busca no Scanner Vendas** — Autocomplete funcional via SearchModal popup

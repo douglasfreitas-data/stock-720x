@@ -4,6 +4,19 @@ Todas as mudanças notáveis do projeto são documentadas aqui.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [0.2.4] - 2026-02-22
+
+### Adicionado
+- **Webhooks de Produto**: Sync reverso em tempo real Nuvemshop -> Supabase.
+- **Validação de Estoque**: Bloqueio de itens sem saldo no PDV (Scan e Carrinho).
+- **Timeouts de API**: Proteção de 8 segundos contra travamentos em requisições externas.
+
+### Corrigido
+- **Checkout Redirect**: Fim do "ejetar usuário" ao carregar a página via guard de inicialização.
+- **Freeze no Checkout**: Tratamento de erro robusto no fluxo de finalização de venda.
+
+---
+
 ## [0.2.3] - 2026-02-14
 
 ### Adicionado

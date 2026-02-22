@@ -1,5 +1,8 @@
 # 🎯 Fase 3: Polimento & Core (Detalhado)
 
+> **LEMBRETE PARA A PRÓXIMA SESSÃO (via /iniciar):**
+> "Quero recuperar a função de Estoque Mínimo no inventário que arquivamos na tarefa F3.1.3"
+
 **Foco da Semana:** Estabilizar funcionalidades, corrigir bugs críticos e implementar automação de sync.
 
 ---

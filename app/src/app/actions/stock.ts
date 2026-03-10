@@ -55,6 +55,7 @@ export async function updateStockAction(params: StockUpdateParams) {
         }
 
         // 3. Atualizar estoque no Supabase (cache local)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const updatePayload: any = {
             stock: newStock,
             updated_at: new Date().toISOString()

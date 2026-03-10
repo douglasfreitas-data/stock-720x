@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getStockSessionsAction } from '@/app/actions/reports';
 export default function ReportsPage() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [sessions, setSessions] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -57,11 +58,15 @@ export default function ReportsPage() {
 
             <div className="flex-1 p-4 overflow-y-auto">
                 {isLoading ? (
-                    <div className="text-center py-20 opacity-50">Carregando movimentações...</div>
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+                        <div className="opacity-50 text-sm">Carregando movimentações...</div>
+                    </div>
                 ) : sessions.length === 0 ? (
                     <div className="text-center py-20 opacity-50">Nenhuma movimentação encontrada.</div>
                 ) : (
                     <div className="space-y-6">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {sessions.map((session: any) => (
                             <div key={session.id} className="bg-[var(--surface)] rounded-lg border border-[var(--border)] overflow-hidden shadow-sm">
                                 {/* Session Header */}
@@ -89,6 +94,7 @@ export default function ReportsPage() {
 
                                 {/* Items */}
                                 <div className="p-2">
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                     {session.stock_movements?.map((mov: any) => (
                                         <div key={mov.id} className="flex justify-between items-center py-2 px-1 border-b border-[var(--border)] last:border-0">
                                             <div className="flex-1 min-w-0 pr-2">

@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getNuvemshopClient } from '@/lib/nuvemshop/server';
 import { syncAllProducts } from '@/lib/sync/products';
-import { cookies } from 'next/headers';
+
 
 /**
  * POST /api/sync
  * Aciona a sincronização completa de produtos da Nuvemshop para o Supabase
  */
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
+    // Vercel Cron Jobs usam GET por padrão
+    const authHeader = request.headers.get('authorization');
+    if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return NextResponse.json({ error: 'Unauthorized cron request' }, { status: 401 });
+    }
+    return POST(request);
+}
+
+export async function POST(_request: NextRequest) {
     // 1. Autenticação
     const client = await getNuvemshopClient();
 

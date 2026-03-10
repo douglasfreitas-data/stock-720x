@@ -290,7 +290,7 @@ function InventoryContent() {
                             <button
                                 onClick={() => setSelectedProduct(null)}
                                 className="btn-back"
-                                style={{ flex: 1 }}
+                                style={{ flex: 1, marginTop: 0 }}
                             >
                                 Cancelar
                             </button>
@@ -298,7 +298,7 @@ function InventoryContent() {
                                 onClick={handleConfirmAdjust}
                                 className="btn-confirm"
                                 disabled={isProcessing}
-                                style={{ flex: 2 }}
+                                style={{ flex: 2, marginTop: 0 }}
                             >
                                 {isProcessing ? 'Salvando...' : '✓ Confirmar Ajuste'}
                             </button>

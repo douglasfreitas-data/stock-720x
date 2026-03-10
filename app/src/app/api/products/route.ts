@@ -42,6 +42,7 @@ export async function GET(request: NextRequest) {
                 return NextResponse.json({ products: [], page: 1 });
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const products: Product[] = (data || []).map((row: any) => ({
                 id: row.id,
                 name: row.products?.name?.pt || 'Sem nome',

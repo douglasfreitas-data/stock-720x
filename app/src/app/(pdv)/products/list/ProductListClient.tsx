@@ -16,6 +16,7 @@ interface ProductListClientProps {
 }
 
 export default function ProductListClient({ products }: ProductListClientProps) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [qrCode, setQrCode] = useState<string>('');
 

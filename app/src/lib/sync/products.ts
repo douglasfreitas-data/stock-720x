@@ -38,7 +38,7 @@ export async function syncAllProducts(storeId: string, accessToken: string) {
             } else {
                 page++;
             }
-        } catch (error) {
+        } catch (_error) {
             // Nuvemshop retorna 404 quando a página não existe
             console.log(`[Sync] Página ${page} não existe, finalizando paginação.`);
             hasMore = false;

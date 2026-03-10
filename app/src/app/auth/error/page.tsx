@@ -2,6 +2,8 @@
  * Página de erro de autenticação OAuth
  */
 
+import Link from 'next/link';
+
 export default function AuthErrorPage({
     searchParams,
 }: {
@@ -55,12 +57,12 @@ async function AuthErrorContent({
                         Tentar Novamente
                     </a>
 
-                    <a
+                    <Link
                         href="/"
                         className="block w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-lg transition-colors"
                     >
                         Voltar ao Início
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

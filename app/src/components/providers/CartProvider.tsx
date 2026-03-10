@@ -33,6 +33,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {
+        // eslint-disable-next-line
         setIsInitialized(true);
     }, []);
 

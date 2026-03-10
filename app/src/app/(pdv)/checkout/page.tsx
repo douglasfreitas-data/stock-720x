@@ -16,10 +16,10 @@ const paymentMethods = [
 ];
 
 const operations = [
-    { id: 'venda', label: 'Venda ao Consumidor' },
-    { id: 'consumo', label: 'Consumo Interno' },
-    { id: 'doacao', label: 'Doação' },
-    { id: 'pregao', label: 'Saída para Pregão' }
+    { id: 'venda', icon: '🛒', label: 'Venda ao Consumidor' },
+    { id: 'consumo', icon: '🏢', label: 'Consumo Interno' },
+    { id: 'doacao', icon: '🎁', label: 'Doação' },
+    { id: 'pregao', icon: '⚖️', label: 'Saída para Pregão' }
 ];
 
 export default function CheckoutPage() {
@@ -111,6 +111,7 @@ export default function CheckoutPage() {
                                 className={`payment-option ${selectedOperation === op.id ? 'selected' : ''}`}
                                 onClick={() => setSelectedOperation(op.id)}
                             >
+                                <div className="payment-icon">{op.icon}</div>
                                 <div className="payment-label">{op.label}</div>
                             </div>
                         ))}

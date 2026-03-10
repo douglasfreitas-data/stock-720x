@@ -5,7 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthorizationUrl, generateState } from '@/lib/nuvemshop';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
     // Gera state para proteção CSRF
     const state = generateState();
 

@@ -2,7 +2,7 @@
 
 > **Este é o único arquivo que você precisa ler para entender o estado do projeto.**
 
-**Última Atualização:** 22/02/2026
+**Última Atualização:** 10/03/2026
 **Fase Atual:** Fase 3 (Polimento & Core)
 **Status Geral:** 🟢 Em Andamento
 
@@ -28,7 +28,7 @@ O projeto **Stock 720x** é um PDV mobile-first (Next.js PWA) integrado à Nuvem
 Já completamos o **Mockup** (Fase 1) e o **Backend Base** (Fase 2). Agora estamos polindo a UX, resolvendo bugs críticos de fluxo e blindando a integração de dados.
 
 ### Próximo Objetivo Imediato
-Resolver bugs críticos de usabilidade (Scanner 404, Checkout travado) e garantir que o Sync de Estoque seja automático e confiável.
+Implementar geração de QR Code/Barcode e impressão de etiquetas (Bloco 3.3). Blocos 3.1, 3.2 e 3.5 concluídos.
 
 ---
 

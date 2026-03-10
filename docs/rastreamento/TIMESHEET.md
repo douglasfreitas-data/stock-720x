@@ -5,8 +5,8 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 32.0h | 🔄 Em andamento |
-| **Total** | **50.0h** | - |
+| Desenvolvimento | 34.0h | 🔄 Em andamento |
+| **Total** | **52.0h** | - |
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 28 horas (em andamento)
+**Total**: 30 horas (em andamento)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -63,6 +63,7 @@
 | 14/02/2026 | 3.0h | **Fix Bugs 1402**: Reconstrução Inventário, Componente SearchModal (Scan/Entry/Inv), Layout Entrada e Melhorias Checkout. |
 | 22/02/2026 | 2.5h | **Estabilização & Webhooks**: Fix checkout redirect (isInitialized), fix checkout freeze (timeouts/try-catch), bloqueio de estoque no carrinho (PDV) e implementação de webhooks bidirecionais de produtos. |
 | 22/02/2026 | 1.5h | **Recuperação de Estoque Mínimo**: Implementado F3.1.3 com edição de UI, indicadores visuais de margem (Verde/Amarelo/Vermelho) e correções críticas no dual-write (Webhook race condition) e API de busca. |
+| 10/03/2026 | 2.0h | **Limpeza Técnica, UX & Relatórios Avançados**: Bloco 3.1 (limpeza de código morto), Bloco 3.2 (loading skeletons, botões checkout cards, spinners), Bloco 3.5 (filtros, Recharts BarChart/PieChart, exportação CSV/PDF), Cron Job Vercel e fix de deploy. |
 
 ---
 
@@ -70,8 +71,8 @@
 
 - **Velocidade média estimada**: ~4h/dia de trabalho focado
 - **Previsão total do projeto**: ~96h (4 semanas × 24h/semana)
-- **Progresso atual**: ~43% (mockup + backend + deploy + UX polish + movimentação)
+- **Progresso atual**: ~48% (mockup + backend + deploy + UX polish + movimentação + relatórios avançados)
 
 ---
 
-*Última atualização: 10/02/2026 20:43*
+*Última atualização: 10/03/2026 19:59*

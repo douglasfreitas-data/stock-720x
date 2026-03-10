@@ -4,6 +4,22 @@ Todas as mudanças notáveis do projeto são documentadas aqui.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [0.3.0] - 2026-03-10
+
+### Adicionado
+- **Relatórios Avançados**: Página `/reports` reescrita com filtros (data, tipo, operação, produto), gráficos Recharts (BarChart por dia + PieChart por operação), cards resumo e exportação CSV/PDF.
+- **Loading Skeletons**: Skeleton de carregamento na lista de produtos via `loading.tsx` (Suspense).
+- **Spinner de Carregamento**: Indicador visual na página de relatórios.
+- **Cron Job Vercel**: Sincronização automática de produtos 1x/dia às 3h BRT via `/api/sync`.
+- **Botões Checkout Cards**: Tipo de operação no checkout redesenhado como cards com ícones.
+
+### Corrigido
+- **Deploy Vercel**: Cron de 4h bloqueava deploy no plano Hobby; ajustado para 1x/dia.
+- **ESLint Warnings**: Limpeza de imports não utilizados, variáveis mortas e `<a>` substituído por `next/link`.
+- **Alinhamento Inventário**: Margin-top dos botões de ação corrigido.
+
+---
+
 ## [0.2.4] - 2026-02-22
 
 ### Adicionado

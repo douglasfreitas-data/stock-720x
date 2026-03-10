@@ -2,9 +2,16 @@
 
 import { supabaseAdmin } from '@/lib/supabase/client';
 
-export async function getStockSessionsAction() {
+interface ReportFilters {
+    dateFrom?: string;
+    dateTo?: string;
+    type?: string;       // 'entrada' | 'saida' | ''
+    operation?: string;  // 'venda' | 'compra' | 'doacao' | etc.
+}
+
+export async function getStockSessionsAction(filters?: ReportFilters) {
     try {
-        const { data, error } = await supabaseAdmin
+        let query = supabaseAdmin
             .from('stock_sessions')
             .select(`
                 id,
@@ -29,8 +36,25 @@ export async function getStockSessionsAction() {
                     )
                 )
             `)
-            .order('created_at', { ascending: false })
-            .limit(50);
+            .order('created_at', { ascending: false });
+
+        // Apply filters
+        if (filters?.dateFrom) {
+            query = query.gte('created_at', `${filters.dateFrom}T00:00:00`);
+        }
+        if (filters?.dateTo) {
+            query = query.lte('created_at', `${filters.dateTo}T23:59:59`);
+        }
+        if (filters?.type) {
+            query = query.eq('type', filters.type);
+        }
+        if (filters?.operation) {
+            query = query.eq('operation', filters.operation);
+        }
+
+        query = query.limit(200);
+
+        const { data, error } = await query;
 
         if (error) {
             console.error('Erro ao buscar sessões:', error);

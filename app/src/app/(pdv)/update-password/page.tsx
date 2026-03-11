@@ -1,41 +1,38 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { login } from '@/app/actions/auth';
+import { updatePassword } from '@/app/actions/auth';
 
-function LoginForm() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+export default function UpdatePasswordPage() {
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter();
-    const searchParams = useSearchParams();
-    const redirectTo = searchParams.get('from') || '/';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError('');
+        setSuccess(false);
 
         try {
             const formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', password);
+            formData.append('newPassword', newPassword);
+            formData.append('confirmPassword', confirmPassword);
 
-            const result = await login(formData);
+            const result = await updatePassword(formData);
 
             if (result?.error) {
                 setError(result.error);
-            } else {
-                router.push(redirectTo);
-                router.refresh();
+            } else if (result?.success) {
+                setSuccess(true);
+                setNewPassword('');
+                setConfirmPassword('');
             }
         } catch {
-            // redirect() do Next.js lança um erro interno, é esperado
-            router.push(redirectTo);
-            router.refresh();
+            setError('Erro inesperado. Tente novamente.');
         } finally {
             setIsLoading(false);
         }
@@ -60,39 +57,39 @@ function LoginForm() {
             }}>
                 <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                     <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>
-                        Stock 720x
+                        🔑 Alterar Senha
                     </h1>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '8px' }}>
-                        Faça login para acessar o sistema
+                        Digite sua nova senha abaixo
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div className="form-section">
-                        <label className="form-label" htmlFor="email">E-mail</label>
+                        <label className="form-label" htmlFor="newPassword">Nova Senha</label>
                         <input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            id="newPassword"
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
                             className="form-input"
-                            placeholder="seu@email.com"
+                            placeholder="Mínimo 6 caracteres"
                             required
-                            autoComplete="email"
+                            autoComplete="new-password"
                         />
                     </div>
 
                     <div className="form-section">
-                        <label className="form-label" htmlFor="password">Senha</label>
+                        <label className="form-label" htmlFor="confirmPassword">Confirmar Nova Senha</label>
                         <input
-                            id="password"
+                            id="confirmPassword"
                             type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             className="form-input"
-                            placeholder="Digite sua senha..."
+                            placeholder="Repita a nova senha"
                             required
-                            autoComplete="current-password"
+                            autoComplete="new-password"
                         />
                     </div>
 
@@ -102,34 +99,28 @@ function LoginForm() {
                         </div>
                     )}
 
+                    {success && (
+                        <div style={{ color: 'var(--success, #4ade80)', fontSize: '0.875rem', textAlign: 'center' }}>
+                            ✅ Senha alterada com sucesso!
+                        </div>
+                    )}
+
                     <button
                         type="submit"
                         className="btn-confirm"
                         disabled={isLoading}
                         style={{ marginTop: '8px' }}
                     >
-                        {isLoading ? 'Entrando...' : 'Entrar'}
+                        {isLoading ? 'Alterando...' : 'Alterar Senha'}
                     </button>
 
                     <div style={{ textAlign: 'center', marginTop: '12px' }}>
-                        <Link href="/register" style={{ color: 'var(--accent)', fontSize: '0.9rem', textDecoration: 'none' }}>
-                            Não tem uma conta? <strong>Cadastre-se</strong>
+                        <Link href="/" style={{ color: 'var(--text-muted)', fontSize: '0.875rem', textDecoration: 'none' }}>
+                            ← Voltar ao sistema
                         </Link>
                     </div>
                 </form>
             </div>
         </div>
-    );
-}
-
-export default function LoginPage() {
-    return (
-        <Suspense fallback={
-            <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', color: 'white' }}>
-                Carregando...
-            </div>
-        }>
-            <LoginForm />
-        </Suspense>
     );
 }

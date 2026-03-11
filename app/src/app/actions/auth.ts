@@ -1,28 +1,108 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { createSupabaseServer } from '@/lib/supabase/server';
 
-export async function loginWithPassword(formData: FormData) {
+/**
+ * Login com e-mail e senha
+ */
+export async function login(formData: FormData) {
+    const supabase = await createSupabaseServer();
+
+    const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-    const correctPassword = process.env.APP_PASSWORD || '720x'; // Fallback if env is missing
 
-    if (!password) {
-        return { success: false, error: 'Senha obrigatória' };
+    if (!email || !password) {
+        return { error: 'E-mail e senha são obrigatórios.' };
     }
 
-    if (password === correctPassword) {
-        // Obter cookie store de forma assíncrona no Next 15+
-        const cookieStore = await cookies();
-        cookieStore.set('stock_session', 'authenticated', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            maxAge: 60 * 60 * 24 * 30, // 30 dias de acesso
-            path: '/'
-        });
+    const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    });
 
-        return { success: true };
+    if (error) {
+        return { error: 'E-mail ou senha incorretos.' };
     }
 
-    return { success: false, error: 'Senha incorreta' };
+    redirect('/');
+}
+
+/**
+ * Cadastro de novo usuário
+ */
+export async function signup(formData: FormData) {
+    const supabase = await createSupabaseServer();
+
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    if (!email || !password) {
+        return { error: 'E-mail e senha são obrigatórios.' };
+    }
+
+    if (password.length < 6) {
+        return { error: 'A senha deve ter pelo menos 6 caracteres.' };
+    }
+
+    const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+            data: {
+                full_name: name || '',
+            },
+        },
+    });
+
+    if (error) {
+        if (error.message.includes('already registered')) {
+            return { error: 'Este e-mail já está cadastrado.' };
+        }
+        return { error: 'Erro ao criar conta. Tente novamente.' };
+    }
+
+    redirect('/');
+}
+
+/**
+ * Logout
+ */
+export async function signout() {
+    const supabase = await createSupabaseServer();
+    await supabase.auth.signOut();
+    redirect('/login');
+}
+
+/**
+ * Alterar senha do usuário logado
+ */
+export async function updatePassword(formData: FormData) {
+    const supabase = await createSupabaseServer();
+
+    const newPassword = formData.get('newPassword') as string;
+    const confirmPassword = formData.get('confirmPassword') as string;
+
+    if (!newPassword || !confirmPassword) {
+        return { error: 'Preencha todos os campos.' };
+    }
+
+    if (newPassword !== confirmPassword) {
+        return { error: 'As senhas não conferem.' };
+    }
+
+    if (newPassword.length < 6) {
+        return { error: 'A senha deve ter pelo menos 6 caracteres.' };
+    }
+
+    const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+    });
+
+    if (error) {
+        return { error: 'Erro ao alterar senha. Tente novamente.' };
+    }
+
+    return { success: true };
 }

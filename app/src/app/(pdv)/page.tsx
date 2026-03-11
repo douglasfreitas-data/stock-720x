@@ -2,11 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useToast } from '@/components/providers/ToastProvider';
-
+import { signout } from '@/app/actions/auth';
 export default function HomeScreen() {
-    const { showToast } = useToast();
-
     return (
         <div className="home-screen">
             {/* Venda */}
@@ -54,14 +51,25 @@ export default function HomeScreen() {
                 <p className="menu-card-subtitle">Movimentação e Vendas</p>
             </Link>
 
-            {/* Link Sair (mock) */}
-            <button
-                className="exit-link"
-                onClick={() => showToast('Funcionalidade de logout em breve', 'info')}
-            >
-                <span className="exit-text">Sair</span>
-                <span className="exit-arrow">→</span>
-            </button>
+            {/* Alterar Senha */}
+            <Link href="/update-password" className="menu-card decoration-none" style={{ background: 'transparent', border: '1px solid var(--border-color)' }}>
+                <div className="menu-card-row">
+                    <span className="menu-card-icon">🔑</span>
+                    <h2 className="menu-card-title">Alterar Senha</h2>
+                </div>
+                <p className="menu-card-subtitle">Trocar sua senha de acesso</p>
+            </Link>
+
+            {/* Sair */}
+            <form action={signout}>
+                <button
+                    type="submit"
+                    className="exit-link"
+                >
+                    <span className="exit-text">Sair</span>
+                    <span className="exit-arrow">→</span>
+                </button>
+            </form>
         </div>
     );
 }

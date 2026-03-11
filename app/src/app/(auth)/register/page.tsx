@@ -1,40 +1,53 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { login } from '@/app/actions/auth';
+import { signup } from '@/app/actions/auth';
 
-function LoginForm() {
+export default function RegisterPage() {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const redirectTo = searchParams.get('from') || '/';
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError('');
 
+        if (password !== confirmPassword) {
+            setError('As senhas não conferem.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (password.length < 6) {
+            setError('A senha deve ter pelo menos 6 caracteres.');
+            setIsLoading(false);
+            return;
+        }
+
         try {
             const formData = new FormData();
+            formData.append('name', name);
             formData.append('email', email);
             formData.append('password', password);
 
-            const result = await login(formData);
+            const result = await signup(formData);
 
             if (result?.error) {
                 setError(result.error);
             } else {
-                router.push(redirectTo);
+                router.push('/');
                 router.refresh();
             }
         } catch {
             // redirect() do Next.js lança um erro interno, é esperado
-            router.push(redirectTo);
+            router.push('/');
             router.refresh();
         } finally {
             setIsLoading(false);
@@ -60,14 +73,27 @@ function LoginForm() {
             }}>
                 <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                     <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--text-primary)' }}>
-                        Stock 720x
+                        Criar Conta
                     </h1>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '8px' }}>
-                        Faça login para acessar o sistema
+                        Cadastre-se para acessar o Stock 720x
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div className="form-section">
+                        <label className="form-label" htmlFor="name">Nome</label>
+                        <input
+                            id="name"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="form-input"
+                            placeholder="Seu nome completo"
+                            autoComplete="name"
+                        />
+                    </div>
+
                     <div className="form-section">
                         <label className="form-label" htmlFor="email">E-mail</label>
                         <input
@@ -90,9 +116,23 @@ function LoginForm() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="form-input"
-                            placeholder="Digite sua senha..."
+                            placeholder="Mínimo 6 caracteres"
                             required
-                            autoComplete="current-password"
+                            autoComplete="new-password"
+                        />
+                    </div>
+
+                    <div className="form-section">
+                        <label className="form-label" htmlFor="confirmPassword">Confirmar Senha</label>
+                        <input
+                            id="confirmPassword"
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="form-input"
+                            placeholder="Repita a senha"
+                            required
+                            autoComplete="new-password"
                         />
                     </div>
 
@@ -108,28 +148,16 @@ function LoginForm() {
                         disabled={isLoading}
                         style={{ marginTop: '8px' }}
                     >
-                        {isLoading ? 'Entrando...' : 'Entrar'}
+                        {isLoading ? 'Criando conta...' : 'Criar Conta'}
                     </button>
 
                     <div style={{ textAlign: 'center', marginTop: '12px' }}>
-                        <Link href="/register" style={{ color: 'var(--accent)', fontSize: '0.9rem', textDecoration: 'none' }}>
-                            Não tem uma conta? <strong>Cadastre-se</strong>
+                        <Link href="/login" style={{ color: 'var(--accent)', fontSize: '0.9rem', textDecoration: 'none' }}>
+                            Já tem uma conta? <strong>Faça login</strong>
                         </Link>
                     </div>
                 </form>
             </div>
         </div>
-    );
-}
-
-export default function LoginPage() {
-    return (
-        <Suspense fallback={
-            <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', color: 'white' }}>
-                Carregando...
-            </div>
-        }>
-            <LoginForm />
-        </Suspense>
     );
 }

@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { updateSession } from '@/lib/supabase/middleware';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
-    // Rotas públicas que NÃO precisam de senha do galpão
+    // Rotas públicas que NÃO precisam de autenticação
     const publicPaths = [
         '/login',
-        '/api/auth/login',         // Permite o login OAuth com a Nuvemshop
-        '/api/auth/callback',
+        '/register',
+        '/api/auth',              // OAuth Nuvemshop
         '/auth/error',
-        '/api/webhooks',           // Webhooks Nuvemshop não precisam de cookie
-        '/api/sync',               // Cron jobs usam Header/Secret próprio
-        '/_next',                  // Arquivos estáticos e internos do Next.js
+        '/api/webhooks',          // Webhooks Nuvemshop
+        '/api/sync',              // Cron jobs
+        '/_next',
         '/favicon.ico',
         '/manifest.json',
         '/icons/'
@@ -24,28 +25,20 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    // Verifica o cookie de sessão do nosso sistema
-    const sessionCookie = request.cookies.get('stock_session');
+    // Atualiza a sessão do Supabase e verifica se o usuário está logado
+    const { user, supabaseResponse } = await updateSession(request);
 
-    if (!sessionCookie || sessionCookie.value !== 'authenticated') {
+    if (!user) {
         const loginUrl = new URL('/login', request.url);
-        // Pode passar a página de origem para redirecionar depois
         loginUrl.searchParams.set('from', pathname);
         return NextResponse.redirect(loginUrl);
     }
 
-    return NextResponse.next();
+    return supabaseResponse;
 }
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - public files (images, fonts, etc)
-         */
         '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
     ],
 };

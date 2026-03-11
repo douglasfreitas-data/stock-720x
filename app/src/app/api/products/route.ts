@@ -43,17 +43,32 @@ export async function GET(request: NextRequest) {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const products: Product[] = (data || []).map((row: any) => ({
-                id: row.id,
-                name: row.products?.name?.pt || 'Sem nome',
-                sku: row.sku || '',
-                barcode: row.barcode || '',
-                price: parseFloat(row.price) || 0,
-                stock: row.stock || 0,
-                minStock: row.min_stock ?? 5,
-                image: row.products?.images?.[0]?.src || '',
-                nuvemshopId: '',
-            }));
+            const products: Product[] = (data || []).map((row: any) => {
+                let images = [];
+                try {
+                    images = typeof row.products?.images === 'string' 
+                        ? JSON.parse(row.products.images) 
+                        : (row.products?.images || []);
+                } catch {
+                    images = [];
+                }
+                let image = images.length > 0 ? images[0].src : '';
+                if (image && image.startsWith('//')) {
+                    image = `https:${image}`;
+                }
+
+                return {
+                    id: row.id,
+                    name: row.products?.name?.pt || 'Sem nome',
+                    sku: row.sku || '',
+                    barcode: row.barcode || '',
+                    price: parseFloat(row.price) || 0,
+                    stock: row.stock || 0,
+                    minStock: row.min_stock ?? 5,
+                    image: image,
+                    nuvemshopId: '',
+                };
+            });
 
             return NextResponse.json({ products, page: 1 });
         } catch (error) {

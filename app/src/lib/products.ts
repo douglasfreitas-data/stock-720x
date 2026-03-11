@@ -58,8 +58,21 @@ export async function getProductById(id: number): Promise<Product | null> {
 function mapVariantToProduct(data: any): Product {
     const productData = data.products;
     const name = productData?.name?.pt || 'Produto sem nome';
-    const images = productData?.images || [];
-    const image = images.length > 0 ? images[0].src : '';
+    
+    // Garantir que images seja array (pode vir como string do Supabase em alguns casos)
+    let images = [];
+    try {
+        images = typeof productData?.images === 'string' 
+            ? JSON.parse(productData.images) 
+            : (productData?.images || []);
+    } catch {
+        images = [];
+    }
+    
+    let image = images.length > 0 ? images[0].src : '';
+    if (image && image.startsWith('//')) {
+        image = `https:${image}`;
+    }
 
     return {
         id: data.id,

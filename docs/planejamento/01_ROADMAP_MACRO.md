@@ -39,3 +39,6 @@
   - Criar tabela `push_subscriptions` atrelada aos usuários logados.
   - Criar endpoint para envio de payloads (`api/notifications/send`).
   - Integrar disparo visual com webhooks (ex: Nova Venda Nuvemshop).
+- [ ] **Relatório Inteligente de Reposição (Estoque Mínimo)**
+  - Criar relatório de produtos no estoque mínimo ou próximos a ele.
+  - *Reflexão de Produto:* Definir lógica de cálculo para o estoque "próximo ao mínimo" (ex: % acima do mínimo, ou baseado na velocidade de venda recente).

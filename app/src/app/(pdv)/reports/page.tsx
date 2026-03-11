@@ -19,7 +19,7 @@ interface StockMovement {
         sku?: string;
         barcode?: string;
         price?: number;
-        products?: { name?: string };
+        products?: { name?: { pt?: string; [key: string]: string | undefined } };
     };
 }
 interface StockSession {
@@ -93,7 +93,7 @@ export default function ReportsPage() {
         const q = filters.productSearch.toLowerCase();
         return sessions.filter(s =>
             s.stock_movements?.some(m =>
-                (m.product_variants?.products?.name || '').toLowerCase().includes(q) ||
+                (m.product_variants?.products?.name?.pt || '').toLowerCase().includes(q) ||
                 (m.product_variants?.sku || '').toLowerCase().includes(q)
             )
         );
@@ -141,7 +141,7 @@ export default function ReportsPage() {
         const rows: string[] = ['Data,Tipo,Operação,Produto,SKU,Quantidade,Estoque Anterior,Estoque Novo,Obs'];
         filteredSessions.forEach(s => {
             s.stock_movements?.forEach(m => {
-                const name = (m.product_variants?.products?.name || 'N/A').replace(/,/g, ';');
+                const name = (m.product_variants?.products?.name?.pt || 'N/A').replace(/,/g, ';');
                 const date = new Date(s.created_at).toLocaleString('pt-BR');
                 rows.push(`${date},${s.type},${OPERATION_LABELS[s.operation] || s.operation},${name},${m.product_variants?.sku || ''},${m.quantity},${m.old_stock},${m.new_stock},"${(s.notes || '').replace(/"/g, "'")}"`);
             });
@@ -185,7 +185,7 @@ export default function ReportsPage() {
                 doc.text(date, 14, y);
                 doc.text(s.type, 54, y);
                 doc.text(OPERATION_LABELS[s.operation] || s.operation, 74, y);
-                doc.text((m.product_variants?.products?.name || 'N/A').substring(0, 40), 110, y);
+                doc.text((m.product_variants?.products?.name?.pt || 'N/A').substring(0, 40), 110, y);
                 doc.text(m.product_variants?.sku || '-', 190, y);
                 doc.text(String(m.quantity), 220, y);
                 doc.text(String(m.old_stock), 238, y);
@@ -372,7 +372,7 @@ export default function ReportsPage() {
                                             <div key={mov.id} className="flex justify-between items-center py-2 px-1 border-b border-[var(--border-color)] last:border-0">
                                                 <div className="flex-1 min-w-0 pr-2">
                                                     <div className="text-xs font-medium truncate">
-                                                        {mov.product_variants?.products?.name || 'Produto s/ Nome'}
+                                                        {mov.product_variants?.products?.name?.pt || 'Produto s/ Nome'}
                                                     </div>
                                                     <div className="text-[10px] text-[var(--text-muted)]">
                                                         SKU: {mov.product_variants?.sku || 'N/A'}

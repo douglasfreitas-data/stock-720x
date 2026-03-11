@@ -4,6 +4,19 @@ Todas as mudanças notáveis do projeto são documentadas aqui.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [0.4.1] - 2026-03-11
+
+### Adicionado
+- **Autenticação Individual (Supabase Auth)**: Implementadas telas de Login, Registro e Troca de Senha.
+- **Proteção SSR Robusta**: `layout.tsx` do PDV migrado para Server Component para forçar validação hard bloqueando páginas caso a Vercel sirva o HTML em cache estático.
+- **Prompt Nativo PWA**: "Bottom-sheet" amigável para convidar o usuário a instalar o web app localmente.
+
+### Corrigido
+- Ícone padrão Vercel sobreposto substituído pelos ícones corretos do `manifest.json`.
+- Bypass de autenticação ghost (`Bug 15`) travado com expurgo de cookie legado.
+
+---
+
 ## [0.4.0] - 2026-03-11
 
 ### Adicionado

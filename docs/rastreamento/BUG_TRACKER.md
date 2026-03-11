@@ -10,6 +10,7 @@
 ---
 > Histórico de bugs corrigidos nas últimas sessões.
 
+- (11/03) **Bug 15: Autenticação Bypass (Middleware)** — Resolvido adicionando try/catch no Server Component do Layout (`PDVLayout`) após falha de intercepção do middleware estático na Vercel. Limpeza de cookie legado `stock_session`.
 - (22/02) **Bug 12: Edição de Estoque Mínimo Bloqueada** — Resolvido destravando validação de input vazio na UI de Inventário.
 - (22/02) **Bug 13: Overwrite de Estoque Mínimo no Sync** — Resolvido omitindo `min_stock` local do payload de upsert (evita race condition).
 - (22/02) **Bug 14: Busca Retornando Valores Mockados** — Corrigida API `/api/products` para consultar a coluna verdadeira do Supabase em vez de injetar o valor 5.

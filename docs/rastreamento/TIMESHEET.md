@@ -5,9 +5,9 @@
 | Fase | Horas | Status |
 |------|-------|--------|
 | Mockup/Protótipo | 18.0h | ✅ Concluído |
-| Desenvolvimento (Fase 2/3) | 37.0h | ✅ Concluído |
+| Desenvolvimento (Fase 2/3) | 38.5h | ✅ Concluído |
 | Produção & Operação F. (Fase 4) | 0.0h | 🔄 Em andamento |
-| **Total** | **55.0h** | - |
+| **Total** | **56.5h** | - |
 
 ---
 
@@ -67,6 +67,7 @@
 | 22/02/2026 | 1.5h | **Recuperação de Estoque Mínimo**: Implementado F3.1.3 com edição de UI, indicadores visuais de margem (Verde/Amarelo/Vermelho) e correções críticas no dual-write (Webhook race condition) e API de busca. |
 | 10/03/2026 | 2.0h | **Limpeza Técnica, UX & Relatórios Avançados**: Bloco 3.1 (limpeza de código morto), Bloco 3.2 (loading skeletons, botões checkout cards, spinners), Bloco 3.5 (filtros, Recharts BarChart/PieChart, exportação CSV/PDF), Cron Job Vercel e fix de deploy. |
 | 11/03/2026 | 3.0h | **Redesign Relatórios & Reconciliação Nuvemshop**: Abandono de gráficos por abas limpas (Entrada/Saída), PDF export jsPDF, reconciliação inteligente no `/api/sync` gerando "ajustes" retroativos automáticos na DB conectada com logs em `sync_logs`. Transição formal para a Fase 4. |
+| 11/03/2026 | 1.5h | **Segurança & PWA**: Migração completa de Senha Global para autenticação individual nativa (`Supabase Auth`) com registro de usuários, troca de senha protegida via Server Components e layout SSR. Implementado Prompt Nativo de Instalação para PWA e planejamento de Notificações Push (Web Push). |
 
 ---
 

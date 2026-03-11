@@ -4,9 +4,10 @@
 
 | Fase | Horas | Status |
 |------|-------|--------|
-| Mockup/Protótipo | 18h | ✅ Concluído |
-| Desenvolvimento | 34.0h | 🔄 Em andamento |
-| **Total** | **52.0h** | - |
+| Mockup/Protótipo | 18.0h | ✅ Concluído |
+| Desenvolvimento (Fase 2/3) | 37.0h | ✅ Concluído |
+| Produção & Operação F. (Fase 4) | 0.0h | 🔄 Em andamento |
+| **Total** | **55.0h** | - |
 
 ---
 
@@ -41,7 +42,8 @@
 
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
-**Total**: 30 horas (em andamento)
+**Fim**: 11/03/2026
+**Total**: 37.0 horas (Concluída)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -64,15 +66,24 @@
 | 22/02/2026 | 2.5h | **Estabilização & Webhooks**: Fix checkout redirect (isInitialized), fix checkout freeze (timeouts/try-catch), bloqueio de estoque no carrinho (PDV) e implementação de webhooks bidirecionais de produtos. |
 | 22/02/2026 | 1.5h | **Recuperação de Estoque Mínimo**: Implementado F3.1.3 com edição de UI, indicadores visuais de margem (Verde/Amarelo/Vermelho) e correções críticas no dual-write (Webhook race condition) e API de busca. |
 | 10/03/2026 | 2.0h | **Limpeza Técnica, UX & Relatórios Avançados**: Bloco 3.1 (limpeza de código morto), Bloco 3.2 (loading skeletons, botões checkout cards, spinners), Bloco 3.5 (filtros, Recharts BarChart/PieChart, exportação CSV/PDF), Cron Job Vercel e fix de deploy. |
+| 11/03/2026 | 3.0h | **Redesign Relatórios & Reconciliação Nuvemshop**: Abandono de gráficos por abas limpas (Entrada/Saída), PDF export jsPDF, reconciliação inteligente no `/api/sync` gerando "ajustes" retroativos automáticos na DB conectada com logs em `sync_logs`. Transição formal para a Fase 4. |
 
 ---
+
+### Fase 4: Operação Física & Produção
+**Início**: 11/03/2026  
+**Total**: 0.0 horas
+
+| Data | Horas | Atividade |
+|------|-------|-----------|
+| - | - | - |
 
 ## 📊 Métricas
 
 - **Velocidade média estimada**: ~4h/dia de trabalho focado
 - **Previsão total do projeto**: ~96h (4 semanas × 24h/semana)
-- **Progresso atual**: ~48% (mockup + backend + deploy + UX polish + movimentação + relatórios avançados)
+- **Progresso atual**: ~57% (mockup + backend + deploy + UX polish + relatórios redesign + reconciliação nuvemshop implementada)
 
 ---
 
-*Última atualização: 10/03/2026 19:59*
+*Última atualização: 11/03/2026 11:53*

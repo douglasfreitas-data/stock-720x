@@ -11,27 +11,25 @@
 - [x] Scanner simulado
 
 ## Fase 2: Backend + Integração Nuvemshop ✅
-> **Status:** Concluída (07/02 - 10/02)
+> **Status:** Concluída (Fev/2026)
 - [x] Next.js + OAuth2
 - [x] Sync Nuvemshop → Supabase (Dual-write)
 - [x] Módulo de Movimentação (Entrada/Saída/Ajuste)
 
-## Fase 3: Polimento & Funcionalidades Core 🔄
-> **Status:** EM ANDAMENTO
-- [ ] **Limpeza Técnica**: Remover tabelas obsoletas, limpar código morto.
-- [ ] **UX/Design**: Revisão visual, responsividade, feedback de loading.
-- [ ] **QR Code**: Geração e impressão de etiquetas.
-- [ ] **Automação**: Cron jobs para sync e webhooks em tempo real.
-- [ ] **Relatórios**: Filtros avançados e exportação.
+## Fase 3: Polimento & Funcionalidades Core ✅
+> **Status:** Concluída (Mar/2026)
+- [x] **Limpeza Técnica**: Remover tabelas obsoletas, limpar código morto.
+- [x] **UX/Design**: Revisão visual, responsividade, feedback de loading.
+- [x] **Relatórios**: Filtros avançados, design clean e exportação PDF.
+- [x] **Automação**: Cron jobs inteligentes (reconciliação Nuvemshop) e webhooks em tempo real.
 
-## Fase 4: Produção & Testes 🔲
-> **Status:** Pendente
-- [ ] Testes E2E (Playwright)
-- [ ] Tratamento de erros offline
-- [ ] Onboarding de usuário e documentação final
+## Fase 4: Operação Física & Produção 🔄
+> **Status:** EM ANDAMENTO
+- [ ] **Etiquetas e QR Code**: Geração e impressão de etiquetas PDF.
+- [ ] **Testes de Ponta a Ponta**: Validação contínua do uso no galpão.
+- [ ] **Onboarding & Docs**: Documentação final e tratamento offline básico.
 
 ## Fase 5: Expansão 🔲
 > **Status:** Futuro
 - [ ] Multi-loja
-- [ ] Módulo Financeiro
 - [ ] Notificações Push

@@ -4,6 +4,20 @@ Todas as mudanças notáveis do projeto são documentadas aqui.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [0.4.0] - 2026-03-11
+
+### Adicionado
+- **Reconciliação Automática de Estoque**: O Cron Job agora compara o estoque na Nuvemshop com a base local. Discrepâncias silenciosas agora geram um "Ajuste de Estoque" rastreável no sistema.
+- **Log de Sincronização**: Toda execução do Cron via `/api/sync` gera um log de sucesso/erro na tabela `sync_logs`, listando as correções efetuadas.
+- **Exportação em PDF**: Emissão de relatório formatado para impressão (A4 paisagem) separado por operação (Entrada vs Saída).
+
+### Modificado
+- **Redesign dos Relatórios**: UX reconstruída do zero, pautada em simplicidade, dividida em abas e sem gráficos.
+- **Transição de Fase**: Encerramento da Fase Core (F3) e entrada na Fase Operacional (F4).
+- **Adequação Funcional**: Módulo/cards do "Financeiro" removidos da aplicação para manter escopo voltado unicamente ao gerenciamento físico.
+
+---
+
 ## [0.3.0] - 2026-03-10
 
 ### Adicionado

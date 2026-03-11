@@ -1,42 +1,23 @@
-# 🎯 Fase 3: Polimento & Core (Detalhado)
+# 🎯 Fase 4: Operação Física & Produção
 
-> **LEMBRETE PARA A PRÓXIMA SESSÃO (via /iniciar):**
-> "Quero recuperar a função de Estoque Mínimo no inventário que arquivamos na tarefa F3.1.3"
-
-**Foco da Semana:** Estabilizar funcionalidades, corrigir bugs críticos e implementar automação de sync.
+**Foco da Semana:** Garantir que o sistema seja 100% autossuficiente operacionalmente para quem atua fisicamente no galpão/loja, com a geração de QR Codes e testes de uso real.
 
 ---
 
 ## 🚨 Prioridade 0: Bugs Críticos (Bloqueantes)
 > **Origem:** BUG_TRACKER.md
-
-- [x] **Scanner Inventário 404**: Reconstruído como `/stock/inventory` (sem rotas dinâmicas).
-- [x] **Checkout Travado**: Resolvido com isInitialized guard e timeouts em Server Actions.
-- [x] **Autocomplete Entrada**: Implementado `SearchModal` fullscreen.
+- *(Nenhum bug bloqueante documentado no momento)*
 
 ---
 
-## 📦 Bloco 3.1: Limpeza Técnica & Core
-- [x] **F3.1.1** Remover tabela `inventory_logs` do Supabase. (Arquivo local removido. Drop na DB remota pendente.)
-- [x] **F3.1.2** Limpar imports não utilizados e código morto.
-- [x] **F3.1.3** Recuperar funcionalidade de **Estoque Mínimo** no inventário.
+## 🏷️ Bloco 4.1: QR Code & Impressão
+- [ ] **F4.1.1** Geração de imagem de QR/Barcode na tela de detalhes do produto.
+- [ ] **F4.1.2** Criação de template de impressão de etiquetas em PDF (para impressoras térmicas/A4).
 
-- [x] **F3.4.1** Vercel Cron Job para `POST /api/sync` (1x/dia às 3h BRT — limite do plano Hobby).
-- [x] **F3.4.2** Webhook de produtos (atualização em tempo real Nuvemshop -> Supabase).
-- [x] **Validação de Estoque**: Bloqueio de adição ao carrinho se `stock <= 0` no PDV.
+## 🛡️ Bloco 4.2: Seguridade Operacional
+- [ ] **F4.2.1** Testes de Ponta a Ponta (Simular rotina de um dia inteiro de estoque usando celular real).
+- [ ] **F4.2.2** Tratamento de Erros Offline (Feedback amigável caso o usuário perca o 4G/Wi-Fi no fundo do estoque e tente salvar algo).
 
-## 🎨 Bloco 3.2: UX & Design
-- [x] **F3.2.1** Revisão visual (Entrada/Saída/Ajuste) - espaçamentos e feedback.
-- [x] **F3.2.2** Responsividade mobile (testar em device real).
-- [x] **F3.2.3** Loading states (spinners, skeletons).
-- [ ] **F3.2.4** Tema Dark/Light.
-- [x] **Fix Estético**: Botões "Tipo de Operação" no checkout (estilo cards).
-
-## 🏷️ Bloco 3.3: QR Code
-- [ ] **F3.3.1** Geração de imagem de QR/Barcode na tela de produto.
-- [ ] **F3.3.2** Impressão de etiquetas em PDF.
-
-## 📊 Bloco 3.5: Relatórios Avançados
-- [x] **F3.5.1** Filtros por data, operação e produto.
-- [x] **F3.5.2** Exportação para CSV/PDF.
-- [x] **F3.5.3** Gráficos com Recharts.
+## 📚 Bloco 4.3: Onboarding Final
+- [ ] Otimização final do PWA manifest.
+- [ ] Preparo de um guia de uso ou dicas de tela para novos colaboradores.

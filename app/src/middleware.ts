@@ -26,15 +26,32 @@ export async function middleware(request: NextRequest) {
     }
 
     // Atualiza a sessão do Supabase e verifica se o usuário está logado
-    const { user, supabaseResponse } = await updateSession(request);
+    try {
+        const { user, supabaseResponse } = await updateSession(request);
 
-    if (!user) {
+        if (!user) {
+            // Limpa cookie antigo do sistema anterior, se existir
+            const loginUrl = new URL('/login', request.url);
+            loginUrl.searchParams.set('from', pathname);
+            const response = NextResponse.redirect(loginUrl);
+            response.cookies.delete('stock_session');
+            return response;
+        }
+
+        // Limpa cookie antigo se ainda existir no browser de antes
+        if (request.cookies.has('stock_session')) {
+            supabaseResponse.cookies.delete('stock_session');
+        }
+
+        return supabaseResponse;
+    } catch (error) {
+        // Se o Supabase falhar por qualquer motivo (env vars, rede, etc),
+        // NÃO permitir acesso — redirecionar para login por segurança
+        console.error('[Middleware] Erro ao verificar sessão:', error);
         const loginUrl = new URL('/login', request.url);
         loginUrl.searchParams.set('from', pathname);
         return NextResponse.redirect(loginUrl);
     }
-
-    return supabaseResponse;
 }
 
 export const config = {

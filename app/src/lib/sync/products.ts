@@ -1,5 +1,6 @@
 import { NuvemshopAPI, NuvemshopProduct } from '@/lib/nuvemshop/api';
 import { supabaseAdmin } from '@/lib/supabase/client';
+import { v4 as uuidv4 } from 'uuid';
 
 /**
  * Sincroniza todos os produtos da loja Nuvemshop com o banco local Supabase
@@ -11,6 +12,8 @@ export async function syncAllProducts(storeId: string, accessToken: string) {
     let page = 1;
     let hasMore = true;
     let totalSynced = 0;
+    let totalDiscrepancies = 0;
+    const discrepanciesIds: string[] = [];
 
     console.log(`[Sync] Iniciando sincronização de produtos para loja ${storeId}...`);
 
@@ -28,8 +31,12 @@ export async function syncAllProducts(storeId: string, accessToken: string) {
 
             // Processa cada produto
             for (const product of products) {
-                await upsertProduct(storeId, product);
+                const result = await upsertProduct(storeId, product);
                 totalSynced++;
+                if (result && result.discrepancies > 0) {
+                    totalDiscrepancies += result.discrepancies;
+                    discrepanciesIds.push(...result.sessionIds);
+                }
             }
 
             // Se retornou menos que o per_page, é a última página
@@ -48,14 +55,18 @@ export async function syncAllProducts(storeId: string, accessToken: string) {
         if (page > 100) hasMore = false;
     }
 
-    console.log(`[Sync] Sincronização concluída! Total: ${totalSynced} produtos.`);
-    return totalSynced;
+    console.log(`[Sync] Sincronização concluída! Total: ${totalSynced} produtos. Divergências: ${totalDiscrepancies}`);
+    return { totalSynced, totalDiscrepancies, discrepanciesIds };
 }
 
 /**
- * Salva ou atualiza um único produto e suas variantes no Supabase
+ * Salva ou atualiza um único produto e suas variantes no Supabase.
+ * Retorna se houve discrepância de estoque.
  */
 export async function upsertProduct(storeId: string, product: NuvemshopProduct) {
+    let discrepancies = 0;
+    const sessionIds: string[] = [];
+
     // 1. Salvar Produto
     const { error: prodError } = await supabaseAdmin
         .from('products')
@@ -71,11 +82,54 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
 
     if (prodError) {
         console.error(`[Sync] Erro ao salvar produto ${product.id}:`, prodError);
-        return;
+        return { discrepancies, sessionIds };
     }
 
-    // 2. Salvar Variantes
+    // 2. Salvar Variantes e Verificar Discrepâncias
     if (product.variants && product.variants.length > 0) {
+        // Obter estoque atual para comparar
+        const variantIds = product.variants.map(v => v.id);
+        const { data: existingVariants } = await supabaseAdmin
+            .from('product_variants')
+            .select('id, stock')
+            .in('id', variantIds);
+
+        const localStockMap = new Map(existingVariants?.map(v => [Number(v.id), v.stock || 0]) || []);
+
+        for (const variant of product.variants) {
+            const localStock = localStockMap.get(variant.id);
+            const remoteStock = variant.stock || 0;
+
+            // Se a variante já existe localmente E tem divergência de estoque
+            if (localStock !== undefined && localStock !== remoteStock) {
+                const diff = remoteStock - localStock;
+                const type = diff > 0 ? 'entrada' : 'saida';
+                const sessionId = uuidv4();
+                
+                // Grava sessão de ajuste
+                await supabaseAdmin.from('stock_sessions').insert({
+                    id: sessionId,
+                    type: type,
+                    operation: 'ajuste',
+                    status: 'closed',
+                    notes: 'Correção automática - Sincronização Diária Nuvemshop'
+                });
+
+                // Grava movimentação
+                await supabaseAdmin.from('stock_movements').insert({
+                    session_id: sessionId,
+                    variant_id: variant.id,
+                    quantity: Math.abs(diff),
+                    old_stock: localStock,
+                    new_stock: remoteStock
+                });
+
+                discrepancies++;
+                sessionIds.push(sessionId);
+                console.log(`[Sync] Discrepância corrigida para Variante ${variant.id}: Local(${localStock}) -> Nuvemshop(${remoteStock})`);
+            }
+        }
+
         const variantsToUpsert = product.variants.map(variant => ({
             id: variant.id,
             product_id: product.id,
@@ -86,9 +140,6 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
             stock: variant.stock,
             stock_management: variant.stock_management,
             // NOTA IMPORTANTE: Nós NÃO enviamos `min_stock` aqui!
-            // Para não sobrescrever o valor local (ex: durante webhooks da Nuvemshop),
-            // a propriedade `min_stock` é omitida. O Supabase (Postgres) irá preservá-la
-            // nativamente em UPDATES, e atribuir o default (5) para INSERTS.
             updated_at: new Date().toISOString()
         }));
 
@@ -100,4 +151,6 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
             console.error(`[Sync] Erro ao salvar variantes do produto ${product.id}:`, varError);
         }
     }
+
+    return { discrepancies, sessionIds };
 }

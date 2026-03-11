@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getNuvemshopClient } from '@/lib/nuvemshop/server';
 import { syncAllProducts } from '@/lib/sync/products';
+import { supabaseAdmin } from '@/lib/supabase/client';
 
 
 /**
@@ -26,17 +27,41 @@ export async function POST(_request: NextRequest) {
 
     try {
         // 2. Executar Sincronização
-        // Usa as credenciais diretamente do cliente autenticado (seja via cookie ou DB fallback)
-        const count = await syncAllProducts(client.getStoreId(), client.getAccessToken());
+        const result = await syncAllProducts(client.getStoreId(), client.getAccessToken());
+
+        // 3. Registrar Audit Log na tabela sync_logs
+        let message = '';
+        if (result.totalDiscrepancies > 0) {
+            message = `Sincronização concluída. ${result.totalDiscrepancies} divergências de estoque corrigidas automaticamente. Sessões geradas: ${result.discrepanciesIds.join(', ')}`;
+        } else {
+            message = `Sincronização concluída perfeitamente. Nenhuma divergência de estoque encontrada para os ${result.totalSynced} produtos vericados.`;
+        }
+
+        await supabaseAdmin.from('sync_logs').insert({
+            store_id: client.getStoreId(),
+            entity: 'product',
+            action: 'sync_all',
+            status: 'success',
+            message: message
+        });
 
         return NextResponse.json({
             success: true,
-            message: `Sincronização concluída com sucesso!`,
-            count
+            message: message,
+            data: result
         });
 
     } catch (error) {
         console.error('Erro na sincronização:', error);
+        
+        // Log de erro caso a api falhe globalmente
+        await supabaseAdmin.from('sync_logs').insert({
+            entity: 'product',
+            action: 'sync_all',
+            status: 'error',
+            message: `Falha fatal na sincronização: ${String(error)}`
+        });
+
         return NextResponse.json(
             { error: 'Falha na sincronização', details: String(error) },
             { status: 500 }

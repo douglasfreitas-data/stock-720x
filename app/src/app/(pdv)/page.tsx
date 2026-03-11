@@ -54,16 +54,6 @@ export default function HomeScreen() {
                 <p className="menu-card-subtitle">Movimentação e Vendas</p>
             </Link>
 
-            {/* Financeiro (Broken/Future) */}
-            <div className="menu-card decoration-none opacity-40">
-                <div className="menu-card-row">
-                    <span className="menu-card-icon">💰</span>
-                    <h2 className="menu-card-title">Financeiro</h2>
-                </div>
-                <p className="menu-card-subtitle">Em breve...</p>
-            </div>
-
-
             {/* Link Sair (mock) */}
             <button
                 className="exit-link"

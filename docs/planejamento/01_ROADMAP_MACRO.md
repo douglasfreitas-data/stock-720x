@@ -32,4 +32,10 @@
 ## Fase 5: Expansão 🔲
 > **Status:** Futuro
 - [ ] Multi-loja
-- [ ] Notificações Push
+- [ ] **Notificações Push Nativas (Web Push)**
+  - Configurar Service Worker (`sw.js`) no Frontend PWA.
+  - Implementar solicitação nativa de permissão (`Notification.requestPermission()`).
+  - Gerar e configurar chaves seguras VAPID no backend.
+  - Criar tabela `push_subscriptions` atrelada aos usuários logados.
+  - Criar endpoint para envio de payloads (`api/notifications/send`).
+  - Integrar disparo visual com webhooks (ex: Nova Venda Nuvemshop).

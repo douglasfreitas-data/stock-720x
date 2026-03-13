@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { signout } from '@/app/actions/auth';
-import OnboardingTour from '@/components/OnboardingTour';
 
 export default function HomeScreen() {
     return (
@@ -62,19 +61,6 @@ export default function HomeScreen() {
                 <p className="menu-card-subtitle">Trocar sua senha de acesso</p>
             </Link>
 
-            {/* Ajuda / Tutorial */}
-            <button 
-                className="menu-card decoration-none" 
-                style={{ background: 'var(--surface)', border: '1px solid var(--primary)', textAlign: 'left', cursor: 'pointer' }}
-                onClick={() => (window as any).startStock720xTour?.()}
-            >
-                <div className="menu-card-row">
-                    <span className="menu-card-icon">💡</span>
-                    <h2 className="menu-card-title">Ajuda / Tutorial</h2>
-                </div>
-                <p className="menu-card-subtitle">Rever apresentação do sistema</p>
-            </button>
-
             {/* Sair */}
             <form action={signout}>
                 <button
@@ -85,9 +71,6 @@ export default function HomeScreen() {
                     <span className="exit-arrow">→</span>
                 </button>
             </form>
-            
-            {/* Componente do Tour Interativo */}
-            <OnboardingTour />
         </div>
     );
 }

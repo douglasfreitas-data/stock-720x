@@ -9,7 +9,6 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 ### Adicionado
 - **Tratamento Offline**: Detecção de conectividade persistente interativa pelo `OnlineStatusProvider` e `OfflineBanner`. Controles do formulário bloqueados e alertas proativos na interface de vendas e entrada durante perda de sinal.
 - **Teste End-to-End**: `playwright` framework incorporado na suíte em `/e2e`. Smoke Tests simulando fluxo de navegação protegida de dashboard operando via webServer.
-- **Tour de Onboarding**: Tutorial in-App interativo desenvolvido _in-house_ com leitura de `DOMRect` do Next.js sem deps, guiando o onboarding e persistido no localStorage.
 - **Otimização PWA**: Refinadas as propriedades idiomáticas `manifest.json` com ícones isolados do pool `any`/`maskable` e viewport otimizado no SSR.
 
 ### Modificado

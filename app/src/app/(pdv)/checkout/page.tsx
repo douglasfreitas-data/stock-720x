@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { processSessionAction } from '@/app/actions/session';
 import { useCart } from '@/components/providers/CartProvider';
 import { useToast } from '@/components/providers/ToastProvider';
+import { useOnlineStatus } from '@/components/providers/OnlineStatusProvider';
 
 const paymentMethods = [
     { id: 'pix', icon: '📱', label: 'PIX' },
@@ -26,6 +27,7 @@ export default function CheckoutPage() {
     const router = useRouter();
     const { cart, clearCart, cartTotal, cartCount, isInitialized } = useCart();
     const { showToast } = useToast();
+    const { isOnline } = useOnlineStatus();
 
     const [customer, setCustomer] = useState('');
     const [selectedPayment, setSelectedPayment] = useState('pix');
@@ -47,6 +49,12 @@ export default function CheckoutPage() {
 
     const handleConfirmSale = async () => {
         if (isProcessing) return;
+
+        if (!isOnline) {
+            showToast('Sem conexão com a internet. Verifique seu Wi-Fi ou 4G.', 'error');
+            return;
+        }
+
         setCheckoutState('processing');
         try {
             const result = await processSessionAction({
@@ -67,8 +75,13 @@ export default function CheckoutPage() {
             }
         } catch (error) {
             setCheckoutState('idle');
-            console.error('Erro geral na venda:', error);
-            showToast('Erro ao processar venda', 'error');
+            const isNetworkError = !navigator.onLine || (error instanceof TypeError && error.message.includes('fetch'));
+            if (isNetworkError) {
+                showToast('Falha de conexão. Verifique sua internet e tente novamente.', 'error');
+            } else {
+                console.error('Erro geral na venda:', error);
+                showToast('Erro ao processar venda. Tente novamente.', 'error');
+            }
         }
     };
 
@@ -153,9 +166,9 @@ export default function CheckoutPage() {
                 <button
                     className="btn-confirm"
                     onClick={handleConfirmSale}
-                    disabled={isProcessing}
+                    disabled={isProcessing || !isOnline}
                 >
-                    {isProcessing ? 'Processando...' : '✓ Confirmar'}
+                    {!isOnline ? '📡 Sem conexão' : isProcessing ? 'Processando...' : '✓ Confirmar'}
                 </button>
             </div>
         </div>

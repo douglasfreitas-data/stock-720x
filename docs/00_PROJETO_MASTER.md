@@ -2,8 +2,8 @@
 
 > **Este é o único arquivo que você precisa ler para entender o estado do projeto.**
 
-**Última Atualização:** 11/03/2026 (Noite)
-**Fase Atual:** Fase 4 (Operação Física & Produção)
+**Última Atualização:** 13/03/2026
+**Fase Atual:** Fase 5 (Expansão)
 **Status Geral:** 🟢 Em Andamento
 
 ---
@@ -24,11 +24,11 @@
 
 O projeto **Stock 720x** é um PDV mobile-first (Next.js PWA) integrado à Nuvemshop (ERP) com cache local no Supabase para performance e offline-first capabilities.
 
-### Onde Estamos (Fase 4)
-Já completamos o **Mockup** (Fase 1), o **Backend Base** (Fase 2) e o **Polimento** (Fase 3 com Relatórios e Sync Inteligente). Agora estamos focados em garantir a solidez na operação física (Fase 4).
+### Onde Estamos (Fase 5)
+Já completamos Fase 1 (Mockup), Fase 2 (Backend Base), Fase 3 (Polimento) e Fase 4 (Operação Física). O PWA já funciona offline, possui E2E tests, reconciliações e onboarding ativo.
 
 ### Próximo Objetivo Imediato
-Implementar geração de QR Code/Barcode e impressão de template em PDF para uso interno de gôndola.
+Implementar sistema de **Web Push Notifications** (Bloco 5.1) com Service Worker para notificar vendas em tempo real via celular nativamente pelo PWA.
 
 ---
 

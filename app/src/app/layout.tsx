@@ -20,7 +20,14 @@ export const metadata: Metadata = {
     icon: "/icon-192.png",
     apple: "/icon-192.png",
   },
+};
+
+export const viewport = {
   themeColor: "#ff5500",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";

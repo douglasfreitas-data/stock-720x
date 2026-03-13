@@ -24,13 +24,15 @@
 - [x] **Automação**: Cron jobs inteligentes (reconciliação Nuvemshop) e webhooks em tempo real.
 
 ## Fase 4: Operação Física & Produção 🔄
-> **Status:** EM ANDAMENTO
-- [ ] **Etiquetas e QR Code**: Geração e impressão de etiquetas PDF.
-- [ ] **Testes de Ponta a Ponta**: Validação contínua do uso no galpão.
-- [ ] **Onboarding & Docs**: Documentação final e tratamento offline básico.
+> **Status:** Concluída (Mar/2026)
+- [x] **Etiquetas e QR Code**: Catálogo de Produtos e leitura via câmera mobile.
+  - *Pendente (Aguardando Cliente)*: Impressão física de etiquetas térmicas e A4.
+- [x] **Testes de Ponta a Ponta**: Framework Playwright + Smoke Tests.
+- [x] **Seguridade Operacional**: Tratamento de Erros Offline e visualização robusta.
+- [x] **Onboarding & Docs**: Otimização PWA (Manifest) e Tutorial Interativo (In-App).
 
 ## Fase 5: Expansão 🔲
-> **Status:** Futuro
+> **Status:** EM ANDAMENTO
 - [ ] Multi-loja
 - [ ] **Notificações Push Nativas (Web Push)**
   - Configurar Service Worker (`sw.js`) no Frontend PWA.

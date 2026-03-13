@@ -4,6 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { CartProvider, useCart } from '@/components/providers/CartProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
+import { OnlineStatusProvider } from '@/components/providers/OnlineStatusProvider';
+import OfflineBanner from '@/components/OfflineBanner';
 
 function HeaderCartButton() {
     const { cartCount } = useCart();
@@ -33,20 +35,25 @@ export default function PDVClientLayout({
     children: React.ReactNode;
 }) {
     return (
-        <ToastProvider>
-            <CartProvider>
-                <div className="app">
-                    {/* Header Global */}
-                    <header className="header">
-                        <img src="/logo.png" alt="720x" className="logo" />
-                        <HeaderCartButton />
-                    </header>
+        <OnlineStatusProvider>
+            <ToastProvider>
+                <CartProvider>
+                    <div className="app">
+                        {/* Header Global */}
+                        <header className="header">
+                            <img src="/logo.png" alt="720x" className="logo" />
+                            <HeaderCartButton />
+                        </header>
 
-                    <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                        {children}
-                    </main>
-                </div>
-            </CartProvider>
-        </ToastProvider>
+                        {/* Offline Banner */}
+                        <OfflineBanner />
+
+                        <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                            {children}
+                        </main>
+                    </div>
+                </CartProvider>
+            </ToastProvider>
+        </OnlineStatusProvider>
     );
 }

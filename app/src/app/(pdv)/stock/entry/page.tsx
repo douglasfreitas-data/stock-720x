@@ -6,6 +6,7 @@ import Scanner from '@/components/Scanner';
 import SearchModal from '@/components/SearchModal';
 import { processSessionAction } from '@/app/actions/session';
 import { useToast } from '@/components/providers/ToastProvider';
+import { useOnlineStatus } from '@/components/providers/OnlineStatusProvider';
 import { Product, CartItem } from '@/lib/types';
 import Link from 'next/link';
 
@@ -26,6 +27,7 @@ async function fetchProductByBarcode(barcode: string): Promise<Product | null> {
 function EntryContent() {
     const router = useRouter();
     const { showToast } = useToast();
+    const { isOnline } = useOnlineStatus();
 
     const [items, setItems] = useState<CartItem[]>([]);
     const [selectedOperation, setSelectedOperation] = useState('compra');
@@ -94,6 +96,12 @@ function EntryContent() {
         if (isScanning) return;
         setIsScanning(true);
 
+        if (!isOnline) {
+            showToast('Sem conexão. Não é possível buscar o produto.', 'error');
+            setTimeout(() => setIsScanning(false), 1500);
+            return;
+        }
+
         try {
             const product = await fetchProductByBarcode(decodedText);
             if (product && product.id) {
@@ -102,8 +110,13 @@ function EntryContent() {
                 showToast('Produto não encontrado', 'error');
             }
         } catch (err) {
-            console.error('Entry Scan Error:', err);
-            showToast('Erro ao processar item.', 'error');
+            const isNetworkError = !navigator.onLine || (err instanceof TypeError && (err as TypeError).message.includes('fetch'));
+            if (isNetworkError) {
+                showToast('Falha de conexão. Verifique sua internet.', 'error');
+            } else {
+                console.error('Entry Scan Error:', err);
+                showToast('Erro ao processar item.', 'error');
+            }
         } finally {
             setTimeout(() => setIsScanning(false), 1500);
         }
@@ -143,6 +156,12 @@ function EntryContent() {
 
     const handleConfirmEntry = async () => {
         if (items.length === 0) return;
+
+        if (!isOnline) {
+            showToast('Sem conexão com a internet. Verifique seu Wi-Fi ou 4G.', 'error');
+            return;
+        }
+
         setIsProcessing(true);
 
         try {
@@ -162,8 +181,13 @@ function EntryContent() {
                 showToast(result.message || 'Erro ao registrar entrada', 'error');
             }
         } catch (error) {
-            console.error('Erro na entrada:', error);
-            showToast('Erro interno', 'error');
+            const isNetworkError = !navigator.onLine || (error instanceof TypeError && (error as TypeError).message.includes('fetch'));
+            if (isNetworkError) {
+                showToast('Falha de conexão. Verifique sua internet e tente novamente.', 'error');
+            } else {
+                console.error('Erro na entrada:', error);
+                showToast('Erro interno. Tente novamente.', 'error');
+            }
         } finally {
             setIsProcessing(false);
         }
@@ -293,10 +317,10 @@ function EntryContent() {
                 {/* Confirm Button */}
                 <button
                     onClick={handleConfirmEntry}
-                    disabled={items.length === 0 || isProcessing}
+                    disabled={items.length === 0 || isProcessing || !isOnline}
                     className="btn-confirm"
                 >
-                    {isProcessing ? 'Processando...' : `Confirmar Entrada (${totalItems})`}
+                    {!isOnline ? '📡 Sem conexão' : isProcessing ? 'Processando...' : `Confirmar Entrada (${totalItems})`}
                 </button>
             </div>
 

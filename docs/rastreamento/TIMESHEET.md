@@ -79,7 +79,7 @@
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
-| 13/03/2026 | 2.5h | **Seguridade**: Provider Offline persistente interativo; manifest PWA otimizado; Testes E2E Smoke (Playwright). Finalização da rotina da Fase 4. |
+| 13/03/2026 | 2.5h | **Seguridade & Offline**: Provider Offline persistente interativo; manifest PWA otimizado; Testes E2E Smoke (Playwright). Finalização da rotina da Fase 4. |
 
 ---
 

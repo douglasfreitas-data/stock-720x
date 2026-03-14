@@ -61,6 +61,7 @@ export default function PushNotificationPrompt() {
     };
 
     if (!isSupported || isSubscribed || permission === 'denied') {
+        console.log('Push Prompt Hidden:', { isSupported, isSubscribed, permission, vapidKeyExists: !!vapidPublicKey });
         return null;
     }
 

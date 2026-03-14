@@ -14,8 +14,8 @@ self.addEventListener('push', function (event) {
 self.addEventListener('notificationclick', function(event) {
     event.notification.close();
     
-    // Abre o app na tela de produtos/relatórios
-    const urlToOpen = new URL('/products', self.location.origin).href;
+    // Abre o app na tela de Relatório de Reposição
+    const urlToOpen = new URL('/reports/replenishment', self.location.origin).href;
 
     // eslint-disable-next-line
     const promiseChain = clients.matchAll({

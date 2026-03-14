@@ -1,3 +1,11 @@
+self.addEventListener('install', (event) => {
+    event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener('push', function (event) {
     const title = '⚠️ Alerta de Estoque Mínimo';
     const options = {

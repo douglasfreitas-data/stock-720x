@@ -122,7 +122,7 @@ export default function ReplenishmentReport() {
                 </p>
 
                 {criticalItems.length === 0 ? (
-                    <div style={{ padding: '20px', background: '#f5f5f5', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ padding: '20px', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--text-muted)', border: '1px solid var(--border-color)' }}>
                         Nenhum produto em nível crítico no momento.
                     </div>
                 ) : (
@@ -155,7 +155,7 @@ export default function ReplenishmentReport() {
                 </p>
 
                 {attentionItems.length === 0 ? (
-                    <div style={{ padding: '20px', background: '#f5f5f5', borderRadius: '8px', textAlign: 'center' }}>
+                    <div style={{ padding: '20px', background: 'var(--bg-card)', borderRadius: 'var(--radius-md)', textAlign: 'center', color: 'var(--text-muted)', border: '1px solid var(--border-color)' }}>
                         Nenhum produto na área de atenção.
                     </div>
                 ) : (

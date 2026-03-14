@@ -9,6 +9,61 @@ interface ReportFilters {
     operation?: string;  // 'venda' | 'compra' | 'doacao' | etc.
 }
 
+export async function getReplenishmentDataAction() {
+    try {
+        const { data, error } = await supabaseAdmin
+            .from('product_variants')
+            .select('id, sku, price, stock, min_stock, products(name, images)')
+            .gt('min_stock', 0)
+            .order('stock', { ascending: true });
+
+        if (error) {
+            console.error('Erro ao buscar dados de reposição:', error);
+            return { success: false, message: 'Erro ao buscar dados de reposição.' };
+        }
+
+        // Processar os dados para extrair nome e imagem corretamente
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const processed = (data || []).map((variant: any) => {
+            const product = Array.isArray(variant.products) ? variant.products[0] : variant.products;
+            
+            // name é JSONB: { pt: "Nome do produto" }
+            const productName = product?.name?.pt || 'Produto sem nome';
+            
+            // images é JSONB array: [{ src: "//url..." }, ...]
+            let imageUrl: string | null = null;
+            try {
+                const images = typeof product?.images === 'string'
+                    ? JSON.parse(product.images)
+                    : (product?.images || []);
+                if (images.length > 0) {
+                    imageUrl = images[0].src;
+                    if (imageUrl && imageUrl.startsWith('//')) {
+                        imageUrl = `https:${imageUrl}`;
+                    }
+                }
+            } catch {
+                imageUrl = null;
+            }
+
+            return {
+                id: variant.id,
+                sku: variant.sku,
+                price: variant.price,
+                stock: variant.stock,
+                min_stock: variant.min_stock,
+                productName,
+                imageUrl,
+            };
+        });
+
+        return { success: true, data: processed };
+    } catch (error) {
+        console.error('Erro geral no relatório de reposição:', error);
+        return { success: false, message: 'Erro interno no servidor.' };
+    }
+}
+
 export async function getStockSessionsAction(filters?: ReportFilters) {
     try {
         let query = supabaseAdmin

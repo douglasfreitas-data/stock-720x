@@ -2,30 +2,26 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/lib/supabase/client';
+import { getReplenishmentDataAction } from '@/app/actions/reports';
+
 function formatCurrency(value: number | null | undefined) {
     if (value === null || value === undefined) return '';
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
 
-// Tipagem baseada no schema
-interface Product {
-    name: string;
-    image_url: string | null;
-}
-
-interface Variant {
+interface ProcessedVariant {
     id: number;
     sku: string;
     price: number | null;
     stock: number;
     min_stock: number;
-    products: Product | Product[]; // O select do Supabase pode retornar array dependo da cardinalidade
+    productName: string;
+    imageUrl: string | null;
 }
 
 export default function ReplenishmentReport() {
-    const [criticalItems, setCriticalItems] = useState<Variant[]>([]);
-    const [attentionItems, setAttentionItems] = useState<Variant[]>([]);
+    const [criticalItems, setCriticalItems] = useState<ProcessedVariant[]>([]);
+    const [attentionItems, setAttentionItems] = useState<ProcessedVariant[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -33,26 +29,20 @@ export default function ReplenishmentReport() {
         async function fetchStockAlerts() {
             setLoading(true);
             try {
-                const { data, error } = await supabase
-                    .from('product_variants')
-                    .select('id, sku, price, stock, min_stock, products(name, image_url)')
-                    .gt('min_stock', 0)
-                    .order('stock', { ascending: true });
+                const result = await getReplenishmentDataAction();
 
-                if (error) {
-                    throw error;
+                if (!result.success) {
+                    throw new Error(result.message || 'Erro ao carregar dados.');
                 }
 
-                if (data) {
-                    const critical: Variant[] = [];
-                    const attention: Variant[] = [];
+                if (result.data) {
+                    const critical: ProcessedVariant[] = [];
+                    const attention: ProcessedVariant[] = [];
 
                     // Regra:
                     // Crítico: stock <= min_stock
                     // Atenção: stock > min_stock AND stock <= min_stock + max(1, min_stock * 0.20)
-                    // (Garantindo que pelo menos 1 unidade seja considerada margem se o estoque mínimo for muito baixo)
-                    
-                    data.forEach((variant: any) => {
+                    result.data.forEach((variant: ProcessedVariant) => {
                         const min = variant.min_stock;
                         const margin = Math.max(1, Math.ceil(min * 0.20));
                         const threshold = min + margin;
@@ -82,18 +72,6 @@ export default function ReplenishmentReport() {
     useEffect(() => {
         setIsMounted(true);
     }, []);
-
-    const getProductName = (p: any) => {
-        if (!p) return 'Produto sem nome';
-        if (Array.isArray(p)) return p[0]?.name || 'Produto sem nome';
-        return p.name || 'Produto sem nome';
-    };
-
-    const getImageUrl = (p: any) => {
-        if (!p) return null;
-        if (Array.isArray(p)) return p[0]?.image_url;
-        return p.image_url;
-    };
 
     if (loading) {
         return (
@@ -153,8 +131,6 @@ export default function ReplenishmentReport() {
                                 key={item.id} 
                                 item={item} 
                                 status="critical" 
-                                productName={getProductName(item.products)}
-                                imageUrl={getImageUrl(item.products)}
                                 isMounted={isMounted}
                             />
                         ))}
@@ -188,8 +164,6 @@ export default function ReplenishmentReport() {
                                 key={item.id} 
                                 item={item} 
                                 status="attention" 
-                                productName={getProductName(item.products)}
-                                imageUrl={getImageUrl(item.products)}
                                 isMounted={isMounted}
                             />
                         ))}
@@ -200,7 +174,7 @@ export default function ReplenishmentReport() {
     );
 }
 
-function ProductCard({ item, status, productName, imageUrl, isMounted }: { item: Variant, status: 'critical' | 'attention', productName: string, imageUrl: string | null, isMounted: boolean }) {
+function ProductCard({ item, status, isMounted }: { item: ProcessedVariant, status: 'critical' | 'attention', isMounted: boolean }) {
     const bg = status === 'critical' ? '#ffebee' : '#fff3e0';
     const borderColor = status === 'critical' ? '#ffcdd2' : '#ffe0b2';
     const textColor = status === 'critical' ? '#c62828' : '#e65100';
@@ -217,9 +191,9 @@ function ProductCard({ item, status, productName, imageUrl, isMounted }: { item:
             gap: '15px',
             boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
         }}>
-            {imageUrl ? (
+            {item.imageUrl ? (
                 <div style={{ width: '60px', height: '60px', borderRadius: '6px', overflow: 'hidden', flexShrink: 0, border: '1px solid #eee' }}>
-                    <img src={imageUrl} alt={productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={item.imageUrl} alt={item.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             ) : (
                 <div style={{ width: '60px', height: '60px', borderRadius: '6px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid #eee' }}>
@@ -229,7 +203,7 @@ function ProductCard({ item, status, productName, imageUrl, isMounted }: { item:
             
             <div style={{ flex: 1, minWidth: 0 }}>
                 <h3 style={{ margin: '0 0 5px 0', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {productName}
+                    {item.productName}
                 </h3>
                 <div style={{ display: 'flex', gap: '10px', fontSize: '0.85rem', color: '#666', flexWrap: 'wrap' }}>
                     <span style={{ background: '#f0f0f0', padding: '2px 6px', borderRadius: '4px' }}>SKU: {item.sku}</span>

@@ -1,7 +1,7 @@
 self.addEventListener('push', function (event) {
     const title = '⚠️ Alerta de Estoque Mínimo';
     const options = {
-        body: 'Um ou mais produtos atingiram a quantidade mínima. Acesse o sistema para conferir.',
+        body: 'Um ou mais produtos atingiram o estoque mínimo. Toque para ver o relatório de reposição.',
         icon: '/logo.png',   // Certifique-se de que o logo.png / ícone 192x192 exista
         badge: '/logo.png',
         vibrate: [200, 100, 200, 100, 200, 100, 200],

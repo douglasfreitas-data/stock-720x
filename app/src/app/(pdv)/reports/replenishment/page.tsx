@@ -203,7 +203,7 @@ function ProductCard({ item, status, isMounted }: { item: ProcessedVariant, stat
             )}
             
             <div style={{ flex: 1, minWidth: 0 }}>
-                <h3 style={{ margin: '0 0 5px 0', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <h3 style={{ margin: '0 0 5px 0', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text-color)' }}>
                     {item.productName}
                 </h3>
             </div>

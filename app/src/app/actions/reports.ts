@@ -27,9 +27,19 @@ export async function getReplenishmentDataAction() {
         const processed = (data || []).map((variant: any) => {
             const product = Array.isArray(variant.products) ? variant.products[0] : variant.products;
             
-            // name é JSONB: { pt: "Nome do produto" }
-            const productName = product?.name?.pt || 'Produto sem nome';
-            
+            let productName = 'Produto sem nome';
+            if (product?.name) {
+                if (typeof product.name === 'string') {
+                    try {
+                        const parsed = JSON.parse(product.name);
+                        productName = parsed.pt || parsed.es || parsed.en || product.name;
+                    } catch {
+                        productName = product.name;
+                    }
+                } else if (typeof product.name === 'object') {
+                    productName = product.name.pt || product.name.es || product.name.en || 'Produto sem nome';
+                }
+            }
             // images é JSONB array: [{ src: "//url..." }, ...]
             let imageUrl: string | null = null;
             try {

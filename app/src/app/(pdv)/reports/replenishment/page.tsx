@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getReplenishmentDataAction } from '@/app/actions/reports';
+import { ArrowLeft, Package } from 'lucide-react';
 
 function formatCurrency(value: number | null | undefined) {
     if (value === null || value === undefined) return '';
@@ -95,8 +96,8 @@ export default function ReplenishmentReport() {
     return (
         <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '15px' }}>
-                <Link href="/reports" style={{ fontSize: '1.5rem', textDecoration: 'none' }}>
-                    ⬅️
+                <Link href="/reports" style={{ textDecoration: 'none', color: 'var(--text-color)', display: 'flex', alignItems: 'center' }}>
+                    <ArrowLeft size={24} />
                 </Link>
                 <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Relatório de Reposição</h1>
             </div>
@@ -114,7 +115,7 @@ export default function ReplenishmentReport() {
                     alignItems: 'center',
                     gap: '10px'
                 }}>
-                    🚨 Ação Imediata (Crítico)
+                    Ação Imediata (Crítico)
                 </h2>
                 <p style={{ fontSize: '0.9rem', marginBottom: '15px' }}>
                     Estes produtos atingiram ou ficaram abaixo do mínimo estipulado.
@@ -122,7 +123,7 @@ export default function ReplenishmentReport() {
 
                 {criticalItems.length === 0 ? (
                     <div style={{ padding: '20px', background: '#f5f5f5', borderRadius: '8px', textAlign: 'center' }}>
-                        Nenhum produto em nível crítico no momento. 🎉
+                        Nenhum produto em nível crítico no momento.
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -147,7 +148,7 @@ export default function ReplenishmentReport() {
                     alignItems: 'center',
                     gap: '10px'
                 }}>
-                    ⚠️ Em Observação (Atenção)
+                    Em Observação (Atenção)
                 </h2>
                 <p style={{ fontSize: '0.9rem', marginBottom: '15px' }}>
                     Estes produtos estão na margem de 20% acima do mínimo estipulado.
@@ -196,8 +197,8 @@ function ProductCard({ item, status, isMounted }: { item: ProcessedVariant, stat
                     <img src={item.imageUrl} alt={item.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             ) : (
-                <div style={{ width: '60px', height: '60px', borderRadius: '6px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid #eee' }}>
-                    📦
+                <div style={{ width: '60px', height: '60px', borderRadius: '6px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid #eee', color: '#999' }}>
+                    <Package size={24} />
                 </div>
             )}
             
@@ -205,10 +206,6 @@ function ProductCard({ item, status, isMounted }: { item: ProcessedVariant, stat
                 <h3 style={{ margin: '0 0 5px 0', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {item.productName}
                 </h3>
-                <div style={{ display: 'flex', gap: '10px', fontSize: '0.85rem', color: '#666', flexWrap: 'wrap' }}>
-                    <span style={{ background: '#f0f0f0', padding: '2px 6px', borderRadius: '4px' }}>SKU: {item.sku}</span>
-                    {isMounted && item.price != null && <span>{formatCurrency(item.price)}</span>}
-                </div>
             </div>
 
             <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>

@@ -6,6 +6,7 @@ import { CartProvider, useCart } from '@/components/providers/CartProvider';
 import { ToastProvider } from '@/components/providers/ToastProvider';
 import { OnlineStatusProvider } from '@/components/providers/OnlineStatusProvider';
 import OfflineBanner from '@/components/OfflineBanner';
+import PushNotificationPrompt from '@/components/PushNotificationPrompt';
 
 function HeaderCartButton() {
     const { cartCount } = useCart();
@@ -49,6 +50,7 @@ export default function PDVClientLayout({
                         <OfflineBanner />
 
                         <main style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                            <PushNotificationPrompt />
                             {children}
                         </main>
                     </div>

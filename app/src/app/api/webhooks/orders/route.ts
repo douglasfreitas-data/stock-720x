@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
                 // 1. Busca estoque atual e ID interno
                 const { data: variant, error: getError } = await supabaseAdmin
                     .from('product_variants')
-                    .select('id, stock')
+                    .select('id, stock, min_stock')
                     .eq('id', product.variant_id.toString())
                     .single();
 
@@ -77,6 +77,10 @@ export async function POST(request: NextRequest) {
                     console.error(`    ↳ Falha ao dar baixa de estoque na variante ${variant.id}:`, updateError);
                 } else {
                     console.log(`    ↳ Estoque atualizado no Supabase: antes ${variant.stock} -> agora ${newStock}`);
+                    if (variant.min_stock && newStock <= variant.min_stock) {
+                        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+                        fetch(`${baseUrl}/api/push/send`, { method: 'POST' }).catch(console.error);
+                    }
                 }
             }
         }

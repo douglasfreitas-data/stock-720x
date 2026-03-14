@@ -26,7 +26,7 @@ export async function updateStockAction(params: StockUpdateParams) {
         // 1. Buscar dados atuais da variante (estoque atual + product_id para Nuvemshop)
         const { data: variantData, error: fetchError } = await supabaseAdmin
             .from('product_variants')
-            .select('stock, product_id')
+            .select('stock, product_id, min_stock')
             .eq('id', variantId)
             .single();
 
@@ -115,6 +115,13 @@ export async function updateStockAction(params: StockUpdateParams) {
         // 6. Revalidar caches
         revalidatePath('/products');
         revalidatePath('/scan');
+
+        // 7. Notificar se atingiu estoque mínimo
+        const currentMinStock = minStock !== undefined ? minStock : variantData.min_stock;
+        if (currentMinStock && newStock <= currentMinStock) {
+            const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+            fetch(`${baseUrl}/api/push/send`, { method: 'POST' }).catch(console.error);
+        }
 
         const syncStatus = nuvemshopUpdated
             ? 'Estoque atualizado (Nuvemshop + Supabase)'

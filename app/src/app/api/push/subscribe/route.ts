@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { NextResponse } from "next/server"
+import { supabaseAdmin } from "@/lib/supabase/client"
 
 export async function POST(req: Request) {
     try {
@@ -32,8 +33,9 @@ export async function POST(req: Request) {
             return new NextResponse("Invalid subscription", { status: 400 })
         }
 
-        // Check if it already exists
-        const { data: existing, error: checkError } = await supabase
+        // Check if it already exists -> Bypass RLS with supabaseAdmin so we can see other
+        // users' subscriptions that hold this exact same device endpoint
+        const { data: existing, error: checkError } = await supabaseAdmin
             .from('push_subscriptions')
             .select('id')
             .eq('endpoint', endpoint)
@@ -42,16 +44,16 @@ export async function POST(req: Request) {
         let data, error;
         
         if (existing) {
-            // Update
-            const res = await supabase
+            // Update -> Bypass RLS to transfer ownership to the current user
+            const res = await supabaseAdmin
                 .from('push_subscriptions')
                 .update({ user_id: user.id, p256dh: keys.p256dh, auth: keys.auth })
                 .eq('id', existing.id)
             data = res.data;
             error = res.error;
         } else {
-            // Insert
-            const res = await supabase
+            // Insert -> Bypass RLS just in case policies are fully closed
+            const res = await supabaseAdmin
                 .from('push_subscriptions')
                 .insert({
                     user_id: user.id,

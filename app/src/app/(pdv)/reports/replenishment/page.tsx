@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getReplenishmentDataAction } from '@/app/actions/reports';
-import { ArrowLeft, Package } from 'lucide-react';
+import { Package } from 'lucide-react';
 
 function formatCurrency(value: number | null | undefined) {
     if (value === null || value === undefined) return '';
@@ -96,8 +96,8 @@ export default function ReplenishmentReport() {
     return (
         <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '15px' }}>
-                <Link href="/" style={{ textDecoration: 'none', color: 'var(--text-color)', display: 'inline-block', lineHeight: 0 }}>
-                    <ArrowLeft size={28} />
+                <Link href="/" style={{ fontSize: '1.5rem', textDecoration: 'none', color: 'var(--text-primary)' }}>
+                    ←
                 </Link>
                 <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Relatório de Reposição</h1>
             </div>
@@ -176,44 +176,43 @@ export default function ReplenishmentReport() {
 }
 
 function ProductCard({ item, status, isMounted }: { item: ProcessedVariant, status: 'critical' | 'attention', isMounted: boolean }) {
-    const bg = status === 'critical' ? '#ffebee' : '#fff3e0';
-    const borderColor = status === 'critical' ? '#ffcdd2' : '#ffe0b2';
-    const textColor = status === 'critical' ? '#c62828' : '#e65100';
+    const bg = status === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(234, 179, 8, 0.15)';
+    const textColor = status === 'critical' ? 'var(--danger)' : 'var(--warning)';
 
     return (
         <div style={{ 
             display: 'flex', 
-            background: 'white', 
-            border: `1px solid ${borderColor}`,
+            background: 'var(--bg-card)', 
+            border: `1px solid var(--border-color)`,
             borderLeft: `5px solid ${textColor}`,
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-md)',
             padding: '15px',
             alignItems: 'center',
             gap: '15px',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.05)'
+            boxShadow: 'var(--shadow-sm)'
         }}>
             {item.imageUrl ? (
-                <div style={{ width: '60px', height: '60px', borderRadius: '6px', overflow: 'hidden', flexShrink: 0, border: '1px solid #eee' }}>
+                <div style={{ width: '60px', height: '60px', borderRadius: '6px', overflow: 'hidden', flexShrink: 0, border: '1px solid var(--border-color)' }}>
                     <img src={item.imageUrl} alt={item.productName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             ) : (
-                <div style={{ width: '60px', height: '60px', borderRadius: '6px', background: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid #eee', color: '#999' }}>
+                <div style={{ width: '60px', height: '60px', borderRadius: '6px', background: 'var(--bg-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
                     <Package size={24} />
                 </div>
             )}
             
             <div style={{ flex: 1, minWidth: 0 }}>
-                <h3 style={{ margin: '0 0 5px 0', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text-color)' }}>
+                <h3 style={{ margin: '0 0 5px 0', fontSize: '1rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: 'var(--text-primary)' }}>
                     {item.productName}
                 </h3>
             </div>
 
             <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', justifyContent: 'center' }}>
-                <div style={{ fontSize: '0.8rem', color: '#666', marginBottom: '2px' }}>Estoque</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '2px' }}>Estoque</div>
                 <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: textColor }}>
                     {item.stock}
                 </div>
-                <div style={{ fontSize: '0.75rem', padding: '2px 6px', borderRadius: '10px', background: bg, color: textColor, marginTop: '4px' }}>
+                <div style={{ fontSize: '0.75rem', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: bg, color: textColor, marginTop: '4px' }}>
                     Mínimo: {item.min_stock}
                 </div>
             </div>

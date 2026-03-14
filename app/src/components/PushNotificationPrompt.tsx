@@ -25,10 +25,20 @@ export default function PushNotificationPrompt() {
         if ('serviceWorker' in navigator && 'PushManager' in window && vapidPublicKey) {
             setIsSupported(true);
             setPermission(Notification.permission);
-            // Verifica se já está inscrito
+            // Verifica se já está inscrito no navegador
             navigator.serviceWorker.register('/sw.js').then((registration) => {
                 registration.pushManager.getSubscription().then((sub) => {
-                    setIsSubscribed(!!sub);
+                    if (sub) {
+                        setIsSubscribed(true);
+                        // Garante que o backend sabe dessa inscrição para o usuário atual
+                        fetch('/api/push/subscribe', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(sub)
+                        }).catch(console.error);
+                    } else {
+                        setIsSubscribed(false);
+                    }
                 });
             });
         }

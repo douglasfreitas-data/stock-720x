@@ -32,16 +32,36 @@ export async function POST(req: Request) {
             return new NextResponse("Invalid subscription", { status: 400 })
         }
 
-        const { data, error } = await supabase
+        // Check if it already exists
+        const { data: existing, error: checkError } = await supabase
             .from('push_subscriptions')
-            .upsert({
-                user_id: user.id,
-                endpoint: endpoint,
-                p256dh: keys.p256dh,
-                auth: keys.auth
-            }, {
-                onConflict: 'user_id, endpoint'
-            })
+            .select('id')
+            .eq('endpoint', endpoint)
+            .single()
+
+        let data, error;
+        
+        if (existing) {
+            // Update
+            const res = await supabase
+                .from('push_subscriptions')
+                .update({ user_id: user.id, p256dh: keys.p256dh, auth: keys.auth })
+                .eq('id', existing.id)
+            data = res.data;
+            error = res.error;
+        } else {
+            // Insert
+            const res = await supabase
+                .from('push_subscriptions')
+                .insert({
+                    user_id: user.id,
+                    endpoint: endpoint,
+                    p256dh: keys.p256dh,
+                    auth: keys.auth
+                })
+            data = res.data;
+            error = res.error;
+        }
 
         if (error) {
             console.error('Error saving subscription:', error)

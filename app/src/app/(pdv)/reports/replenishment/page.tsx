@@ -96,8 +96,8 @@ export default function ReplenishmentReport() {
     return (
         <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '15px' }}>
-                <Link href="/reports" style={{ textDecoration: 'none', color: 'var(--text-color)', display: 'flex', alignItems: 'center' }}>
-                    <ArrowLeft size={24} />
+                <Link href="/" style={{ textDecoration: 'none', color: 'var(--text-color)', display: 'inline-block', lineHeight: 0 }}>
+                    <ArrowLeft size={28} />
                 </Link>
                 <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Relatório de Reposição</h1>
             </div>

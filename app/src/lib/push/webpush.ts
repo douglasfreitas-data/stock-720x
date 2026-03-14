@@ -96,7 +96,9 @@ export async function sendPushNotification(subscription: PushSubscription) {
 
     const headers = {
         'Authorization': `vapid t=${jwt}, k=${publicKey}`,
-        'Content-Length': '0'
+        'Content-Length': '0',
+        'TTL': '86400',
+        'Urgency': 'high'
     };
 
     const response = await fetch(subscription.endpoint, {

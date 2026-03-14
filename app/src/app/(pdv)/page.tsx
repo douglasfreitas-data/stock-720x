@@ -52,6 +52,15 @@ export default function HomeScreen() {
                 <p className="menu-card-subtitle">Movimentação e Vendas</p>
             </Link>
 
+            {/* Reposição */}
+            <Link href="/reports/replenishment" className="menu-card decoration-none" style={{ borderLeft: '4px solid #ed6c02' }}>
+                <div className="menu-card-row">
+                    <span className="menu-card-icon">🚨</span>
+                    <h2 className="menu-card-title">Reposição</h2>
+                </div>
+                <p className="menu-card-subtitle">Estoque crítico e alertas</p>
+            </Link>
+
             {/* Alterar Senha */}
             <Link href="/update-password" className="menu-card decoration-none" style={{ background: 'transparent', border: '1px solid var(--border-color)' }}>
                 <div className="menu-card-row">

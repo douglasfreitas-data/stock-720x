@@ -85,7 +85,7 @@
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Total**: 1.0 horas
+**Total**: 6.0 horas
 
 | Data | Horas | Atividade |
 |------|-------|-----------|

@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
-function formatCurrency(value: number) {
+function formatCurrency(value: number | null | undefined) {
+    if (value === null || value === undefined) return '';
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
 
@@ -75,6 +76,11 @@ export default function ReplenishmentReport() {
         }
 
         fetchStockAlerts();
+    }, []);
+
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => {
+        setIsMounted(true);
     }, []);
 
     const getProductName = (p: any) => {
@@ -149,6 +155,7 @@ export default function ReplenishmentReport() {
                                 status="critical" 
                                 productName={getProductName(item.products)}
                                 imageUrl={getImageUrl(item.products)}
+                                isMounted={isMounted}
                             />
                         ))}
                     </div>
@@ -183,6 +190,7 @@ export default function ReplenishmentReport() {
                                 status="attention" 
                                 productName={getProductName(item.products)}
                                 imageUrl={getImageUrl(item.products)}
+                                isMounted={isMounted}
                             />
                         ))}
                     </div>
@@ -192,7 +200,7 @@ export default function ReplenishmentReport() {
     );
 }
 
-function ProductCard({ item, status, productName, imageUrl }: { item: Variant, status: 'critical' | 'attention', productName: string, imageUrl: string | null }) {
+function ProductCard({ item, status, productName, imageUrl, isMounted }: { item: Variant, status: 'critical' | 'attention', productName: string, imageUrl: string | null, isMounted: boolean }) {
     const bg = status === 'critical' ? '#ffebee' : '#fff3e0';
     const borderColor = status === 'critical' ? '#ffcdd2' : '#ffe0b2';
     const textColor = status === 'critical' ? '#c62828' : '#e65100';
@@ -225,7 +233,7 @@ function ProductCard({ item, status, productName, imageUrl }: { item: Variant, s
                 </h3>
                 <div style={{ display: 'flex', gap: '10px', fontSize: '0.85rem', color: '#666', flexWrap: 'wrap' }}>
                     <span style={{ background: '#f0f0f0', padding: '2px 6px', borderRadius: '4px' }}>SKU: {item.sku}</span>
-                    {item.price && <span>{formatCurrency(item.price)}</span>}
+                    {isMounted && item.price != null && <span>{formatCurrency(item.price)}</span>}
                 </div>
             </div>
 

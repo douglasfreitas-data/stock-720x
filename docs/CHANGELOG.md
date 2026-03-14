@@ -10,10 +10,13 @@ O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.
 - **Web Push Nativo (Node.js)**: Infraestrutura própria de criptografia P-256 e payload FCM, superando bloqueios nativos e descontinuados da Vercel Edge.
 - **Service Worker Nativo & cross-account RLS bypassing**: Componente `<PushNotificationPrompt />` gerencia autorizações ativas silenciosamente com VAPID no frontend conectando as WebSockets locais via Supabase.
 - **Relatório Inteligente de Reposição**: Interface iterativa para listar os SKUs críticos (<= mínimo) ou em atenção (margem até 20% acima do mínimo). Linkada no menu home e direto nos cliques de Notificação Web Push.
+- **Design System Adaptivo**: Componente de Reposição 100% migrado para o Dark Theme global da aplicação, substituindo fundos brancos estáticos por paletas suaves (`--bg-card`, `--text-muted`, `--danger`, `--warning`).
 
 ### Corrigido
 - **Cadeia de Notificação Push (Bug 16)**: Tratados simultaneamente 7 gargalos na conexão Client -> NextJS -> FCM (incluindo parsing DER e cabeçalhos de Urgency).
-- **React Hydration (Relatório)**: Condição de rendering `isMounted` estabilizada no `formatCurrency` client-side *(Nota: Deploy enviado à produção aguarda teste)*.
+- **Service Worker Cache Lock**: Implementado `skipWaiting()` e `clients.claim()` no `sw.js` para garantir que o navegador ative atualizações de interface e lógica de notificações push imediatamente, sem exigir restart da aba.
+- **React Hydration (Relatório)**: Condição de rendering `isMounted` estabilizada no `formatCurrency` client-side.
+- **JSONB Parsing de API**: Corrigido parser de nomes de produtos advindos do Nuvemshop, suportando tanto formato cru (string "Espada") quanto mapa JSON Multilanguage (`{"pt": "Espada"}`).
 
 ---
 

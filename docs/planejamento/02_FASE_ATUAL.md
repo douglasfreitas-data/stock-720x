@@ -30,7 +30,7 @@
 - [x] Criar relatório de produtos no estoque mínimo ou próximos a ele (Crítico e Atenção).
 - [x] Definir lógica de cálculo para o estoque "próximo ao mínimo" (regra: 20% acima do mínimo).
 - [x] Linkar clique da notificação Push nativa direto para a aba de relatório.
-*Nota: Componente aguardando validação visual (teste de renderização do Next.js) pelo usuário.*
+- [x] Refinamento visual: Adaptação de cores ao Dark Theme global (var(--bg-card)), remoção de emojis pesados, substituição da visualização crua pelo formato JSONB polido (Nuvemshop Sync), e ajuste tipográfico.
 
 ## 🏢 Bloco 5.3: Multi-loja
 - [ ] Estruturação (a definir requisitos)

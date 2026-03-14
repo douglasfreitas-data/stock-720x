@@ -7,8 +7,8 @@
 | Mockup/Protótipo | 18.0h | ✅ Concluído |
 | Desenvolvimento (Fase 2/3) | 38.5h | ✅ Concluído |
 | Produção & Operação F. (Fase 4) | 2.5h | ✅ Concluído |
-| Expansão (Fase 5) | 6.0h | 🔄 Em andamento |
-| **Total** | **65.0h** | - |
+| Expansão (Fase 5) | 7.5h | 🔄 Em andamento |
+| **Total** | **66.5h** | - |
 
 ---
 
@@ -85,13 +85,14 @@
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Total**: 6.0 horas
+**Total**: 7.5 horas
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
 | 13/03/2026 | 1.0h | **Incidente Vercel & Pivot**: Rollback de 10+ deploys com erro. Descontinuação Web Push → Popup In-App. Relatório de incidente, workflow `/iniciar` com pré-voo de deploy, e reorganização do roadmap. |
 | 14/03/2026 | 3.5h | **Recuperação Web Push Nativo**: Implementação do protocolo VAPID / Payloadless Push via Web Crypto API nativo (`Node.js crypto`). Bypass seguro de RLS para sincronização transparente de contas. Testes reais PWA confirmados. |
 | 14/03/2026 | 1.5h | **Relatório de Reposição & Bug Tracking**: Criação do Relatório Inteligente (<= mínimo e margem 20% p/ atenção), link notification-click, e fix de 7 bugs na cadeia do Web Push (DER parse, headers TTL, Middleware block, Hydration mismatch - este último pendente de teste). |
+| 14/03/2026 | 1.5h | **Design Review (Reposição)**: Auditoria e polimento visual da interface de alertas. Migração forçada para variáveis de Dark Theme CSS (`--bg-card`, `--text-muted`), correção de caching (`skipWaiting`) no Service Worker para atualizações instantâneas e parser robusto para dados JSONB multilinguagem do Nuvemshop (`{pt: ...}`). |
 
 ## 📊 Métricas
 

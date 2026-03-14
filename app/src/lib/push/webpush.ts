@@ -55,14 +55,19 @@ function createVapidJwt(endpoint: string, publicKey: string, privateKey: string,
     const signatureDer = sign.sign(privateKeyPem);
     
     // Normalize DER signature to raw 64 byte Buffer
-    const isZeroTolerated = signatureDer[3] === 0x00;
-    const rStart = isZeroTolerated ? 4 : 3;
-    const rLength = signatureDer[2] === 0x00 ? signatureDer[rStart - 2] - 1 : signatureDer[rStart - 1]; // Length of R
-    const r = signatureDer.subarray(rStart, rStart + rLength);
+    // DER format: 30 <totalLen> 02 <rLen> <rBytes> 02 <sLen> <sBytes>
+    let offset = 2; // skip SEQUENCE tag (0x30) + total length
+    offset += 1;    // skip INTEGER tag (0x02) for R
+    const rLen = signatureDer[offset++];
+    const rBytes = signatureDer.subarray(offset, offset + rLen);
+    offset += rLen;
+    offset += 1;    // skip INTEGER tag (0x02) for S
+    const sLen = signatureDer[offset++];
+    const sBytes = signatureDer.subarray(offset, offset + sLen);
 
-    const sStart = rStart + rLength + 2;
-    const sLength = signatureDer[sStart - 1];
-    const s = signatureDer.subarray(sStart, sStart + sLength);
+    // Strip leading zero padding from DER integers (DER adds 0x00 prefix for positive sign)
+    const r = rBytes.length > 32 ? rBytes.subarray(rBytes.length - 32) : rBytes;
+    const s = sBytes.length > 32 ? sBytes.subarray(sBytes.length - 32) : sBytes;
 
     const rawR = Buffer.alloc(32);
     const rawS = Buffer.alloc(32);

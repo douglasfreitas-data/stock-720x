@@ -9,7 +9,11 @@ export async function POST(req: Request) {
     // Basic protection: either internal check via local auth or CRON_SECRET
     const authHeader = req.headers.get('authorization');
     const isCron = process.env.CRON_SECRET && authHeader === `Bearer ${process.env.CRON_SECRET}`;
-    
+    const isInternal = authHeader === `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`;
+
+    // Allow Vercel Cron (GET without auth on free tier) or authenticated calls
+    console.log('[Push] Request received:', { method: req.method, isCron, isInternal });
+
     // Check if we have active subscriptions before doing expensive DB work
     const { count, error: countErr } = await supabaseAdmin
         .from('push_subscriptions')

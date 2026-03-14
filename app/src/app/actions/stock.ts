@@ -120,7 +120,14 @@ export async function updateStockAction(params: StockUpdateParams) {
         const currentMinStock = minStock !== undefined ? minStock : variantData.min_stock;
         if (currentMinStock && newStock <= currentMinStock) {
             const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-            fetch(`${baseUrl}/api/push/send`, { method: 'POST' }).catch(console.error);
+            console.log(`[Stock] Estoque mínimo atingido! variant=${variantId}, stock=${newStock}, min=${currentMinStock}. Disparando push...`);
+            fetch(`${baseUrl}/api/push/send`, { 
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` }
+            })
+            .then(res => res.json())
+            .then(data => console.log('[Stock] Push notification response:', data))
+            .catch(err => console.error('[Stock] Falha ao enviar push notification:', err));
         }
 
         const syncStatus = nuvemshopUpdated

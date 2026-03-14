@@ -13,9 +13,11 @@ export async function middleware(request: NextRequest) {
         '/auth/error',
         '/api/webhooks',          // Webhooks Nuvemshop
         '/api/sync',              // Cron jobs
+        '/api/push',              // Push notifications (cron + internal)
         '/_next',
         '/favicon.ico',
         '/manifest.json',
+        '/sw.js',                 // Service Worker
         '/icons/'
     ];
 

@@ -17,13 +17,14 @@
 
 ---
 
-## 🔔 Bloco 5.1: Alertas de Estoque Mínimo (Popup In-App) — PIVOTADO
-> ~~Web Push Notifications~~ → Substituído por alertas popup simples ao logar.
-- [ ] Criar componente `LowStockAlert` (modal/popup persistente ao login).
-- [ ] Criar tabela `alert_preferences` no Supabase (produto silenciado por usuário).
-- [ ] Consultar produtos com estoque ≤ mínimo na carga do dashboard.
-- [ ] Botão "Lembrar Depois" (ignora até próximo login).
-- [ ] Botão "Não avisar mais sobre este produto" (persiste no Supabase).
+## 🔔 Bloco 5.1: Alertas de Estoque Mínimo (Web Push Vercel-Safe) — CONCLUÍDO
+> Voltamos para Notificações Web Push nativas superando a limitação da Vercel.
+- [x] Criar infra nativa de criptografia P-256 (`webpush.ts`)
+- [x] Criar API routes de subscrição (`/api/push/subscribe`)
+- [x] Criar broadcast de notificação (`/api/push/send`)
+- [x] Integrar prompt visual `<PushNotificationPrompt />`
+- [x] Sincronização inteligente de subscrições e cross-account RLS bypassing
+- [x] Testes no celular (iOS/Android) e validação E2E Build
 
 ## 📊 Bloco 5.2: Relatório Inteligente de Reposição (Estoque Mínimo)
 - [ ] Criar relatório de produtos no estoque mínimo ou próximos a ele.

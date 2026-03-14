@@ -102,7 +102,7 @@ export default function ReplenishmentReport() {
                 <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Relatório de Reposição</h1>
             </div>
 
-            <p style={{ color: 'var(--text-color)', opacity: 0.8, marginBottom: '20px' }}>
+            <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
                 Acompanhe os produtos que atingiram o estoque mínimo ou que estão próximos a ele.
             </p>
 
@@ -110,14 +110,16 @@ export default function ReplenishmentReport() {
                 <h2 style={{ 
                     color: '#d32f2f', 
                     borderBottom: '2px solid #d32f2f', 
-                    paddingBottom: '10px',
+                    paddingBottom: '8px',
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
                     gap: '10px'
                 }}>
                     Ação Imediata (Crítico)
                 </h2>
-                <p style={{ fontSize: '0.9rem', marginBottom: '15px' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '15px' }}>
                     Estes produtos atingiram ou ficaram abaixo do mínimo estipulado.
                 </p>
 
@@ -143,14 +145,16 @@ export default function ReplenishmentReport() {
                 <h2 style={{ 
                     color: '#ed6c02', 
                     borderBottom: '2px solid #ed6c02', 
-                    paddingBottom: '10px',
+                    paddingBottom: '8px',
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
                     gap: '10px'
                 }}>
                     Em Observação (Atenção)
                 </h2>
-                <p style={{ fontSize: '0.9rem', marginBottom: '15px' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '15px' }}>
                     Estes produtos estão na margem de 20% acima do mínimo estipulado.
                 </p>
 

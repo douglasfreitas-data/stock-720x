@@ -26,9 +26,11 @@
 - [x] Sincronização inteligente de subscrições e cross-account RLS bypassing
 - [x] Testes no celular (iOS/Android) e validação E2E Build
 
-## 📊 Bloco 5.2: Relatório Inteligente de Reposição (Estoque Mínimo)
-- [ ] Criar relatório de produtos no estoque mínimo ou próximos a ele.
-- [ ] Definir lógica de cálculo para o estoque "próximo ao mínimo" (ex: % acima do mínimo, ou baseado na velocidade de venda recente).
+## 📊 Bloco 5.2: Relatório Inteligente de Reposição (Estoque Mínimo) — CONCLUÍDO
+- [x] Criar relatório de produtos no estoque mínimo ou próximos a ele (Crítico e Atenção).
+- [x] Definir lógica de cálculo para o estoque "próximo ao mínimo" (regra: 20% acima do mínimo).
+- [x] Linkar clique da notificação Push nativa direto para a aba de relatório.
+*Nota: Componente aguardando validação visual (teste de renderização do Next.js) pelo usuário.*
 
 ## 🏢 Bloco 5.3: Multi-loja
 - [ ] Estruturação (a definir requisitos)

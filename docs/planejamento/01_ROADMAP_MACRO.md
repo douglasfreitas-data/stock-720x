@@ -33,14 +33,16 @@
 
 ## Fase 5: Expansão 🔲
 > **Status:** EM ANDAMENTO
-- [ ] Multi-loja
-- [ ] **Notificações Push Nativas (Web Push)**
-  - Configurar Service Worker (`sw.js`) no Frontend PWA.
-  - Implementar solicitação nativa de permissão (`Notification.requestPermission()`).
-  - Gerar e configurar chaves seguras VAPID no backend.
-  - Criar tabela `push_subscriptions` atrelada aos usuários logados.
-  - Criar endpoint para envio de payloads (`api/notifications/send`).
-  - Integrar disparo visual com webhooks (ex: Nova Venda Nuvemshop).
+- [ ] **🛡️ CI/CD e Proteção de Deploy** *(Prioridade 0)*
+  - Criar branch `dev` para desenvolvimento isolado.
+  - Configurar GitHub Actions (`next build` em PRs para `main`).
+  - Tags de release para rollback facilitado.
+- [x] ~~**Notificações Push Nativas (Web Push)**~~ ❌ *Descontinuado (incompatível com Vercel/Edge)*
+- [ ] **Alertas de Estoque Mínimo (Popup In-App)** *(substitui Push)*
+  - Popup persistente ao logar avisando produtos ≤ estoque mínimo.
+  - Botão "Lembrar Depois" e "Não avisar mais sobre este produto".
+  - Tabela `alert_preferences` no Supabase.
 - [ ] **Relatório Inteligente de Reposição (Estoque Mínimo)**
   - Criar relatório de produtos no estoque mínimo ou próximos a ele.
-  - *Reflexão de Produto:* Definir lógica de cálculo para o estoque "próximo ao mínimo" (ex: % acima do mínimo, ou baseado na velocidade de venda recente).
+  - Definir lógica de cálculo para o estoque "próximo ao mínimo".
+- [ ] Multi-loja

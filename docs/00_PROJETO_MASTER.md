@@ -2,7 +2,7 @@
 
 > **Este é o único arquivo que você precisa ler para entender o estado do projeto.**
 
-**Última Atualização:** 13/03/2026
+**Última Atualização:** 13/03/2026 (Noite — Pós-Incidente)
 **Fase Atual:** Fase 5 (Expansão)
 **Status Geral:** 🟢 Em Andamento
 
@@ -28,7 +28,7 @@ O projeto **Stock 720x** é um PDV mobile-first (Next.js PWA) integrado à Nuvem
 Já completamos Fase 1 (Mockup), Fase 2 (Backend Base), Fase 3 (Polimento) e Fase 4 (Operação Física). O PWA já funciona offline, possui E2E tests, reconciliações e onboarding ativo.
 
 ### Próximo Objetivo Imediato
-Implementar sistema de **Web Push Notifications** (Bloco 5.1) com Service Worker para notificar vendas em tempo real via celular nativamente pelo PWA.
+Restaurar deploy funcional na Vercel, implementar proteção CI/CD (branch `dev` + GitHub Actions) e desenvolver **Alertas de Estoque Mínimo (Popup In-App)** como substituto do Web Push descontinuado. Ver `docs/rastreamento/INCIDENTE_VERCEL_2026-03-13.md`.
 
 ---
 

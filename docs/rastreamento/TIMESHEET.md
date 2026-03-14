@@ -7,8 +7,8 @@
 | Mockup/Protótipo | 18.0h | ✅ Concluído |
 | Desenvolvimento (Fase 2/3) | 38.5h | ✅ Concluído |
 | Produção & Operação F. (Fase 4) | 2.5h | ✅ Concluído |
-| Expansão (Fase 5) | 0.0h | 🔄 Em andamento |
-| **Total** | **59.0h** | - |
+| Expansão (Fase 5) | 1.0h | 🔄 Em andamento |
+| **Total** | **60.0h** | - |
 
 ---
 
@@ -85,11 +85,11 @@
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Total**: 0.0 horas
+**Total**: 1.0 horas
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
-| - | - | - |
+| 13/03/2026 | 1.0h | **Incidente Vercel & Pivot**: Rollback de 10+ deploys com erro. Descontinuação Web Push → Popup In-App. Relatório de incidente, workflow `/iniciar` com pré-voo de deploy, e reorganização do roadmap. |
 
 ## 📊 Métricas
 
@@ -99,4 +99,4 @@
 
 ---
 
-*Última atualização: 13/03/2026 11:21*
+*Última atualização: 13/03/2026 21:22*

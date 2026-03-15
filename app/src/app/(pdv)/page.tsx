@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { signout, getAdminStatus } from '@/app/actions/auth';
 import { getReplenishmentDataAction } from '@/app/actions/reports';
-import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key, Users } from 'lucide-react';
+import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key, Users, Activity } from 'lucide-react';
 
 export default function HomeScreen() {
     const [hasCriticalItems, setHasCriticalItems] = useState(false);
@@ -96,16 +96,27 @@ export default function HomeScreen() {
 
             {/* Alterar Senha ou Admin */}
             {isAdmin ? (
-                <Link href="/admin/users" style={{ 
-                    display: 'flex', alignItems: 'center', gap: '8px', 
-                    width: 'fit-content', margin: 'var(--space-lg) auto 0', 
-                    padding: 'var(--space-sm) var(--space-md)',
-                    borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
-                    color: 'var(--text-secondary)', textDecoration: 'none', background: 'var(--surface)'
-                }}>
-                    <Users size={16} color="var(--accent)" />
-                    <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>Gestão de Usuários</span>
-                </Link>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', margin: 'var(--space-lg) auto 0' }}>
+                    <Link href="/admin/users" style={{ 
+                        display: 'flex', alignItems: 'center', gap: '8px', 
+                        padding: 'var(--space-sm) var(--space-md)',
+                        borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
+                        color: 'var(--text-secondary)', textDecoration: 'none', background: 'var(--surface)'
+                    }}>
+                        <Users size={16} color="var(--accent)" />
+                        <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>Gestão de Usuários</span>
+                    </Link>
+                    
+                    <Link href="/admin/logs" style={{ 
+                        display: 'flex', alignItems: 'center', gap: '8px', 
+                        padding: 'var(--space-sm) var(--space-md)',
+                        borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
+                        color: 'var(--text-secondary)', textDecoration: 'none', background: 'var(--surface)'
+                    }}>
+                        <Activity size={16} color="var(--accent)" />
+                        <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>Logs do Sistema</span>
+                    </Link>
+                </div>
             ) : (
                 <Link href="/update-password" style={{ 
                     display: 'flex', alignItems: 'center', gap: '8px', 

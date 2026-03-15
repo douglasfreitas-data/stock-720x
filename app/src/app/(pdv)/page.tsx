@@ -1,11 +1,29 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { signout } from '@/app/actions/auth';
+import { getReplenishmentDataAction } from '@/app/actions/reports';
 import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key } from 'lucide-react';
 
 export default function HomeScreen() {
+    const [hasCriticalItems, setHasCriticalItems] = useState(false);
+
+    useEffect(() => {
+        async function checkCriticalStock() {
+            try {
+                const result = await getReplenishmentDataAction();
+                if (result.success && result.data) {
+                    const criticalCount = result.data.filter((variant: any) => variant.stock <= variant.min_stock).length;
+                    setHasCriticalItems(criticalCount > 0);
+                }
+            } catch (err) {
+                console.error("Erro ao verificar estoque crítico na home:", err);
+            }
+        }
+        checkCriticalStock();
+    }, []);
+
     return (
         <div className="home-screen">
             <div className="menu-grid">
@@ -55,9 +73,9 @@ export default function HomeScreen() {
                 </Link>
 
                 {/* Reposição */}
-                <Link href="/reports/replenishment" className="menu-card decoration-none" style={{ borderBottom: '4px solid #ed6c02' }}>
+                <Link href="/reports/replenishment" className="menu-card decoration-none" style={{ borderBottom: hasCriticalItems ? '4px solid #ed6c02' : '1px solid var(--border-color)' }}>
                     <div className="menu-card-row">
-                        <AlertTriangle className="menu-card-icon" size={36} color="#ed6c02" />
+                        <AlertTriangle className="menu-card-icon" size={36} color={hasCriticalItems ? "#ed6c02" : "var(--accent)"} />
                         <h2 className="menu-card-title">Reposição</h2>
                     </div>
                     <p className="menu-card-subtitle">Estoque crítico</p>

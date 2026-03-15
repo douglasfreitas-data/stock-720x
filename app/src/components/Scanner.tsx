@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
+import { Camera } from 'lucide-react';
 
 interface ScannerProps {
     onScan: (decodedText: string) => void;
@@ -166,7 +167,9 @@ export default function Scanner({ onScan, onError }: ScannerProps) {
                                 boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
                             }}
                         >
-                            📷 Ativar Câmera
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <Camera size={24} /> Ativar Câmera
+                            </div>
                         </button>
                     </div>
                 )}

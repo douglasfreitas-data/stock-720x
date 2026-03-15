@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getReplenishmentDataAction } from '@/app/actions/reports';
-import { Package } from 'lucide-react';
+import { Package, ArrowLeft } from 'lucide-react';
 
 function formatCurrency(value: number | null | undefined) {
     if (value === null || value === undefined) return '';
@@ -94,15 +94,15 @@ export default function ReplenishmentReport() {
     }
 
     return (
-        <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', gap: '15px' }}>
-                <Link href="/" style={{ fontSize: '1.5rem', textDecoration: 'none', color: 'var(--text-primary)' }}>
-                    ←
-                </Link>
-                <h1 style={{ margin: 0, fontSize: '1.5rem' }}>Relatório de Reposição</h1>
+        <div className="modal-overlay">
+            <div className="modal-header">
+                <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
+                <h3 className="modal-title">Relatório de Reposição</h3>
+                <div style={{ width: 40 }}></div>
             </div>
 
-            <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
+            <div className="modal-body" style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '20px' }}>
                 Acompanhe os produtos que atingiram o estoque mínimo ou que estão próximos a ele.
             </p>
 
@@ -175,6 +175,7 @@ export default function ReplenishmentReport() {
                     </div>
                 )}
             </section>
+            </div>
         </div>
     );
 }

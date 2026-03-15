@@ -6,21 +6,22 @@ import { processSessionAction } from '@/app/actions/session';
 import { useCart } from '@/components/providers/CartProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 import { useOnlineStatus } from '@/components/providers/OnlineStatusProvider';
+import { Smartphone, CreditCard, Banknote, FileText, ClipboardList, ShoppingCart, Building2, Gift, Scale, ArrowLeft, Check } from 'lucide-react';
 
 const paymentMethods = [
-    { id: 'pix', icon: '📱', label: 'PIX' },
-    { id: 'credit', icon: '💳', label: 'Crédito' },
-    { id: 'debit', icon: '💳', label: 'Débito' },
-    { id: 'cash', icon: '💵', label: 'Dinheiro' },
-    { id: 'boleto', icon: '📄', label: 'Boleto' },
-    { id: 'other', icon: '📋', label: 'Outro' }
+    { id: 'pix', icon: <Smartphone size={24} />, label: 'PIX' },
+    { id: 'credit', icon: <CreditCard size={24} />, label: 'Crédito' },
+    { id: 'debit', icon: <CreditCard size={24} />, label: 'Débito' },
+    { id: 'cash', icon: <Banknote size={24} />, label: 'Dinheiro' },
+    { id: 'boleto', icon: <FileText size={24} />, label: 'Boleto' },
+    { id: 'other', icon: <ClipboardList size={24} />, label: 'Outro' }
 ];
 
 const operations = [
-    { id: 'venda', icon: '🛒', label: 'Venda ao Consumidor' },
-    { id: 'consumo', icon: '🏢', label: 'Consumo Interno' },
-    { id: 'doacao', icon: '🎁', label: 'Doação' },
-    { id: 'pregao', icon: '⚖️', label: 'Saída para Pregão' }
+    { id: 'venda', icon: <ShoppingCart size={24} />, label: 'Venda ao Consumidor' },
+    { id: 'consumo', icon: <Building2 size={24} />, label: 'Consumo Interno' },
+    { id: 'doacao', icon: <Gift size={24} />, label: 'Doação' },
+    { id: 'pregao', icon: <Scale size={24} />, label: 'Saída para Pregão' }
 ];
 
 export default function CheckoutPage() {
@@ -88,7 +89,7 @@ export default function CheckoutPage() {
     return (
         <div className="modal-overlay">
             <div className="modal-header">
-                <button onClick={() => router.back()} className="modal-close">←</button>
+                <button onClick={() => router.back()} className="modal-close"><ArrowLeft size={24} /></button>
                 <h3 className="modal-title">Finalizar Operação</h3>
                 <div style={{ width: 40 }}></div>
             </div>
@@ -168,7 +169,11 @@ export default function CheckoutPage() {
                     onClick={handleConfirmSale}
                     disabled={isProcessing || !isOnline}
                 >
-                    {!isOnline ? '📡 Sem conexão' : isProcessing ? 'Processando...' : '✓ Confirmar'}
+                    {!isOnline ? '📡 Sem conexão' : isProcessing ? 'Processando...' : (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <Check size={20} /> Confirmar
+                        </div>
+                    )}
                 </button>
             </div>
         </div>

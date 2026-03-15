@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCart } from '@/components/providers/CartProvider';
 import { useToast } from '@/components/providers/ToastProvider';
+import { ArrowLeft, ShoppingCart, Camera, Trash2, Plus, Minus } from 'lucide-react';
 
 export default function CartPage() {
     const router = useRouter();
@@ -25,16 +26,16 @@ export default function CartPage() {
         return (
             <div className="modal-overlay">
                 <div className="modal-header">
-                    <Link href="/" className="modal-close">←</Link>
-                    <h3 className="modal-title">🛒 Carrinho</h3>
+                    <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
+                    <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><ShoppingCart size={20} /> Carrinho</h3>
                     <div style={{ width: 40 }}></div>
                 </div>
                 <div className="modal-body">
                     <div className="cart-empty">
-                        <div className="cart-empty-icon">🛒</div>
+                        <div className="cart-empty-icon" style={{ display: 'flex', justifyContent: 'center' }}><ShoppingCart size={48} /></div>
                         <p className="cart-empty-text">Carrinho vazio</p>
-                        <button className="btn-scan-more" onClick={() => router.push('/scan?mode=sale')}>
-                            📷 Escanear Produto
+                        <button className="btn-scan-more" onClick={() => router.push('/scan?mode=sale')} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <Camera size={20} /> Escanear Produto
                         </button>
                     </div>
                 </div>
@@ -45,8 +46,8 @@ export default function CartPage() {
     return (
         <div className="modal-overlay">
             <div className="modal-header">
-                <Link href="/" className="modal-close">←</Link>
-                <h3 className="modal-title">🛒 Carrinho</h3>
+                <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
+                <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><ShoppingCart size={20} /> Carrinho</h3>
                 <button onClick={clearCart} className="text-sm text-red-500">Limpar</button>
             </div>
 
@@ -80,7 +81,7 @@ export default function CartPage() {
                                             onClick={() => updateCartQuantity(item.productId, Math.max(1, item.quantity - 1))}
                                             disabled={item.quantity <= 1}
                                         >
-                                            −
+                                            <Minus size={16} />
                                         </button>
                                         <span className="cart-qty-value">{item.quantity}</span>
                                         <button
@@ -88,14 +89,14 @@ export default function CartPage() {
                                             onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
                                             disabled={item.quantity >= (item.product?.stock ?? 9999)}
                                         >
-                                            +
+                                            <Plus size={16} />
                                         </button>
                                     </div>
                                     <button
                                         className="cart-item-remove"
                                         onClick={() => removeFromCart(item.productId)}
                                     >
-                                        🗑️
+                                        <Trash2 size={20} />
                                     </button>
                                 </div>
                             </div>
@@ -107,9 +108,9 @@ export default function CartPage() {
                 <button
                     className="btn-scan-more"
                     onClick={() => router.push('/scan?mode=sale')}
-                    style={{ marginBottom: '24px' }}
+                    style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
                 >
-                    ➕ Escanear Mais Produtos
+                    <Plus size={20} /> Escanear Mais Produtos
                 </button>
 
                 {/* Order Summary */}

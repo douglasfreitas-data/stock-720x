@@ -9,6 +9,7 @@ import { useToast } from '@/components/providers/ToastProvider';
 import { useOnlineStatus } from '@/components/providers/OnlineStatusProvider';
 import { Product, CartItem } from '@/lib/types';
 import Link from 'next/link';
+import { ArrowLeft, Package, Edit2, Plus, Minus, Trash2 } from 'lucide-react';
 
 // Operações de entrada
 const operations = [
@@ -199,7 +200,7 @@ function EntryContent() {
         <div className="modal-overlay">
             {/* Header */}
             <div className="modal-header">
-                <Link href="/" className="modal-close">←</Link>
+                <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
                 <h3 className="modal-title">Entrada de Estoque</h3>
                 <div style={{ width: 40, textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                     {totalItems > 0 && totalItems}
@@ -243,7 +244,7 @@ function EntryContent() {
                     <label className="form-label">Itens na Sessão ({items.length})</label>
                     {items.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: 'var(--space-xl)', color: 'var(--text-muted)', opacity: 0.5 }}>
-                            <div style={{ fontSize: '3rem', marginBottom: 'var(--space-sm)' }}>📦</div>
+                            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-sm)' }}><Package size={48} /></div>
                             <p>Nenhum item adicionado</p>
                         </div>
                     ) : (
@@ -294,7 +295,7 @@ function EntryContent() {
                                         color: 'var(--text-muted)',
                                         flexShrink: 0,
                                     }}>
-                                        ✏️
+                                        <Edit2 size={16} />
                                     </span>
                                 </div>
                             ))}
@@ -513,7 +514,7 @@ function EntryContent() {
                                     fontWeight: 600,
                                     cursor: 'pointer'
                                 }}
-                            >🗑️ Remover</button>
+                            ><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><Trash2 size={18} /> Remover</div></button>
                             <button
                                 onClick={() => setEditingItem(null)}
                                 style={{

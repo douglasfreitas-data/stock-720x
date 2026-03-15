@@ -4,6 +4,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { getStockSessionsAction } from '@/app/actions/reports';
 import jsPDF from 'jspdf';
+import { ArrowLeft, BarChart2, FileDown, ArrowDownToLine, ArrowUpFromLine, ChevronDown, ChevronRight } from 'lucide-react';
 
 // ── Types ──
 interface StockMovement {
@@ -174,44 +175,30 @@ export default function ReportsPage() {
     };
 
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100vh',
-            background: 'var(--bg-primary)',
-            color: 'var(--text-primary)',
-        }}>
+        <div className="modal-overlay">
             {/* ── Header ── */}
-            <header style={{
-                padding: 'var(--space-md)',
-                background: 'var(--bg-card)',
-                borderBottom: '1px solid var(--border-color)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                position: 'sticky',
-                top: 0,
-                zIndex: 10,
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <Link href="/" style={{ fontSize: '1.5rem', textDecoration: 'none' }}>←</Link>
-                    <h1 style={{ fontSize: '1.1rem', fontWeight: 700 }}>📊 Relatórios</h1>
+            <div className="modal-header">
+                <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
+                <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><BarChart2 size={20} /> Relatórios</h3>
+                <div style={{ paddingRight: '0px' }}>
+                    <button
+                        onClick={exportPDF}
+                        style={{
+                            padding: '6px 14px',
+                            background: 'var(--bg-secondary)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius-sm)',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.8rem',
+                            cursor: 'pointer',
+                        }}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FileDown size={14} /> PDF</div>
+                    </button>
                 </div>
-                <button
-                    onClick={exportPDF}
-                    style={{
-                        padding: '6px 14px',
-                        background: 'var(--bg-secondary)',
-                        border: '1px solid var(--border-color)',
-                        borderRadius: 'var(--radius-sm)',
-                        color: 'var(--text-primary)',
-                        fontSize: '0.8rem',
-                        cursor: 'pointer',
-                    }}
-                >
-                    📄 PDF
-                </button>
-            </header>
+            </div>
+
+            <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', padding: 0 }}>
 
             {/* ── Tabs ── */}
             <div style={{
@@ -240,7 +227,7 @@ export default function ReportsPage() {
                         transition: 'var(--transition-fast)',
                     }}
                 >
-                    📥 Entradas
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><ArrowDownToLine size={16} /> Entradas</div>
                 </button>
                 <button
                     onClick={() => setActiveTab('saida')}
@@ -260,7 +247,7 @@ export default function ReportsPage() {
                         transition: 'var(--transition-fast)',
                     }}
                 >
-                    📤 Saídas
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><ArrowUpFromLine size={16} /> Saídas</div>
                 </button>
             </div>
 
@@ -278,7 +265,9 @@ export default function ReportsPage() {
                     textAlign: 'left',
                 }}
             >
-                {showFilters ? '▼ Ocultar Filtros' : '▶ Filtros & Busca'}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    {showFilters ? <ChevronDown size={14} /> : <ChevronRight size={14} />} {showFilters ? 'Ocultar Filtros' : 'Filtros & Busca'}
+                </div>
                 {(dateFrom || dateTo || operation || productSearch) && (
                     <span style={{
                         marginLeft: 8,
@@ -368,7 +357,7 @@ export default function ReportsPage() {
                         type="text"
                         value={productSearch}
                         onChange={e => setProductSearch(e.target.value)}
-                        placeholder="🔍 Buscar por produto ou SKU..."
+                        placeholder="Buscar por produto ou SKU..."
                         style={{
                             padding: '8px 10px',
                             background: 'var(--bg-card)',
@@ -420,7 +409,7 @@ export default function ReportsPage() {
                 ) : filteredSessions.length === 0 ? (
                     <div style={{ textAlign: 'center', paddingTop: '80px', opacity: 0.5 }}>
                         <div style={{ fontSize: '2.5rem', marginBottom: 12 }}>
-                            {activeTab === 'entrada' ? '📥' : '📤'}
+                            {activeTab === 'entrada' ? <ArrowDownToLine size={48} /> : <ArrowUpFromLine size={48} />}
                         </div>
                         <div style={{ fontSize: '0.95rem' }}>
                             Nenhuma {activeTab === 'entrada' ? 'entrada' : 'saída'} encontrada
@@ -563,6 +552,7 @@ export default function ReportsPage() {
                         </div>
                     </>
                 )}
+            </div>
             </div>
         </div>
     );

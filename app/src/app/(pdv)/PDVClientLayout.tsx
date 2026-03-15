@@ -8,12 +8,14 @@ import { OnlineStatusProvider } from '@/components/providers/OnlineStatusProvide
 import OfflineBanner from '@/components/OfflineBanner';
 import PushNotificationPrompt from '@/components/PushNotificationPrompt';
 
+import { ShoppingCart } from 'lucide-react';
+
 function HeaderCartButton() {
     const { cartCount } = useCart();
     return (
         <div className="header-menu">
-            <Link href="/cart" style={{ position: 'relative', fontSize: '1.5rem', color: 'white', textDecoration: 'none' }}>
-                🛒
+            <Link href="/cart" style={{ position: 'relative', display: 'flex', alignItems: 'center', color: 'white', textDecoration: 'none' }}>
+                <ShoppingCart size={24} />
                 {cartCount > 0 && (
                     <span style={{
                         position: 'absolute', top: '-6px', right: '-10px',

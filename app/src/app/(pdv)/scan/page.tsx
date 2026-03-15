@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useCart } from '@/components/providers/CartProvider';
 import { useToast } from '@/components/providers/ToastProvider';
 import { Product } from '@/lib/types';
+import { ArrowLeft, ShoppingCart } from 'lucide-react';
 
 async function fetchProductByBarcode(barcode: string): Promise<Product | null> {
     const res = await fetch(`/api/products/barcode?code=${encodeURIComponent(barcode)}`);
@@ -78,11 +79,11 @@ function ScanContent() {
     return (
         <div className="modal-overlay">
             <div className="modal-header">
-                <Link href="/" className="modal-close">←</Link>
+                <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
                 <h3 className="modal-title">{title}</h3>
                 {mode === 'sale' && cartCount > 0 ? (
-                    <Link href="/cart" className="cart-header-btn">
-                        🛒
+                    <Link href="/cart" className="cart-header-btn" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <ShoppingCart size={20} />
                         <span className="cart-badge">{cartCount}</span>
                     </Link>
                 ) : (
@@ -113,8 +114,8 @@ function ScanContent() {
 
                 {mode === 'sale' && cartCount > 0 && !isLoading && (
                     <div style={{ padding: '24px 16px', marginTop: 'auto', textAlign: 'center' }}>
-                        <Link href="/cart" className="btn-view-cart" style={{ margin: '0 auto', maxWidth: '320px' }}>
-                            🛒 Ver Carrinho ({cartCount} {cartCount === 1 ? 'item' : 'itens'})
+                        <Link href="/cart" className="btn-view-cart" style={{ margin: '0 auto', maxWidth: '320px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <ShoppingCart size={20} /> Ver Carrinho ({cartCount} {cartCount === 1 ? 'item' : 'itens'})
                         </Link>
                     </div>
                 )}

@@ -1,0 +1,3 @@
+Comando 'pnpm' não encontrado, você quis dizer:
+  comando 'npm' do deb npm (9.2.0~ds1-2)
+Experimente: sudo apt install <deb name>

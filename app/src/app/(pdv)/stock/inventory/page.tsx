@@ -7,6 +7,7 @@ import { updateStockAction } from '@/app/actions/stock';
 import { useToast } from '@/components/providers/ToastProvider';
 import { Product } from '@/lib/types';
 import Link from 'next/link';
+import { ArrowLeft, ClipboardList, Check } from 'lucide-react';
 
 // Motivos de ajuste de inventário
 const adjustReasons = [
@@ -157,8 +158,8 @@ function InventoryContent() {
     return (
         <div className="modal-overlay">
             <div className="modal-header">
-                <Link href="/" className="modal-close">←</Link>
-                <h3 className="modal-title">📋 Inventário</h3>
+                <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
+                <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><ClipboardList size={20} /> Inventário</h3>
                 <div style={{ width: 40 }}></div>
             </div>
 
@@ -300,7 +301,11 @@ function InventoryContent() {
                                 disabled={isProcessing}
                                 style={{ flex: 2, marginTop: 0 }}
                             >
-                                {isProcessing ? 'Salvando...' : '✓ Confirmar Ajuste'}
+                                {isProcessing ? 'Salvando...' : (
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                        <Check size={20} /> Confirmar Ajuste
+                                    </div>
+                                )}
                             </button>
                         </div>
                     </div>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getNuvemshopClient } from '@/lib/nuvemshop/server';
 import { NuvemshopProduct } from '@/lib/nuvemshop/api';
 import PrintQRClient from './PrintQRClient';
+import { ArrowLeft, QrCode } from 'lucide-react';
 
 export default async function PrintQRPage() {
     const client = await getNuvemshopClient();
@@ -26,12 +27,12 @@ export default async function PrintQRPage() {
     }
 
     return (
-        <div className="products-screen p-4">
-            <header className="flex items-center gap-3 mb-6">
-                <Link href="/products" className="text-gray-400 hover:text-white transition-colors">← Voltar</Link>
-                <h1 className="text-xl font-bold text-white">🏷️ Imprimir QR Code</h1>
-            </header>
-
+        <div className="modal-overlay">
+            <div className="modal-header">
+                <Link href="/products" className="modal-close"><ArrowLeft size={24} /></Link>
+                <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><QrCode size={20} /> Imprimir QR Code</h3>
+                <div style={{ width: 40 }}></div>
+            </div>
             <PrintQRClient products={products} />
         </div>
     );

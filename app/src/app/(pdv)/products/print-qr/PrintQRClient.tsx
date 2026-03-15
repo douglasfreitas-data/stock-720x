@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
 import { jsPDF } from 'jspdf';
+import { FileText, Loader } from 'lucide-react';
 
 interface NuvemshopProduct {
     id: number;
@@ -163,7 +164,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
             </p>
 
             <button className="btn-confirm" onClick={generatePDF} disabled={generatingPdf} style={{ marginBottom: '24px' }}>
-                {generatingPdf ? '⏳ Gerando PDF...' : '📄 Gerar PDF para Impressão'}
+                {generatingPdf ? (<><Loader size={16} className="animate-spin" style={{ display: 'inline' }} /> Gerando PDF...</>) : (<><FileText size={16} style={{ display: 'inline' }} /> Gerar PDF para Impressão</>)}
             </button>
 
             <h4 className="print-preview-title">Prévia ({productsForQR.length} produtos)</h4>
@@ -180,7 +181,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                             {qrCodes[product.id] ? (
                                 <img src={qrCodes[product.id]} alt="QR" className="qr-preview" />
                             ) : (
-                                <div className="qr-loading">⏳</div>
+                                <div className="qr-loading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Loader size={16} /></div>
                             )}
                         </div>
                     </div>

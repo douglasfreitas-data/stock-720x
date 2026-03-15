@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
+import { Package, ArrowLeft } from 'lucide-react';
 
 interface NuvemshopProduct {
     id: number;
@@ -65,7 +66,7 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                                 <div className="product-list-info">
                                     <h3 className="product-list-name">{productName}</h3>
                                     <p className="product-list-sku">SKU: {sku}</p>
-                                    <p className="product-list-stock">📦 {totalStock} em estoque</p>
+                                    <p className="product-list-stock" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Package size={14} /> {totalStock} em estoque</p>
                                 </div>
                             </div>
                         );
@@ -77,7 +78,7 @@ export default function ProductListClient({ products }: ProductListClientProps) 
             {selectedProduct && (
                 <div className="modal-overlay" onClick={() => setSelectedProduct(null)}>
                     <div className="modal-header">
-                        <button onClick={() => setSelectedProduct(null)} className="modal-close">←</button>
+                        <button onClick={() => setSelectedProduct(null)} className="modal-close"><ArrowLeft size={24} /></button>
                         <h3 className="modal-title">Detalhes do Produto</h3>
                         <div style={{ width: 40 }}></div>
                     </div>
@@ -109,8 +110,8 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: 'var(--space-xs)' }}>
                                 Barcode: {selectedProduct.barcode}
                             </p>
-                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                                📦 {selectedProduct.totalStock} em estoque
+                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <Package size={14} /> {selectedProduct.totalStock} em estoque
                             </p>
                         </div>
 

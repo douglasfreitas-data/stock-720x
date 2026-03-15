@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getNuvemshopClient } from '@/lib/nuvemshop/server';
 import { NuvemshopProduct } from '@/lib/nuvemshop/api';
 import ProductListClient from './ProductListClient';
+import { ArrowLeft, ClipboardList } from 'lucide-react';
 
 export default async function ProductList() {
     const client = await getNuvemshopClient();
@@ -26,14 +27,12 @@ export default async function ProductList() {
     }
 
     return (
-        <div className="products-screen p-4">
-            <header className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                    <Link href="/products" className="text-gray-400 hover:text-white transition-colors">← Voltar</Link>
-                    <h1 className="text-xl font-bold text-white">📋 Lista de Produtos</h1>
-                </div>
-            </header>
-
+        <div className="modal-overlay">
+            <div className="modal-header">
+                <Link href="/products" className="modal-close"><ArrowLeft size={24} /></Link>
+                <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><ClipboardList size={20} /> Lista de Produtos</h3>
+                <div style={{ width: 40 }}></div>
+            </div>
             <ProductListClient products={products} />
         </div>
     );

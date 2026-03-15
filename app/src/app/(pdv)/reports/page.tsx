@@ -32,7 +32,8 @@ interface StockSession {
 
 // ── Labels ──
 const OPERATION_LABELS: Record<string, string> = {
-    venda: 'Venda',
+    venda: 'Venda (App)',
+    venda_online: 'Venda (Loja Online)',
     compra: 'Compra',
     devolucao: 'Devolução',
     consumo: 'Uso Interno',

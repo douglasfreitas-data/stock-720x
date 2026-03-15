@@ -50,6 +50,22 @@ export async function POST(request: NextRequest) {
             // O estoque na NS já foi decrementado automaticamente
             // Aqui precisamos atualizar nosso cache local se tivermos um
 
+            // Criar uma sessão de estoque para registrar a venda online
+            const { data: session, error: sessionError } = await supabaseAdmin
+                .from('stock_sessions')
+                .insert({
+                    type: 'saida',
+                    operation: 'venda_online',
+                    status: 'closed',
+                    notes: `Pedido Nuvemshop #${body.number}`
+                })
+                .select('id')
+                .single();
+
+            if (sessionError) {
+                console.error('Falha ao criar sessão de estoque para venda online:', sessionError);
+            }
+
             for (const product of body.products || []) {
                 console.log(`  - Produto ${product.product_id}: -${product.quantity} unidades (variante ${product.variant_id})`);
                 
@@ -77,6 +93,21 @@ export async function POST(request: NextRequest) {
                     console.error(`    ↳ Falha ao dar baixa de estoque na variante ${variant.id}:`, updateError);
                 } else {
                     console.log(`    ↳ Estoque atualizado no Supabase: antes ${variant.stock} -> agora ${newStock}`);
+                    
+                    // 3. Registrar movimentação de estoque
+                    if (session?.id) {
+                        const { error: movError } = await supabaseAdmin
+                            .from('stock_movements')
+                            .insert({
+                                session_id: session.id,
+                                variant_id: variant.id,
+                                quantity: -product.quantity,
+                                old_stock: variant.stock || 0,
+                                new_stock: newStock,
+                            });
+                        if (movError) console.error(`    ↳ Falha ao registrar movimento de estoque:`, movError);
+                    }
+
                     if (variant.min_stock && newStock <= variant.min_stock) {
                         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
                         fetch(`${baseUrl}/api/push/send`, { method: 'POST' }).catch(console.error);

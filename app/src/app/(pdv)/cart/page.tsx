@@ -90,7 +90,6 @@ export default function CartPage() {
                                         <button
                                             className="cart-item-remove"
                                             onClick={() => removeFromCart(item.productId)}
-                                            style={{ marginLeft: 'auto' }}
                                         >
                                             <Trash2 size={18} />
                                         </button>

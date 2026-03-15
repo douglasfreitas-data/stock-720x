@@ -106,3 +106,12 @@ export async function updatePassword(formData: FormData) {
 
     return { success: true };
 }
+
+/**
+ * Verifica se o usuário logado é o administrador
+ */
+export async function getAdminStatus() {
+    const supabase = await createSupabaseServer();
+    const { data: { user } } = await supabase.auth.getUser();
+    return user?.email === process.env.ADMIN_EMAIL;
+}

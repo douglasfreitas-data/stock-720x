@@ -8,7 +8,6 @@ export async function middleware(request: NextRequest) {
     // Rotas públicas que NÃO precisam de autenticação
     const publicPaths = [
         '/login',
-        '/register',
         '/api/auth',              // OAuth Nuvemshop
         '/auth/error',
         '/api/webhooks',          // Webhooks Nuvemshop

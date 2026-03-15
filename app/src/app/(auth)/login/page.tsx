@@ -110,12 +110,6 @@ function LoginForm() {
                     >
                         {isLoading ? 'Entrando...' : 'Entrar'}
                     </button>
-
-                    <div style={{ textAlign: 'center', marginTop: '12px' }}>
-                        <Link href="/register" style={{ color: 'var(--accent)', fontSize: '0.9rem', textDecoration: 'none' }}>
-                            Não tem uma conta? <strong>Cadastre-se</strong>
-                        </Link>
-                    </div>
                 </form>
             </div>
         </div>

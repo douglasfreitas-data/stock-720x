@@ -2,12 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { signout } from '@/app/actions/auth';
+import { signout, getAdminStatus } from '@/app/actions/auth';
 import { getReplenishmentDataAction } from '@/app/actions/reports';
-import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key } from 'lucide-react';
+import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key, Users } from 'lucide-react';
 
 export default function HomeScreen() {
     const [hasCriticalItems, setHasCriticalItems] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         async function checkCriticalStock() {
@@ -21,7 +22,18 @@ export default function HomeScreen() {
                 console.error("Erro ao verificar estoque crítico na home:", err);
             }
         }
+        
+        async function loadAdminStatus() {
+            try {
+                const status = await getAdminStatus();
+                setIsAdmin(status);
+            } catch (err) {
+                console.error("Erro ao verificar status de admin:", err);
+            }
+        }
+
         checkCriticalStock();
+        loadAdminStatus();
     }, []);
 
     return (
@@ -82,17 +94,30 @@ export default function HomeScreen() {
                 </Link>
             </div>
 
-            {/* Alterar Senha */}
-            <Link href="/update-password" style={{ 
-                display: 'flex', alignItems: 'center', gap: '8px', 
-                width: 'fit-content', margin: 'var(--space-lg) auto 0', 
-                padding: 'var(--space-sm) var(--space-md)',
-                borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
-                color: 'var(--text-secondary)', textDecoration: 'none'
-            }}>
-                <Key size={16} />
-                <span style={{ fontSize: '0.85rem' }}>Alterar Senha</span>
-            </Link>
+            {/* Alterar Senha ou Admin */}
+            {isAdmin ? (
+                <Link href="/admin/users" style={{ 
+                    display: 'flex', alignItems: 'center', gap: '8px', 
+                    width: 'fit-content', margin: 'var(--space-lg) auto 0', 
+                    padding: 'var(--space-sm) var(--space-md)',
+                    borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
+                    color: 'var(--text-secondary)', textDecoration: 'none', background: 'var(--surface)'
+                }}>
+                    <Users size={16} color="var(--accent)" />
+                    <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>Gestão de Usuários</span>
+                </Link>
+            ) : (
+                <Link href="/update-password" style={{ 
+                    display: 'flex', alignItems: 'center', gap: '8px', 
+                    width: 'fit-content', margin: 'var(--space-lg) auto 0', 
+                    padding: 'var(--space-sm) var(--space-md)',
+                    borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
+                    color: 'var(--text-secondary)', textDecoration: 'none'
+                }}>
+                    <Key size={16} />
+                    <span style={{ fontSize: '0.85rem' }}>Alterar Senha</span>
+                </Link>
+            )}
 
             {/* Sair */}
             <form action={signout}>

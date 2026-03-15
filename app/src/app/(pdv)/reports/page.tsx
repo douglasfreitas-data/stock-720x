@@ -457,7 +457,7 @@ export default function ReportsPage() {
                         </div>
 
                         {/* ── Session List ── */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             {filteredSessions.map(session => (
                                 <div key={session.id} style={{
                                     background: 'var(--bg-card)',
@@ -467,7 +467,7 @@ export default function ReportsPage() {
                                 }}>
                                     {/* Session header */}
                                     <div style={{
-                                        padding: '10px 14px',
+                                        padding: '6px 10px',
                                         borderBottom: '1px solid var(--border-color)',
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -492,13 +492,13 @@ export default function ReportsPage() {
                                     </div>
 
                                     {/* Movement items */}
-                                    <div style={{ padding: '6px 10px' }}>
+                                    <div style={{ padding: '2px 10px' }}>
                                         {session.stock_movements?.map(mov => (
                                             <div key={mov.id} style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
-                                                padding: '8px 4px',
+                                                padding: '4px 0',
                                                 borderBottom: '1px solid var(--border-color)',
                                             }}>
                                                 <div style={{ flex: 1, minWidth: 0, paddingRight: 10 }}>
@@ -511,9 +511,6 @@ export default function ReportsPage() {
                                                     }}>
                                                         {getProductName(mov)}
                                                     </div>
-                                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                                                        SKU: {mov.product_variants?.sku || 'N/A'}
-                                                    </div>
                                                 </div>
                                                 <div style={{ textAlign: 'right', flexShrink: 0 }}>
                                                     <div style={{
@@ -524,13 +521,6 @@ export default function ReportsPage() {
                                                     }}>
                                                         {mov.quantity > 0 ? '+' : ''}{mov.quantity}
                                                     </div>
-                                                    <div style={{
-                                                        fontSize: '0.7rem',
-                                                        color: 'var(--text-muted)',
-                                                        fontFamily: 'monospace',
-                                                    }}>
-                                                        {mov.old_stock} → {mov.new_stock}
-                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
@@ -539,8 +529,8 @@ export default function ReportsPage() {
                                     {/* Notes */}
                                     {session.notes && (
                                         <div style={{
-                                            padding: '8px 14px',
-                                            borderTop: '1px solid var(--border-color)',
+                                            padding: '6px 10px',
+                                            borderTop: '0px solid var(--border-color)',
                                             fontSize: '0.75rem',
                                             color: 'var(--text-muted)',
                                             fontStyle: 'italic',

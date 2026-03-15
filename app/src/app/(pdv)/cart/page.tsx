@@ -69,7 +69,7 @@ export default function CartPage() {
                                 />
                                 <div className="cart-item-info" style={{ flex: 1 }}>
                                     <h4 className="cart-item-name">{productName}</h4>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '16px' }}>
                                         <div className="cart-qty-controls">
                                             <button
                                                 className="cart-qty-btn"

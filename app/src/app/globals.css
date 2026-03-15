@@ -1026,8 +1026,13 @@ a {
   border: none;
   font-size: 1rem;
   cursor: pointer;
-  opacity: 0.5;
+  color: var(--danger);
+  opacity: 0.7;
   transition: var(--transition-fast);
+  padding: var(--space-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cart-item-remove:hover {

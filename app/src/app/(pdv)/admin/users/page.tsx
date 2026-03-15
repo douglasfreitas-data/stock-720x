@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Users, Plus, ShieldAlert } from 'lucide-react';
-import { listUsersAction, createUserAction } from '@/app/actions/admin';
+import { ArrowLeft, Users, Plus, ShieldAlert, Trash2 } from 'lucide-react';
+import { listUsersAction, createUserAction, deleteUserAction } from '@/app/actions/admin';
 import { useToast } from '@/components/providers/ToastProvider';
 
 interface User {
@@ -65,6 +65,22 @@ function AdminUsersContent() {
         setIsCreating(false);
     };
 
+    const handleDeleteUser = async (userId: string, email: string) => {
+        if (!window.confirm(`Tem certeza que deseja excluir o usuário ${email}? Esta ação não pode ser desfeita e removerá o acesso ao sistema.`)) {
+            return;
+        }
+
+        setIsLoading(true);
+        const result = await deleteUserAction(userId);
+        if (result.error) {
+            showToast(result.error, 'error');
+            setIsLoading(false);
+        } else {
+            showToast('Usuário excluído com sucesso.', 'success');
+            loadUsers(); // refresh
+        }
+    };
+
     return (
         <div className="modal-overlay">
             <div className="modal-header">
@@ -110,6 +126,22 @@ function AdminUsersContent() {
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                         <h4 style={{ margin: 0, fontSize: '1rem', color: 'var(--text-primary)' }}>{user.email}</h4>
+                                        <button 
+                                            onClick={() => handleDeleteUser(user.id, user.email || 'Desconhecido')}
+                                            style={{ 
+                                                background: 'transparent', 
+                                                border: 'none', 
+                                                color: 'var(--danger)', 
+                                                cursor: 'pointer',
+                                                padding: '4px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center'
+                                            }}
+                                            title="Excluir Usuário"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                                         <span>Criado em: {new Date(user.createdAt).toLocaleDateString()}</span>

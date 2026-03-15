@@ -83,3 +83,32 @@ export async function createUserAction(formData: FormData) {
         return { error: error.message };
     }
 }
+
+export async function deleteUserAction(userId: string) {
+    try {
+        const supabaseAdmin = await verifyAdminAccess();
+
+        // Security check: we probably shouldn't let the admin delete themselves
+        // Let's get the user to check their email first, or just try to delete
+        const { data: { user }, error: fetchError } = await supabaseAdmin.auth.admin.getUserById(userId);
+        
+        if (fetchError || !user) {
+            return { error: 'Usuário não encontrado.' };
+        }
+
+        if (user.email === process.env.ADMIN_EMAIL) {
+            return { error: 'Você não pode excluir a conta de administrador principal.' };
+        }
+
+        const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+
+        if (error) {
+            console.error('Error deleting user:', error);
+            return { error: 'Falha ao excluir o usuário.' };
+        }
+
+        return { success: true };
+    } catch (error: any) {
+        return { error: error.message };
+    }
+}

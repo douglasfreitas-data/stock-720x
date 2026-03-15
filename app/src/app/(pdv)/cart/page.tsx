@@ -48,7 +48,7 @@ export default function CartPage() {
             <div className="modal-header">
                 <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
                 <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><ShoppingCart size={20} /> Carrinho</h3>
-                <button onClick={clearCart} className="modal-close" style={{ color: 'var(--danger)' }} title="Limpar Carrinho"><Trash2 size={24} /></button>
+                <button onClick={clearCart} className="modal-close" style={{ color: '#fff' }} title="Limpar Carrinho"><Trash2 size={24} /></button>
             </div>
 
             <div className="modal-body">

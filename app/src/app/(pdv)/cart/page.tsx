@@ -61,40 +61,40 @@ export default function CartPage() {
                         const sku = item.product?.sku || '-';
 
                         return (
-                            <div key={item.productId} className="cart-item">
+                            <div key={item.productId} className="cart-item" style={{ alignItems: 'flex-start' }}>
                                 <img
                                     src={mainImage}
                                     alt={productName}
                                     className="cart-item-image"
                                 />
-                                <div className="cart-item-info">
+                                <div className="cart-item-info" style={{ flex: 1 }}>
                                     <h4 className="cart-item-name">{productName}</h4>
-                                    <p className="cart-item-sku">{sku}</p>
-                                </div>
-                                <div className="cart-item-actions">
-                                    <div className="cart-qty-controls">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+                                        <div className="cart-qty-controls">
+                                            <button
+                                                className="cart-qty-btn"
+                                                onClick={() => updateCartQuantity(item.productId, Math.max(1, item.quantity - 1))}
+                                                disabled={item.quantity <= 1}
+                                            >
+                                                <Minus size={16} />
+                                            </button>
+                                            <span className="cart-qty-value">{item.quantity}</span>
+                                            <button
+                                                className="cart-qty-btn"
+                                                onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
+                                                disabled={item.quantity >= (item.product?.stock ?? 9999)}
+                                            >
+                                                <Plus size={16} />
+                                            </button>
+                                        </div>
                                         <button
-                                            className="cart-qty-btn"
-                                            onClick={() => updateCartQuantity(item.productId, Math.max(1, item.quantity - 1))}
-                                            disabled={item.quantity <= 1}
+                                            className="cart-item-remove"
+                                            onClick={() => removeFromCart(item.productId)}
+                                            style={{ marginLeft: 'auto' }}
                                         >
-                                            <Minus size={16} />
-                                        </button>
-                                        <span className="cart-qty-value">{item.quantity}</span>
-                                        <button
-                                            className="cart-qty-btn"
-                                            onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
-                                            disabled={item.quantity >= (item.product?.stock ?? 9999)}
-                                        >
-                                            <Plus size={16} />
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
-                                    <button
-                                        className="cart-item-remove"
-                                        onClick={() => removeFromCart(item.productId)}
-                                    >
-                                        <Trash2 size={20} />
-                                    </button>
                                 </div>
                             </div>
                         );

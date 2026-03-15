@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { getStockSessionsAction } from '@/app/actions/reports';
 import jsPDF from 'jspdf';
-import { ArrowLeft, BarChart2, FileDown, ArrowDownToLine, ArrowUpFromLine, ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowLeft, BarChart2, FileDown, ArrowDownToLine, ArrowUpFromLine, ChevronDown, ChevronRight, ChevronUp } from 'lucide-react';
 
 // ── Types ──
 interface StockMovement {
@@ -64,6 +64,101 @@ function formatDateShort(iso: string): string {
     return new Date(iso).toLocaleDateString('pt-BR', {
         day: '2-digit', month: '2-digit',
     });
+}
+
+function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session: StockSession, activeTab: string }) {
+    const [expanded, setExpanded] = useState(false);
+
+    // Format date specifically for the row to be concise: "15/03 14:30"
+    const dateStr = new Date(session.created_at).toLocaleString('pt-BR', {
+        day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+    });
+
+    return (
+        <div style={{
+            background: 'var(--bg-card)',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid var(--border-color)',
+            overflow: 'hidden',
+        }}>
+            {/* Clickable collapsed row */}
+            <div 
+                onClick={() => setExpanded(!expanded)}
+                style={{
+                    padding: '10px 12px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    gap: '8px'
+                }}
+            >
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ 
+                        fontSize: '0.75rem', 
+                        color: 'var(--text-muted)', 
+                        whiteSpace: 'nowrap',
+                        background: 'var(--bg-secondary)',
+                        padding: '2px 6px',
+                        borderRadius: 'var(--radius-sm)',
+                        fontWeight: 600
+                    }}>
+                        {dateStr}
+                    </div>
+                    <div style={{ 
+                        fontSize: '0.9rem', 
+                        fontWeight: 500, 
+                        color: 'var(--text-primary)',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                    }}>
+                        {getProductName(mov)}
+                    </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                    <div style={{
+                        fontWeight: 700,
+                        fontSize: '1rem',
+                        fontFamily: 'monospace',
+                        color: activeTab === 'entrada' ? 'var(--success)' : 'var(--danger)',
+                    }}>
+                        {mov.quantity > 0 ? '+' : ''}{mov.quantity}
+                    </div>
+                    <div style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>
+                        {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    </div>
+                </div>
+            </div>
+
+            {/* Expanded Content */}
+            {expanded && (
+                <div style={{
+                    padding: '12px',
+                    borderTop: '1px solid var(--border-color)',
+                    background: 'var(--bg-secondary)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    fontSize: '0.8rem',
+                    color: 'var(--text-secondary)'
+                }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                        <div><strong style={{color: 'var(--text-primary)'}}>Operação:</strong> {OPERATION_LABELS[session.operation] || session.operation}</div>
+                        <div><strong style={{color: 'var(--text-primary)'}}>SKU:</strong> {mov.product_variants?.sku || 'N/A'}</div>
+                        <div><strong style={{color: 'var(--text-primary)'}}>Estoque Anterior:</strong> {mov.old_stock}</div>
+                        <div><strong style={{color: 'var(--text-primary)'}}>Estoque Atual:</strong> {mov.new_stock}</div>
+                    </div>
+                    {session.notes && (
+                        <div style={{ marginTop: '4px', paddingTop: '6px', borderTop: '1px dashed var(--border-color)' }}>
+                            <strong style={{color: 'var(--text-primary)'}}>Obs:</strong> <span style={{ fontStyle: 'italic' }}>{session.notes}</span>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default function ReportsPage() {
@@ -456,90 +551,18 @@ export default function ReportsPage() {
                             </div>
                         </div>
 
-                        {/* ── Session List ── */}
+                        {/* ── Movement List (Flattened from Sessions) ── */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            {filteredSessions.map(session => (
-                                <div key={session.id} style={{
-                                    background: 'var(--bg-card)',
-                                    borderRadius: 'var(--radius-md)',
-                                    border: '1px solid var(--border-color)',
-                                    overflow: 'hidden',
-                                }}>
-                                    {/* Session header */}
-                                    <div style={{
-                                        padding: '6px 10px',
-                                        borderBottom: '1px solid var(--border-color)',
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                    }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <span style={{
-                                                padding: '2px 8px',
-                                                borderRadius: 'var(--radius-sm)',
-                                                fontSize: '0.7rem',
-                                                fontWeight: 700,
-                                                textTransform: 'uppercase' as const,
-                                                background: activeTab === 'entrada' ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)',
-                                                color: activeTab === 'entrada' ? 'var(--success)' : 'var(--danger)',
-                                            }}>
-                                                {OPERATION_LABELS[session.operation] || session.operation}
-                                            </span>
-                                        </div>
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                            {formatDate(session.created_at)}
-                                        </div>
-                                    </div>
-
-                                    {/* Movement items */}
-                                    <div style={{ padding: '2px 10px' }}>
-                                        {session.stock_movements?.map(mov => (
-                                            <div key={mov.id} style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                alignItems: 'center',
-                                                padding: '4px 0',
-                                                borderBottom: '1px solid var(--border-color)',
-                                            }}>
-                                                <div style={{ flex: 1, minWidth: 0, paddingRight: 10 }}>
-                                                    <div style={{
-                                                        fontSize: '0.85rem',
-                                                        fontWeight: 500,
-                                                        overflow: 'hidden',
-                                                        textOverflow: 'ellipsis',
-                                                        whiteSpace: 'nowrap' as const,
-                                                    }}>
-                                                        {getProductName(mov)}
-                                                    </div>
-                                                </div>
-                                                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                                                    <div style={{
-                                                        fontWeight: 700,
-                                                        fontSize: '0.95rem',
-                                                        fontFamily: 'monospace',
-                                                        color: activeTab === 'entrada' ? 'var(--success)' : 'var(--danger)',
-                                                    }}>
-                                                        {mov.quantity > 0 ? '+' : ''}{mov.quantity}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* Notes */}
-                                    {session.notes && (
-                                        <div style={{
-                                            padding: '6px 10px',
-                                            borderTop: '0px solid var(--border-color)',
-                                            fontSize: '0.75rem',
-                                            color: 'var(--text-muted)',
-                                            fontStyle: 'italic',
-                                        }}>
-                                            Obs: {session.notes}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
+                            {filteredSessions.flatMap(session => 
+                                (session.stock_movements || []).map(mov => (
+                                    <MovementRow 
+                                        key={mov.id} 
+                                        mov={mov} 
+                                        session={session} 
+                                        activeTab={activeTab} 
+                                    />
+                                ))
+                            )}
                         </div>
                     </>
                 )}

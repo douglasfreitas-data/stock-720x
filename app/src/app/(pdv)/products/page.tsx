@@ -2,15 +2,10 @@ import Link from 'next/link';
 import { ClipboardList, Tag, ArrowLeft, Package } from 'lucide-react';
 export default function ProductsMenu() {
     return (
-        <div className="home-screen">
+        <div className="modal-overlay">
             <div className="modal-header">
                 <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
                 <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Package size={20} /> Produtos</h3>
-                <div style={{ width: 40 }}></div>
-            </div>
-            <div className="modal-header">
-                <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
-                <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Tag size={20} /> Produtos</h3>
                 <div style={{ width: 40 }}></div>
             </div>
 

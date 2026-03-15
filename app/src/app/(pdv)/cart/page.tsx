@@ -48,7 +48,7 @@ export default function CartPage() {
             <div className="modal-header">
                 <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
                 <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><ShoppingCart size={20} /> Carrinho</h3>
-                <button onClick={clearCart} className="text-sm text-red-500">Limpar</button>
+                <button onClick={clearCart} className="modal-close" style={{ color: 'var(--danger)' }} title="Limpar Carrinho"><Trash2 size={24} /></button>
             </div>
 
             <div className="modal-body">
@@ -70,9 +70,6 @@ export default function CartPage() {
                                 <div className="cart-item-info">
                                     <h4 className="cart-item-name">{productName}</h4>
                                     <p className="cart-item-sku">{sku}</p>
-                                    <div className="text-sm text-[var(--accent)] font-medium mt-1">
-                                        R$ {productPrice.toFixed(2)}
-                                    </div>
                                 </div>
                                 <div className="cart-item-actions">
                                     <div className="cart-qty-controls">
@@ -114,15 +111,9 @@ export default function CartPage() {
                 </button>
 
                 {/* Order Summary */}
-                <div className="order-summary">
-                    <div className="order-summary-row">
-                        <span>Total de itens</span>
-                        <span>{cartCount}</span>
-                    </div>
-                    <div className="order-summary-row" style={{ marginTop: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '8px' }}>
-                        <span className="font-bold">Subtotal</span>
-                        <span className="text-xl font-bold text-[var(--accent)]">R$ {cartTotal.toFixed(2)}</span>
-                    </div>
+                <div className="order-summary" style={{ textAlign: 'center', marginBottom: '16px', color: 'var(--text-secondary)' }}>
+                    <span>Total de itens: </span>
+                    <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{cartCount}</span>
                 </div>
 
                 {/* Finalizar Venda Button */}

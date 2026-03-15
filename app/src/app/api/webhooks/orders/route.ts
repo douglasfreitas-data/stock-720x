@@ -110,7 +110,17 @@ export async function POST(request: NextRequest) {
 
                     if (variant.min_stock && newStock <= variant.min_stock) {
                         const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-                        fetch(`${baseUrl}/api/push/send`, { method: 'POST' }).catch(console.error);
+                        console.log(`    ↳ Estoque mínimo atingido! variant=${variant.id}, stock=${newStock}, min=${variant.min_stock}. Disparando push...`);
+                        try {
+                            const pushRes = await fetch(`${baseUrl}/api/push/send`, {
+                                method: 'POST',
+                                headers: { 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` }
+                            });
+                            const pushData = await pushRes.json();
+                            console.log('    ↳ Push notification response:', pushData);
+                        } catch (err) {
+                            console.error('    ↳ Falha ao enviar push notification:', err);
+                        }
                     }
                 }
             }

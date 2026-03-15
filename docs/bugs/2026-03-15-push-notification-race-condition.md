@@ -1,7 +1,8 @@
 # Bug: Push Notification Não Dispara Automaticamente
 
 **Data:** 2026-03-15  
-**Status:** 🔴 Aberto  
+**Status:** 🟢 Resolvido  
+**Resolvido em:** 2026-03-15  
 **Prioridade:** Média
 
 ## Sintoma

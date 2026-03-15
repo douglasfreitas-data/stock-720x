@@ -1,7 +1,6 @@
 'use server';
 
 import { supabaseAdmin } from '@/lib/supabase/client';
-import { createSupabaseServer } from '@/lib/supabase/server';
 import { getNuvemshopClient } from '@/lib/nuvemshop/server';
 import { revalidatePath } from 'next/cache';
 
@@ -77,11 +76,6 @@ export async function updateStockAction(params: StockUpdateParams) {
         let targetSessionId = sessionId;
 
         if (!targetSessionId) {
-            // Get current user to log who did this
-            const supabase = await createSupabaseServer();
-            const { data: { user } } = await supabase.auth.getUser();
-            const userEmail = user?.email || null;
-
             const { data: session, error: sessionError } = await supabaseAdmin
                 .from('stock_sessions')
                 .insert({
@@ -89,7 +83,6 @@ export async function updateStockAction(params: StockUpdateParams) {
                     operation: operation,
                     status: 'closed', // Sessão unitária, já fecha
                     notes: observation || null,
-                    user_email: userEmail,
                 })
                 .select('id')
                 .single();
@@ -128,13 +121,16 @@ export async function updateStockAction(params: StockUpdateParams) {
         if (currentMinStock && newStock <= currentMinStock) {
             const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
             console.log(`[Stock] Estoque mínimo atingido! variant=${variantId}, stock=${newStock}, min=${currentMinStock}. Disparando push...`);
-            fetch(`${baseUrl}/api/push/send`, { 
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` }
-            })
-            .then(res => res.json())
-            .then(data => console.log('[Stock] Push notification response:', data))
-            .catch(err => console.error('[Stock] Falha ao enviar push notification:', err));
+            try {
+                const pushRes = await fetch(`${baseUrl}/api/push/send`, { 
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}` }
+                });
+                const pushData = await pushRes.json();
+                console.log('[Stock] Push notification response:', pushData);
+            } catch (err) {
+                console.error('[Stock] Falha ao enviar push notification:', err);
+            }
         }
 
         const syncStatus = nuvemshopUpdated

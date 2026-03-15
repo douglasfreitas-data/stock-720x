@@ -1,6 +1,7 @@
 'use server';
 
 import { supabaseAdmin } from '@/lib/supabase/client';
+import { createSupabaseServer } from '@/lib/supabase/server';
 import { updateStockAction } from '@/app/actions/stock';
 import { CartItem } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
@@ -20,6 +21,11 @@ export async function processSessionAction(params: SessionParams) {
     }
 
     try {
+        // Get current logging user
+        const supabase = await createSupabaseServer();
+        const { data: { user } } = await supabase.auth.getUser();
+        const userEmail = user?.email || null;
+
         // 1. Criar Sessão "Mestra"
         const { data: session, error: sessionError } = await supabaseAdmin
             .from('stock_sessions')
@@ -28,6 +34,7 @@ export async function processSessionAction(params: SessionParams) {
                 operation: operation,
                 status: 'closed',
                 notes: notes,
+                user_email: userEmail,
             })
             .select('id')
             .single();

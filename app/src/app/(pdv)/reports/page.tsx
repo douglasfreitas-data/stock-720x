@@ -27,6 +27,7 @@ interface StockSession {
     operation: string;
     status: string;
     notes: string | null;
+    user_email?: string | null;
     stock_movements: StockMovement[];
 }
 
@@ -150,8 +151,11 @@ function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session:
                         <div><strong style={{color: 'var(--text-primary)'}}>Estoque Anterior:</strong> {mov.old_stock}</div>
                         <div><strong style={{color: 'var(--text-primary)'}}>Estoque Atual:</strong> {mov.new_stock}</div>
                     </div>
+                    <div style={{ marginTop: '4px', paddingTop: '6px', borderTop: '1px dashed var(--border-color)' }}>
+                        <strong style={{color: 'var(--text-primary)'}}>Usuário:</strong> {session.user_email || 'Sistema (Nuvemshop webhook)'}
+                    </div>
                     {session.notes && (
-                        <div style={{ marginTop: '4px', paddingTop: '6px', borderTop: '1px dashed var(--border-color)' }}>
+                        <div style={{ marginTop: '4px' }}>
                             <strong style={{color: 'var(--text-primary)'}}>Obs:</strong> <span style={{ fontStyle: 'italic' }}>{session.notes}</span>
                         </div>
                     )}

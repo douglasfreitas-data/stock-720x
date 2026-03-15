@@ -1,6 +1,7 @@
 'use server';
 
 import { supabaseAdmin } from '@/lib/supabase/client';
+import { createSupabaseServer } from '@/lib/supabase/server';
 import { getNuvemshopClient } from '@/lib/nuvemshop/server';
 import { revalidatePath } from 'next/cache';
 
@@ -76,6 +77,11 @@ export async function updateStockAction(params: StockUpdateParams) {
         let targetSessionId = sessionId;
 
         if (!targetSessionId) {
+            // Get current user to log who did this
+            const supabase = await createSupabaseServer();
+            const { data: { user } } = await supabase.auth.getUser();
+            const userEmail = user?.email || null;
+
             const { data: session, error: sessionError } = await supabaseAdmin
                 .from('stock_sessions')
                 .insert({
@@ -83,6 +89,7 @@ export async function updateStockAction(params: StockUpdateParams) {
                     operation: operation,
                     status: 'closed', // Sessão unitária, já fecha
                     notes: observation || null,
+                    user_email: userEmail,
                 })
                 .select('id')
                 .single();

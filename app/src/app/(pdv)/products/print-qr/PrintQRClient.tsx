@@ -137,77 +137,83 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const pageWidth = 210;
             const pageHeight = 297;
-            const margin = 15;
-            const itemHeight = 50;
-            const spacing = 10;
-            let y = margin;
-
-            pdf.setFontSize(18);
-            pdf.setFont('helvetica', 'bold');
-            pdf.text('QR Codes de Produtos - 720x', pageWidth / 2, y, { align: 'center' });
-            y += 15;
+            const margin = 5;
+            const itemWidth = 100;
+            const itemHeight = 30;
+            const cols = 2;
+            
+            let currentItemCount = 0;
 
             for (let i = 0; i < selectedProductsArr.length; i++) {
                 const product = selectedProductsArr[i];
-                if (y + itemHeight + spacing > pageHeight - margin) {
+                
+                // Calculate position based on grid (2 cols)
+                const col = currentItemCount % cols;
+                const row = Math.floor(currentItemCount / cols);
+                
+                let x = margin + (col * itemWidth);
+                let y = margin + (row * itemHeight);
+                
+                // Check if we need a new page
+                if (y + itemHeight > pageHeight - margin) {
                     pdf.addPage();
+                    currentItemCount = 0;
+                    x = margin;
                     y = margin;
                 }
 
-                pdf.setFillColor(245, 245, 245);
-                pdf.roundedRect(margin, y, pageWidth - margin * 2, itemHeight, 3, 3, 'F');
+                // Draw dashed border for cutting
+                pdf.setDrawColor(200, 200, 200);
+                pdf.setLineDashPattern([2, 2], 0);
+                pdf.rect(x, y, itemWidth, itemHeight);
+                pdf.setLineDashPattern([], 0); // reset dash
 
-                try {
-                    const imgData = await loadImage(product.image);
-                    if (imgData) {
-                        pdf.addImage(imgData, 'JPEG', margin + 5, y + 5, 40, 40);
-                    } else {
-                        pdf.setFillColor(230, 230, 230);
-                        pdf.roundedRect(margin + 5, y + 5, 40, 40, 2, 2, 'F');
-                        pdf.setFontSize(8);
-                        pdf.setTextColor(150);
-                        pdf.text('S/ Imagem', margin + 8, y + 25);
-                    }
-                } catch (err) {
-                    console.error('Error adding image to PDF:', err);
-                }
-
-                const textX = margin + 50;
-                pdf.setFontSize(12);
+                const textX = x + 4;
+                const textY = y + 8;
+                
+                // Product Name
+                pdf.setFontSize(10);
                 pdf.setFont('helvetica', 'bold');
                 pdf.setTextColor(0);
 
                 let name = product.name;
-                if (pdf.getTextWidth(name) > 80) {
-                    while (pdf.getTextWidth(name + '...') > 80 && name.length > 0) name = name.slice(0, -1);
+                if (pdf.getTextWidth(name) > 65) {
+                    while (pdf.getTextWidth(name + '...') > 65 && name.length > 0) name = name.slice(0, -1);
                     name += '...';
                 }
-                pdf.text(name, textX, y + 12);
+                pdf.text(name, textX, textY);
 
-                pdf.setFontSize(10);
+                // SKU
+                pdf.setFontSize(9);
                 pdf.setFont('helvetica', 'normal');
-                pdf.setTextColor(100);
-                pdf.text(`SKU: ${product.sku}`, textX, y + 20);
+                pdf.setTextColor(80);
+                pdf.text(`SKU: ${product.sku}`, textX, textY + 6);
 
-                pdf.setFont('courier', 'normal');
-                pdf.setFontSize(10);
-                pdf.setTextColor(60);
-                pdf.text(product.barcode, textX, y + 35);
+                // Barcode
+                pdf.setFont('courier', 'bold');
+                pdf.setFontSize(9);
+                pdf.setTextColor(0);
+                pdf.text(product.barcode, textX, textY + 13);
 
+                // Footer
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(7);
+                pdf.setTextColor(120);
+                pdf.text('720x.com.br', textX, textY + 19);
+
+                // QR Code
                 const qrDataUrl = qrCodes[product.id];
                 if (qrDataUrl) {
-                    const qrSize = 35;
-                    const qrX = pageWidth - margin - qrSize - 5;
-                    pdf.addImage(qrDataUrl, 'PNG', qrX, y + 7, qrSize, qrSize);
+                    const qrSize = 24;
+                    const qrX = x + itemWidth - qrSize - 3;
+                    const qrY = y + (itemHeight - qrSize) / 2;
+                    pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
                 }
 
-                y += itemHeight + spacing;
+                currentItemCount++;
             }
 
-            pdf.setFontSize(8);
-            pdf.setTextColor(150);
-            pdf.text('720x.com.br - Sistema de Gestão de Estoque', pageWidth / 2, pageHeight - 10, { align: 'center' });
-            pdf.save('produtos_qrcode_720x.pdf');
+            pdf.save('etiquetas_qrcode_720x.pdf');
         } catch (err) {
             console.error(err);
             alert('Erro ao gerar PDF');

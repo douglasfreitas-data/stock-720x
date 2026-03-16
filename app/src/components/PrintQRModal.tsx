@@ -61,109 +61,95 @@ export default function PrintQRModal({ products, onClose }: PrintQRModalProps) {
         });
     };
 
-    // Generate PDF with list format
     const generatePDF = async () => {
         setGeneratingPdf(true);
 
         try {
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const pageWidth = 210;
             const pageHeight = 297;
-            const margin = 15;
-            const itemHeight = 50;
-            const spacing = 10;
-            let y = margin;
-
-            // Title
-            pdf.setFontSize(18);
-            pdf.setFont('helvetica', 'bold');
-            pdf.text('Lista de Produtos - 720x', pageWidth / 2, y, { align: 'center' });
-            y += 15;
+            const margin = 5;
+            const itemWidth = 100;
+            const itemHeight = 30;
+            const cols = 2;
+            
+            let currentItemCount = 0;
 
             for (let i = 0; i < products.length; i++) {
                 const product = products[i];
-
+                
+                // Calculate position based on grid (2 cols)
+                const col = currentItemCount % cols;
+                const row = Math.floor(currentItemCount / cols);
+                
+                let x = margin + (col * itemWidth);
+                let y = margin + (row * itemHeight);
+                
                 // Check if we need a new page
-                if (y + itemHeight + spacing > pageHeight - margin) {
+                if (y + itemHeight > pageHeight - margin) {
                     pdf.addPage();
+                    currentItemCount = 0;
+                    x = margin;
                     y = margin;
                 }
 
-                // Draw item background
-                pdf.setFillColor(245, 245, 245);
-                pdf.roundedRect(margin, y, pageWidth - margin * 2, itemHeight, 3, 3, 'F');
+                // Draw dashed border for cutting
+                pdf.setDrawColor(200, 200, 200);
+                pdf.setLineDashPattern([2, 2], 0);
+                pdf.rect(x, y, itemWidth, itemHeight);
+                pdf.setLineDashPattern([], 0); // reset dash
 
-                // Load and add product image
-                try {
-                    const imgData = await loadImage(product.image);
-                    if (imgData) {
-                        pdf.addImage(imgData, 'JPEG', margin + 5, y + 5, 40, 40);
-                    }
-                } catch {
-                    // Skip image if fails
-                }
-
-                // Product info
-                const textX = margin + 50;
-                pdf.setFontSize(12);
+                const textX = x + 4;
+                const textY = y + 8;
+                
+                // Product Name
+                pdf.setFontSize(10);
                 pdf.setFont('helvetica', 'bold');
                 pdf.setTextColor(0);
 
-                // Name (truncate if too long)
-                const maxNameWidth = 80;
                 let name = product.name;
-                if (pdf.getTextWidth(name) > maxNameWidth) {
-                    while (pdf.getTextWidth(name + '...') > maxNameWidth && name.length > 0) {
-                        name = name.slice(0, -1);
-                    }
+                if (pdf.getTextWidth(name) > 65) {
+                    while (pdf.getTextWidth(name + '...') > 65 && name.length > 0) name = name.slice(0, -1);
                     name += '...';
                 }
-                pdf.text(name, textX, y + 12);
+                pdf.text(name, textX, textY);
 
                 // SKU
-                pdf.setFontSize(10);
-                pdf.setFont('helvetica', 'normal');
-                pdf.setTextColor(100);
-                pdf.text(`SKU: ${product.sku}`, textX, y + 20);
-
-                // Category & Brand
                 pdf.setFontSize(9);
-                pdf.text(`${product.category || 'N/A'} | ${product.brand || 'N/A'}`, textX, y + 27);
+                pdf.setFont('helvetica', 'normal');
+                pdf.setTextColor(80);
+                pdf.text(`SKU: ${product.sku}`, textX, textY + 6);
 
                 // Barcode
-                pdf.setFont('courier', 'normal');
-                pdf.setFontSize(10);
-                pdf.setTextColor(60);
-                pdf.text(product.barcode || product.sku, textX, y + 35);
+                pdf.setFont('courier', 'bold');
+                pdf.setFontSize(9);
+                pdf.setTextColor(0);
+                pdf.text(product.barcode || product.sku, textX, textY + 13);
 
-                // QR Code on the right
+                // Footer
+                pdf.setFont('helvetica', 'normal');
+                pdf.setFontSize(7);
+                pdf.setTextColor(120);
+                pdf.text('720x.com.br', textX, textY + 19);
+
+                // QR Code
                 const qrDataUrl = await QRCode.toDataURL(product.barcode || product.sku, {
                     width: 200,
                     margin: 1,
                     color: { dark: '#000000', light: '#ffffff' }
                 });
-                const qrSize = 35;
-                const qrX = pageWidth - margin - qrSize - 5;
-                pdf.addImage(qrDataUrl, 'PNG', qrX, y + 7, qrSize, qrSize);
 
-                // Move to next item
-                y += itemHeight + spacing;
+                if (qrDataUrl) {
+                    const qrSize = 24;
+                    const qrX = x + itemWidth - qrSize - 3;
+                    const qrY = y + (itemHeight - qrSize) / 2;
+                    pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
+                }
+
+                currentItemCount++;
             }
 
-            // Footer on last page
-            pdf.setFontSize(8);
-            pdf.setFont('helvetica', 'normal');
-            pdf.setTextColor(150);
-            pdf.text('720x.com.br - Sistema de Gestão de Estoque', pageWidth / 2, pageHeight - 10, { align: 'center' });
-
-            // Save the PDF
-            pdf.save('produtos_qrcode_720x.pdf');
-
+            pdf.save('etiquetas_qrcode_720x.pdf');
         } catch (err) {
             console.error('Error generating PDF:', err);
             alert('Erro ao gerar PDF');

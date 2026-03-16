@@ -152,7 +152,7 @@ function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session:
                         <div><strong style={{color: 'var(--text-primary)'}}>Estoque Atual:</strong> {mov.new_stock}</div>
                     </div>
                     <div style={{ marginTop: '4px', paddingTop: '6px', borderTop: '1px dashed var(--border-color)' }}>
-                        <strong style={{color: 'var(--text-primary)'}}>Usuário:</strong> {session.user_email || 'Sistema (Nuvemshop webhook)'}
+                        <strong style={{color: 'var(--text-primary)'}}>Usuário:</strong> {session.user_email || 'Sistema'}
                     </div>
                     {session.notes && (
                         <div style={{ marginTop: '4px' }}>

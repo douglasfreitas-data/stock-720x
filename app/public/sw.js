@@ -7,11 +7,10 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('push', function (event) {
-    const title = '⚠️ Alerta de Estoque Mínimo';
+    const title = '⚠️ Estoque Mínimo Atingido';
     const options = {
-        body: 'Um ou mais produtos atingiram o estoque mínimo. Toque para ver o relatório de reposição.',
+        body: 'Toque para abrir o relatório de reposição',
         icon: '/logo.png',   // Certifique-se de que o logo.png / ícone 192x192 exista
-        badge: '/logo.png',
         vibrate: [200, 100, 200, 100, 200, 100, 200],
         requireInteraction: true // A notificação fica até o usuário descartá-la
     };

@@ -10,6 +10,7 @@
 ---
 > Histórico de bugs corrigidos nas últimas sessões.
 
+- (15/03) **Bug 17: Push Notification Race Condition** — Corrigida falha silenciosa nas notificações Push. A Vercel cancelava as requisições porque o `fetch` para `/api/push/send` não possuía `await` em `app/src/app/actions/stock.ts`. O mesmo erro se repetia em `app/src/app/api/webhooks/orders/route.ts`, que também sofria falta do payload completo da Nuvemshop (resolvido injetando uma nova requisição `api.getOrder` para pegar as informações essenciais).
 - (14/03) **Bug 16: Silent Push Notification Failures** — Corrigida cadeia completa do Web Push (7 bugs encontrados): `.env.local` colado, parsing DER corrompido em `webpush.ts`, bloqueio pelo `middleware.ts`, requisição fetch fire-and-forget sem auth em `stock.ts`, ausência de Headers de TTL/Urgency exigidos pelo FCM e erro de Hydration no componente de Relatório (pendente teste).
 - (11/03) **Bug 15: Autenticação Bypass (Middleware)** — Resolvido adicionando try/catch no Server Component do Layout (`PDVLayout`) após falha de intercepção do middleware estático na Vercel. Limpeza de cookie legado `stock_session`.
 - (22/02) **Bug 12: Edição de Estoque Mínimo Bloqueada** — Resolvido destravando validação de input vazio na UI de Inventário.

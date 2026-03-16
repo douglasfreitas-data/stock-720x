@@ -85,7 +85,7 @@
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Total**: 7.5 horas
+**Total**: 9.0 horas
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -93,13 +93,14 @@
 | 14/03/2026 | 3.5h | **Recuperação Web Push Nativo**: Implementação do protocolo VAPID / Payloadless Push via Web Crypto API nativo (`Node.js crypto`). Bypass seguro de RLS para sincronização transparente de contas. Testes reais PWA confirmados. |
 | 14/03/2026 | 1.5h | **Relatório de Reposição & Bug Tracking**: Criação do Relatório Inteligente (<= mínimo e margem 20% p/ atenção), link notification-click, e fix de 7 bugs na cadeia do Web Push (DER parse, headers TTL, Middleware block, Hydration mismatch - este último pendente de teste). |
 | 14/03/2026 | 1.5h | **Design Review (Reposição)**: Auditoria e polimento visual da interface de alertas. Migração forçada para variáveis de Dark Theme CSS (`--bg-card`, `--text-muted`), correção de caching (`skipWaiting`) no Service Worker para atualizações instantâneas e parser robusto para dados JSONB multilinguagem do Nuvemshop (`{pt: ...}`). |
+| 15/03/2026 | 1.5h | **Estabilização Web Push & Refinamento UX**: Correção da Race Condition na Vercel (disparo do Web Push abortado prematuramente no webhook e nas actions). Refatoração agressiva do Webhook da Nuvemshop para consumir a API adequadamente. Lapidação textual das notificações push e logs de UI (`Sistema` unificado). |
 
 ## 📊 Métricas
 
 - **Velocidade média estimada**: ~4h/dia de trabalho focado
 - **Previsão total do projeto**: ~96h (4 semanas × 24h/semana)
-- **Progresso atual**: ~68% (Fase 5.1 e 5.2 concluída)
+- **Progresso atual**: ~70% (Fase 5.1 e 5.2 concluídas)
 
 ---
 
-*Última atualização: 14/03/2026 16:45*
+*Última atualização: 15/03/2026 21:10*

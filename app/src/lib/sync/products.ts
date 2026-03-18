@@ -106,13 +106,14 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
                 const type = diff > 0 ? 'entrada' : 'saida';
                 const sessionId = uuidv4();
                 
-                // Grava sessão de ajuste
+                // Grava sessão de ajuste automático (sync)
                 await supabaseAdmin.from('stock_sessions').insert({
                     id: sessionId,
                     type: type,
-                    operation: 'ajuste',
+                    operation: 'sync_auto',
                     status: 'closed',
-                    notes: 'Correção automática - Sincronização Diária Nuvemshop'
+                    notes: `Sincronização automática Nuvemshop: estoque local(${localStock}) → remoto(${remoteStock})`,
+                    user_email: 'sync_nuvemshop'
                 });
 
                 // Grava movimentação

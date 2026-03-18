@@ -34,3 +34,11 @@
 
 ## 🏢 Bloco 5.3: Multi-loja
 - [ ] Estruturação (a definir requisitos)
+
+## 🛒 Bloco 5.4: PDV Unificado & Vendas Pendentes — CONCLUÍDO
+> Transformação do fluxo de venda rápida no aplicativo, permitindo separar itens sem pagar na hora.
+- [x] Unificação das telas `/cart` e `/checkout`.
+- [x] Novo recurso: Editar Preço Manualmente (sobreescreve Nuvemshop).
+- [x] Novo recurso: Vendas Pendentes ("Salvar Pendente" reserva o estoque temporariamente).
+- [x] Rotinas Server-Side de Cancelamento (Estorno) de venda pendente para retorno de estoque físico limpo.
+- [x] Refatoramento inteligente dos arquivos e componentes de UI das listas e do relatorio PDF dinâmico (`Fornecedor` na entrada).

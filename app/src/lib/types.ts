@@ -14,4 +14,5 @@ export interface CartItem {
     productId: number;
     quantity: number;
     product?: Product;
+    customPrice?: number;
 }

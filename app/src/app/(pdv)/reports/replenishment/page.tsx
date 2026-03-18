@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getReplenishmentDataAction } from '@/app/actions/reports';
-import { Package, ArrowLeft } from 'lucide-react';
+import { Package, ArrowLeft, FileDown } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 function formatCurrency(value: number | null | undefined) {
     if (value === null || value === undefined) return '';
@@ -74,6 +75,74 @@ export default function ReplenishmentReport() {
         setIsMounted(true);
     }, []);
 
+    const exportPDF = () => {
+        const doc = new jsPDF({ orientation: 'portrait' });
+        doc.setFontSize(16);
+        doc.text('Relatório de Reposição — Stock 720x', 14, 18);
+        doc.setFontSize(9);
+        doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 25);
+
+        let y = 35;
+
+        // Function to draw header
+        const drawHeader = () => {
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Produto', 14, y);
+            doc.text('Estoque', 140, y);
+            doc.text('Mínimo', 170, y);
+            y += 6;
+            doc.setFont('helvetica', 'normal');
+        };
+
+        // Section 1: Critical
+        if (criticalItems.length > 0) {
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(211, 47, 47); // red #d32f2f
+            doc.text('Ação Imediata (Crítico)', 14, y);
+            doc.setTextColor(0, 0, 0);
+            y += 6;
+            drawHeader();
+
+            criticalItems.forEach(item => {
+                if (y > 275) { doc.addPage(); y = 20; drawHeader(); }
+                doc.text(item.productName.substring(0, 60), 14, y);
+                doc.text(String(item.stock), 140, y);
+                doc.text(String(item.min_stock), 170, y);
+                y += 6;
+            });
+            y += 8;
+        }
+
+        // Section 2: Attention
+        if (attentionItems.length > 0) {
+            if (y > 250) { doc.addPage(); y = 20; }
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(237, 108, 2); // orange #ed6c02
+            doc.text('Em Observação (Atenção)', 14, y);
+            doc.setTextColor(0, 0, 0);
+            y += 6;
+            drawHeader();
+
+            attentionItems.forEach(item => {
+                if (y > 275) { doc.addPage(); y = 20; drawHeader(); }
+                doc.text(item.productName.substring(0, 60), 14, y);
+                doc.text(String(item.stock), 140, y);
+                doc.text(String(item.min_stock), 170, y);
+                y += 6;
+            });
+        }
+
+        if (criticalItems.length === 0 && attentionItems.length === 0) {
+            doc.setFontSize(10);
+            doc.text('Nenhum item em nível crítico ou de atenção.', 14, y);
+        }
+
+        doc.save(`reposicao_${new Date().toISOString().slice(0, 10)}.pdf`);
+    };
+
     if (loading) {
         return (
             <div className="home-screen" style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -98,7 +167,24 @@ export default function ReplenishmentReport() {
             <div className="modal-header">
                 <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
                 <h3 className="modal-title">Relatório de Reposição</h3>
-                <div style={{ width: 40 }}></div>
+                <div style={{ paddingRight: '0px' }}>
+                    <button
+                        onClick={exportPDF}
+                        disabled={loading || !!error || (criticalItems.length === 0 && attentionItems.length === 0)}
+                        style={{
+                            padding: '6px 14px',
+                            background: 'var(--bg-secondary)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: 'var(--radius-sm)',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.8rem',
+                            cursor: 'pointer',
+                            opacity: loading || !!error || (criticalItems.length === 0 && attentionItems.length === 0) ? 0.5 : 1
+                        }}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FileDown size={14} /> PDF</div>
+                    </button>
+                </div>
             </div>
 
             <div className="modal-body" style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>

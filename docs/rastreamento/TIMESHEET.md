@@ -7,8 +7,8 @@
 | Mockup/Protótipo | 18.0h | ✅ Concluído |
 | Desenvolvimento (Fase 2/3) | 38.5h | ✅ Concluído |
 | Produção & Operação F. (Fase 4) | 2.5h | ✅ Concluído |
-| Expansão (Fase 5) | 7.5h | 🔄 Em andamento |
-| **Total** | **66.5h** | - |
+| Expansão (Fase 5) | 15.5h | 🔄 Em andamento |
+| **Total** | **74.5h** | - |
 
 ---
 
@@ -85,7 +85,7 @@
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Total**: 9.0 horas
+**Total**: 15.5 horas
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -94,6 +94,7 @@
 | 14/03/2026 | 1.5h | **Relatório de Reposição & Bug Tracking**: Criação do Relatório Inteligente (<= mínimo e margem 20% p/ atenção), link notification-click, e fix de 7 bugs na cadeia do Web Push (DER parse, headers TTL, Middleware block, Hydration mismatch - este último pendente de teste). |
 | 14/03/2026 | 1.5h | **Design Review (Reposição)**: Auditoria e polimento visual da interface de alertas. Migração forçada para variáveis de Dark Theme CSS (`--bg-card`, `--text-muted`), correção de caching (`skipWaiting`) no Service Worker para atualizações instantâneas e parser robusto para dados JSONB multilinguagem do Nuvemshop (`{pt: ...}`). |
 | 15/03/2026 | 1.5h | **Estabilização Web Push & Refinamento UX**: Correção da Race Condition na Vercel (disparo do Web Push abortado prematuramente no webhook e nas actions). Refatoração agressiva do Webhook da Nuvemshop para consumir a API adequadamente. Lapidação textual das notificações push e logs de UI (`Sistema` unificado). |
+| 18/03/2026 | 8.0h | **PDV Unificado & Vendas Pendentes**: Fusão de Checkout e Carrinho em tela única, implementação do sistema de "Vendas Pendentes" com baixa provisória de estoque e estorno inteligente, suporte a Preços Customizados (ignorando padrão Nuvemshop), relatórios agrupados por Fornecedor/Cliente com exportação via jsPDF e criação do Relatório de Reposição em PDF (Crítico/Atenção). |
 
 ## 📊 Métricas
 

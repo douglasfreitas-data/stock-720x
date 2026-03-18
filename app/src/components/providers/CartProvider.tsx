@@ -8,6 +8,7 @@ interface CartContextType {
     addToCart: (product: Product, quantity?: number) => boolean;
     removeFromCart: (productId: number) => void;
     updateCartQuantity: (productId: number, quantity: number) => void;
+    updateItemPrice: (productId: number, price: number) => void;
     clearCart: () => void;
     cartTotal: number;
     cartCount: number;
@@ -22,7 +23,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (typeof window !== 'undefined') {
             try {
                 const savedCart = localStorage.getItem('cart');
-                return savedCart ? JSON.parse(savedCart) : [];
+                if (savedCart) {
+                    const parsed = JSON.parse(savedCart) as CartItem[];
+                    // Garante que itens antigos tenham customPrice = 0
+                    return parsed.map(item => ({
+                        ...item,
+                        customPrice: item.customPrice !== undefined ? item.customPrice : 0
+                    }));
+                }
+                return [];
             } catch (e) {
                 console.error('Erro ao ler carrinho do storage:', e);
                 return [];
@@ -67,7 +76,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 return [...prev, {
                     productId: product.id,
                     quantity: Math.min(quantity, maxStock),
-                    product
+                    product,
+                    customPrice: 0
                 }];
             }
         });
@@ -89,6 +99,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }));
     };
 
+    const updateItemPrice = (productId: number, price: number) => {
+        setCart(prev => prev.map(item => {
+            if (item.productId === productId) {
+                return { ...item, customPrice: price };
+            }
+            return item;
+        }));
+    };
+
     const clearCart = () => {
         setCart([]);
     };
@@ -100,7 +119,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
     const cartTotal = cart.reduce((acc, item) => {
-        return acc + (item.quantity * (item.product?.price || 0));
+        return acc + (item.quantity * (item.customPrice || 0));
     }, 0);
 
     return (
@@ -109,6 +128,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             addToCart,
             removeFromCart,
             updateCartQuantity,
+            updateItemPrice,
             clearCart,
             cartCount,
             cartTotal,

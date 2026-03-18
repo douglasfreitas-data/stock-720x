@@ -4,6 +4,18 @@ Todas as mudanças notáveis do projeto são documentadas aqui.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 
+## [0.7.0] - 2026-03-18
+
+### Adicionado
+- **PDV Unificado**: Carrinho e Checkout unificados na mesma tela (`/cart`).
+- **Edição de Preços**: Possibilidade de editar o preço unitário do produto diretamente no POS antes da venda.
+- **Vendas Pendentes**: Usuário agora pode "Salvar como Pendente", que guarda os itens num novo menu, faz baixa imediata provisória no estoque para não haver venda dupla.
+- **Estorno Automático**: Cancelar uma venda pendente recupera integralmente o estoque como `estorno_reserva` automaticamente.
+- **Relatórios PDV Refinados**: Geração dinâmica via JS de agrupamentos por Fornecedor (entradas) e Cliente (saídas). Valores ocultos corretamente em relatórios de entrada.
+- **Relatório de Reposição**: Adicionado Export em PDF separando de modo limpo as seções de níveis de urgência ('Crítico' e 'Em Observação').
+
+---
+
 ## [0.6.0] - 2026-03-14
 
 ### Adicionado

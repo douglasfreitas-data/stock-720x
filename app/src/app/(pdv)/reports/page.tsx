@@ -46,6 +46,9 @@ const OPERATION_LABELS: Record<string, string> = {
     quebra: 'Quebra',
     vencido: 'Prazo Vencido',
     ajuste: 'Ajuste',
+    reserva: 'Reserva',
+    estorno_reserva: 'Estorno Reserva',
+    sync_auto: '🔄 Sync Nuvemshop',
     outro: 'Outro',
 };
 
@@ -54,26 +57,41 @@ function getProductName(m: StockMovement): string {
     return m.product_variants?.products?.name?.pt || 'Produto s/ Nome';
 }
 
-function formatDate(iso: string): string {
-    return new Date(iso).toLocaleString('pt-BR', {
-        day: '2-digit', month: '2-digit', year: '2-digit',
-        hour: '2-digit', minute: '2-digit',
-    });
+function getProductPrice(m: StockMovement): number {
+    return m.product_variants?.price || 0;
 }
 
-function formatDateShort(iso: string): string {
-    return new Date(iso).toLocaleDateString('pt-BR', {
-        day: '2-digit', month: '2-digit',
-    });
+function shortUser(email: string | null | undefined): string {
+    if (!email) return 'Sistema';
+    const atIndex = email.indexOf('@');
+    return atIndex > 0 ? email.substring(0, atIndex) : email;
 }
 
+function getDateKey(iso: string): string {
+    const d = new Date(iso);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+}
+
+function extractClient(session: { notes: string | null; operation?: string }): string {
+    if (session.operation === 'venda_online') return 'Site';
+    if (!session.notes) return '';
+    const match = session.notes.match(/Cliente:\s*([^|]+)/i);
+    return match ? match[1].trim() : '';
+}
+
+// ── Movement Row (no SKU, user before @) ──
 function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session: StockSession, activeTab: string }) {
     const [expanded, setExpanded] = useState(false);
 
-    // Format date specifically for the row to be concise: "15/03 14:30"
     const dateStr = new Date(session.created_at).toLocaleString('pt-BR', {
         day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
     });
+
+    const client = extractClient(session);
+    const price = getProductPrice(mov);
 
     return (
         <div style={{
@@ -82,7 +100,6 @@ function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session:
             border: '1px solid var(--border-color)',
             overflow: 'hidden',
         }}>
-            {/* Clickable collapsed row */}
             <div 
                 onClick={() => setExpanded(!expanded)}
                 style={{
@@ -133,7 +150,6 @@ function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session:
                 </div>
             </div>
 
-            {/* Expanded Content */}
             {expanded && (
                 <div style={{
                     padding: '12px',
@@ -147,20 +163,103 @@ function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session:
                 }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div><strong style={{color: 'var(--text-primary)'}}>Operação:</strong> {OPERATION_LABELS[session.operation] || session.operation}</div>
-                        <div><strong style={{color: 'var(--text-primary)'}}>SKU:</strong> {mov.product_variants?.sku || 'N/A'}</div>
-                        <div><strong style={{color: 'var(--text-primary)'}}>Estoque Anterior:</strong> {mov.old_stock}</div>
-                        <div><strong style={{color: 'var(--text-primary)'}}>Estoque Atual:</strong> {mov.new_stock}</div>
+                        {activeTab !== 'entrada' && (
+                            <div><strong style={{color: 'var(--text-primary)'}}>Valor:</strong> R$ {price.toFixed(2).replace('.', ',')}</div>
+                        )}
+                        <div><strong style={{color: 'var(--text-primary)'}}>Saldo:</strong> {mov.new_stock}</div>
+                        <div><strong style={{color: 'var(--text-primary)'}}>Usuário:</strong> {shortUser(session.user_email)}</div>
                     </div>
-                    <div style={{ marginTop: '4px', paddingTop: '6px', borderTop: '1px dashed var(--border-color)' }}>
-                        <strong style={{color: 'var(--text-primary)'}}>Usuário:</strong> {session.user_email || 'Sistema'}
-                    </div>
+                    {client && (
+                        <div style={{ marginTop: '4px', paddingTop: '6px', borderTop: '1px dashed var(--border-color)' }}>
+                            <strong style={{color: 'var(--text-primary)'}}>{activeTab === 'entrada' ? 'Fornecedor' : 'Cliente'}:</strong> {client}
+                        </div>
+                    )}
                     {session.notes && (
-                        <div style={{ marginTop: '4px' }}>
+                        <div style={{ marginTop: '4px', paddingTop: '6px', borderTop: '1px dashed var(--border-color)' }}>
                             <strong style={{color: 'var(--text-primary)'}}>Obs:</strong> <span style={{ fontStyle: 'italic' }}>{session.notes}</span>
                         </div>
                     )}
                 </div>
             )}
+        </div>
+    );
+}
+
+// ── Autocomplete Dropdown ──
+function AutocompleteInput({ value, onChange, suggestions, placeholder, style }: {
+    value: string;
+    onChange: (val: string) => void;
+    suggestions: string[];
+    placeholder: string;
+    style?: React.CSSProperties;
+}) {
+    const [open, setOpen] = useState(false);
+    const filtered = value.trim()
+        ? suggestions.filter(s => s.toLowerCase().includes(value.toLowerCase())).slice(0, 6)
+        : [];
+
+    return (
+        <div style={{ position: 'relative', ...style }}>
+            <input
+                type="text"
+                value={value}
+                onChange={e => { onChange(e.target.value); setOpen(true); }}
+                onFocus={() => setOpen(true)}
+                onBlur={() => setTimeout(() => setOpen(false), 150)}
+                placeholder={placeholder}
+                style={{
+                    width: '100%',
+                    padding: '8px 10px',
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: 'var(--radius-sm)',
+                    color: 'var(--text-primary)',
+                    fontSize: '0.85rem',
+                    outline: 'none',
+                }}
+            />
+            {open && filtered.length > 0 && (
+                <div style={{
+                    position: 'absolute', top: '100%', left: 0, right: 0,
+                    background: 'var(--bg-card)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '0 0 var(--radius-sm) var(--radius-sm)',
+                    zIndex: 50,
+                    maxHeight: '150px',
+                    overflowY: 'auto',
+                }}>
+                    {filtered.map((s, i) => (
+                        <div key={i}
+                            onMouseDown={() => { onChange(s); setOpen(false); }}
+                            style={{
+                                padding: '8px 10px',
+                                fontSize: '0.85rem',
+                                color: 'var(--text-primary)',
+                                cursor: 'pointer',
+                                borderBottom: i < filtered.length - 1 ? '1px solid var(--border-color)' : 'none',
+                            }}
+                        >{s}</div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ── Day Separator ──
+function DaySeparator({ dateLabel }: { dateLabel: string }) {
+    return (
+        <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            padding: '8px 0',
+        }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                {dateLabel}
+            </span>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
         </div>
     );
 }
@@ -176,6 +275,7 @@ export default function ReportsPage() {
     const [dateTo, setDateTo] = useState('');
     const [operation, setOperation] = useState('');
     const [productSearch, setProductSearch] = useState('');
+    const [clientSearch, setClientSearch] = useState('');
 
     // ── Data Loading ──
     const loadData = useCallback(async () => {
@@ -194,25 +294,54 @@ export default function ReportsPage() {
 
     useEffect(() => { loadData(); }, [loadData]);
 
-    // ── Client-side product filter ──
+    // ── Client-side filters (product + client + vendedor) ──
     const filteredSessions = useMemo(() => {
-        if (!productSearch.trim()) return sessions;
-        const q = productSearch.toLowerCase();
-        return sessions.filter(s =>
-            s.stock_movements?.some(m =>
-                getProductName(m).toLowerCase().includes(q) ||
-                (m.product_variants?.sku || '').toLowerCase().includes(q)
-            )
-        );
-    }, [sessions, productSearch]);
+        let result = sessions;
+        if (productSearch.trim()) {
+            const q = productSearch.toLowerCase();
+            result = result.filter(s =>
+                s.stock_movements?.some(m =>
+                    getProductName(m).toLowerCase().includes(q)
+                )
+            );
+        }
+        if (clientSearch.trim()) {
+            const q = clientSearch.toLowerCase();
+            
+            if (activeTab === 'entrada') {
+                result = result.filter(s => s.operation === 'compra');
+            }
 
-    // ── Stats ──
-    const totalMovements = filteredSessions.length;
-    const totalUnits = useMemo(() => {
-        return filteredSessions.reduce((acc, s) => {
-            return acc + (s.stock_movements?.reduce((a, m) => a + Math.abs(m.quantity), 0) || 0);
-        }, 0);
-    }, [filteredSessions]);
+            if (q !== 'todos') {
+                result = result.filter(s => {
+                    const client = extractClient(s);
+                    return client.toLowerCase().includes(q);
+                });
+            }
+        }
+        return result;
+    }, [sessions, productSearch, clientSearch, activeTab]);
+
+    // ── Unique values for autocomplete ──
+    const uniqueProducts = useMemo(() => {
+        const names = new Set<string>();
+        sessions.forEach(s => s.stock_movements?.forEach(m => {
+            const n = getProductName(m);
+            if (n !== 'Produto s/ Nome') names.add(n);
+        }));
+        return Array.from(names).sort();
+    }, [sessions]);
+
+    const uniqueClients = useMemo(() => {
+        const clients = new Set<string>();
+        sessions.forEach(s => {
+            const c = extractClient(s);
+            if (c) clients.add(c);
+        });
+        return ['Todos', ...Array.from(clients).sort()];
+    }, [sessions]);
+
+
 
     // ── Unique operations for filter ──
     const uniqueOps = useMemo(() => {
@@ -226,7 +355,45 @@ export default function ReportsPage() {
         setDateTo('');
         setOperation('');
         setProductSearch('');
+        setClientSearch('');
     };
+
+    // ── Group by day or client for rendering ──
+    const isGroupedByClient = clientSearch.trim().toLowerCase() === 'todos';
+
+    const renderGroups = useMemo(() => {
+        if (!isGroupedByClient) {
+            const groups: { label: string; isClient: boolean; items: { session: StockSession; mov: StockMovement }[] }[] = [];
+            let currentDate = '';
+            filteredSessions.forEach(session => {
+                (session.stock_movements || []).forEach(mov => {
+                    const dayKey = getDateKey(session.created_at);
+                    if (dayKey !== currentDate) {
+                        currentDate = dayKey;
+                        groups.push({ label: dayKey, isClient: false, items: [] });
+                    }
+                    groups[groups.length - 1].items.push({ session, mov });
+                });
+            });
+            return groups;
+        } else {
+            const groupsMap = new Map<string, { session: StockSession; mov: StockMovement }[]>();
+            filteredSessions.forEach(session => {
+                (session.stock_movements || []).forEach(mov => {
+                    const cli = extractClient(session) || (activeTab === 'entrada' ? 'Sem Fornecedor' : 'Sem Cliente');
+                    if (!groupsMap.has(cli)) groupsMap.set(cli, []);
+                    groupsMap.get(cli)!.push({ session, mov });
+                });
+            });
+            const groups: { label: string; isClient: boolean; items: { session: StockSession; mov: StockMovement }[] }[] = [];
+            Array.from(groupsMap.entries())
+                .sort((a, b) => a[0].localeCompare(b[0]))
+                .forEach(([cli, items]) => {
+                    groups.push({ label: cli, isClient: true, items });
+                });
+            return groups;
+        }
+    }, [filteredSessions, isGroupedByClient]);
 
     // ── Export PDF ──
     const exportPDF = () => {
@@ -237,41 +404,161 @@ export default function ReportsPage() {
         doc.text(`${title} — Stock 720x`, 14, 18);
         doc.setFontSize(9);
         doc.text(`Gerado em: ${new Date().toLocaleString('pt-BR')}`, 14, 25);
-        doc.text(`Total: ${filteredSessions.length} movimentações | ${totalUnits} unidades`, 14, 31);
 
-        let y = 40;
-        // Table header
-        doc.setFontSize(8);
-        doc.setFont('helvetica', 'bold');
-        doc.text('Data', 14, y);
-        doc.text('Operação', 60, y);
-        doc.text('Produto', 100, y);
-        doc.text('SKU', 195, y);
-        doc.text('Qtd', 225, y);
-        doc.text('Antes', 242, y);
-        doc.text('Depois', 260, y);
-        y += 6;
-        doc.setFont('helvetica', 'normal');
+        let y = 34;
+        let currentPdfDay = '';
 
-        filteredSessions.forEach(s => {
-            s.stock_movements?.forEach(m => {
-                if (y > 190) { doc.addPage(); y = 20; }
-                const date = new Date(s.created_at).toLocaleString('pt-BR', {
-                    day: '2-digit', month: '2-digit', year: '2-digit',
-                    hour: '2-digit', minute: '2-digit',
+        // Group by client in PDF if 'Todos' is explicitly selected
+        // We already have isGroupedByClient from above
+
+        // Table header function
+        const drawHeader = (grouped: boolean) => {
+            const clientLabel = activeTab === 'entrada' ? 'Fornecedor' : 'Cliente';
+
+            doc.setFontSize(8);
+            doc.setFont('helvetica', 'bold');
+            if (grouped) {
+                doc.text('Data', 14, y);
+                doc.text('Operação', 55, y);
+                doc.text('Produto', 100, y);
+                doc.text('Qtd', 195, y);
+                if (activeTab !== 'entrada') doc.text('Valor', 212, y);
+                doc.text('Saldo', 235, y);
+                doc.text('Usuário', 255, y);
+            } else {
+                doc.text('Data', 14, y);
+                doc.text(clientLabel, 35, y);
+                doc.text('Operação', 75, y);
+                doc.text('Produto', 110, y);
+                doc.text('Qtd', 195, y);
+                if (activeTab !== 'entrada') doc.text('Valor', 212, y);
+                doc.text('Saldo', 235, y);
+                doc.text('Usuário', 255, y);
+            }
+            y += 6;
+            doc.setFont('helvetica', 'normal');
+        };
+        
+        if (isGroupedByClient) {
+            // Group data by cliente
+            const clientGroups = new Map<string, { session: StockSession; mov: StockMovement }[]>();
+            
+            filteredSessions.forEach(s => {
+                s.stock_movements?.forEach(m => {
+                    const cli = extractClient(s) || (activeTab === 'entrada' ? 'Sem Fornecedor' : 'Sem Cliente');
+                    if (!clientGroups.has(cli)) clientGroups.set(cli, []);
+                    clientGroups.get(cli)!.push({ session: s, mov: m });
                 });
-                doc.text(date, 14, y);
-                doc.text(OPERATION_LABELS[s.operation] || s.operation, 60, y);
-                doc.text(getProductName(m).substring(0, 45), 100, y);
-                doc.text(m.product_variants?.sku || '-', 195, y);
-                doc.text(String(m.quantity), 225, y);
-                doc.text(String(m.old_stock), 242, y);
-                doc.text(String(m.new_stock), 260, y);
-                y += 5;
             });
-        });
+
+            clientGroups.forEach((items, cliente) => {
+                const groupLabel = activeTab === 'entrada' ? 'Fornecedor' : 'Cliente';
+                // Cliente header
+                if (y > 170) { doc.addPage(); y = 20; }
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`${groupLabel}: ${cliente}`, 14, y);
+                y += 6;
+
+                drawHeader(true);
+                currentPdfDay = '';
+
+                let totalUnitsClient = 0;
+                let totalValueClient = 0;
+
+                items.forEach(({ session: s, mov: m }) => {
+                    const dayKey = getDateKey(s.created_at);
+                    if (dayKey !== currentPdfDay) {
+                        if (currentPdfDay !== '') {
+                            y += 2;
+                            doc.setDrawColor(180, 180, 180);
+                            doc.line(14, y, 285, y);
+                            y += 4;
+                        }
+                        currentPdfDay = dayKey;
+                    }
+
+                    if (y > 185) { doc.addPage(); y = 20; drawHeader(true); }
+                    
+                    const date = new Date(s.created_at).toLocaleString('pt-BR', {
+                        day: '2-digit', month: '2-digit', year: '2-digit',
+                        hour: '2-digit', minute: '2-digit',
+                    });
+                    const price = getProductPrice(m);
+                    const qty = Math.abs(m.quantity);
+                    doc.text(date, 14, y);
+                    doc.text((OPERATION_LABELS[s.operation] || s.operation).substring(0, 22), 55, y);
+                    doc.text(getProductName(m).substring(0, 42), 100, y);
+                    doc.text(String(m.quantity), 195, y);
+                    if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 212, y);
+                    doc.text(String(m.new_stock), 235, y);
+                    doc.text(shortUser(s.user_email).substring(0, 20), 255, y);
+                    totalUnitsClient += qty;
+                    totalValueClient += (price * qty);
+                    y += 5;
+                });
+
+                // Total line for this cliente
+                y += 2;
+                doc.setDrawColor(100, 100, 100);
+                doc.line(14, y, 285, y);
+                y += 5;
+                doc.setFont('helvetica', 'bold');
+                let totalStr = `Total ${cliente}: ${items.length} movimentações | ${totalUnitsClient} un`;
+                if (activeTab !== 'entrada') totalStr += ` | Valor Total: R$ ${totalValueClient.toFixed(2)}`;
+                doc.text(totalStr, 14, y);
+                doc.setFont('helvetica', 'normal');
+                y += 10;
+            });
+        } else {
+            // Standard ungrouped PDF
+            drawHeader(false);
+
+            filteredSessions.forEach(s => {
+                s.stock_movements?.forEach(m => {
+                    const dayKey = getDateKey(s.created_at);
+                    
+                    if (dayKey !== currentPdfDay) {
+                        if (currentPdfDay !== '') {
+                            y += 2;
+                            doc.setDrawColor(180, 180, 180);
+                            doc.line(14, y, 285, y);
+                            y += 4;
+                        }
+                        currentPdfDay = dayKey;
+                    }
+
+                    if (y > 185) { doc.addPage(); y = 20; drawHeader(false); }
+                    
+                    const date = new Date(s.created_at).toLocaleString('pt-BR', {
+                        day: '2-digit', month: '2-digit', year: '2-digit',
+                        hour: '2-digit', minute: '2-digit',
+                    });
+                    const price = getProductPrice(m);
+                    doc.text(date, 14, y);
+                    doc.text(extractClient(s).substring(0, 25) || '-', 35, y);
+                    doc.text((OPERATION_LABELS[s.operation] || s.operation).substring(0, 20), 75, y);
+                    doc.text(getProductName(m).substring(0, 35), 110, y);
+                    doc.text(String(m.quantity), 195, y);
+                    if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 212, y);
+                    doc.text(String(m.new_stock), 235, y);
+                    doc.text(shortUser(s.user_email).substring(0, 20), 255, y);
+                    y += 5;
+                });
+            });
+        }
 
         doc.save(`relatorio_${activeTab}_${new Date().toISOString().slice(0, 10)}.pdf`);
+    };
+
+    const inputStyle: React.CSSProperties = {
+        padding: '8px 10px',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border-color)',
+        borderRadius: 'var(--radius-sm)',
+        color: 'var(--text-primary)',
+        fontSize: '0.85rem',
+        outline: 'none',
     };
 
     return (
@@ -367,19 +654,19 @@ export default function ReportsPage() {
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     {showFilters ? <ChevronDown size={14} /> : <ChevronRight size={14} />} {showFilters ? 'Ocultar Filtros' : 'Filtros & Busca'}
+                    {(dateFrom || dateTo || operation || productSearch || clientSearch) && (
+                        <span style={{
+                            marginLeft: 8,
+                            padding: '2px 8px',
+                            background: 'var(--accent-subtle)',
+                            borderRadius: 'var(--radius-sm)',
+                            color: 'var(--accent)',
+                            fontSize: '0.7rem',
+                        }}>
+                            Ativo
+                        </span>
+                    )}
                 </div>
-                {(dateFrom || dateTo || operation || productSearch) && (
-                    <span style={{
-                        marginLeft: 8,
-                        padding: '2px 8px',
-                        background: 'var(--accent-subtle)',
-                        borderRadius: 'var(--radius-sm)',
-                        color: 'var(--accent)',
-                        fontSize: '0.7rem',
-                    }}>
-                        Ativo
-                    </span>
-                )}
             </button>
 
             {/* ── Filters Panel ── */}
@@ -396,80 +683,41 @@ export default function ReportsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                         <div>
                             <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>De</label>
-                            <input
-                                type="date"
-                                value={dateFrom}
-                                onChange={e => setDateFrom(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '8px 10px',
-                                    background: 'var(--bg-card)',
-                                    border: '1px solid var(--border-color)',
-                                    borderRadius: 'var(--radius-sm)',
-                                    color: 'var(--text-primary)',
-                                    fontSize: '0.85rem',
-                                    outline: 'none',
-                                }}
-                            />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...inputStyle, width: '100%' }} />
                         </div>
                         <div>
                             <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>Até</label>
-                            <input
-                                type="date"
-                                value={dateTo}
-                                onChange={e => setDateTo(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '8px 10px',
-                                    background: 'var(--bg-card)',
-                                    border: '1px solid var(--border-color)',
-                                    borderRadius: 'var(--radius-sm)',
-                                    color: 'var(--text-primary)',
-                                    fontSize: '0.85rem',
-                                    outline: 'none',
-                                }}
-                            />
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...inputStyle, width: '100%' }} />
                         </div>
                     </div>
 
                     {/* Operation filter */}
-                    <select
-                        value={operation}
-                        onChange={e => setOperation(e.target.value)}
-                        style={{
-                            padding: '8px 10px',
-                            background: 'var(--bg-card)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius-sm)',
-                            color: 'var(--text-primary)',
-                            fontSize: '0.85rem',
-                            outline: 'none',
-                        }}
-                    >
+                    <select value={operation} onChange={e => setOperation(e.target.value)} style={inputStyle}>
                         <option value="">Todas as Operações</option>
                         {uniqueOps.map(op => (
                             <option key={op} value={op}>{OPERATION_LABELS[op] || op}</option>
                         ))}
                     </select>
 
-                    {/* Product search */}
-                    <input
-                        type="text"
+
+
+                    {/* Product search with autocomplete */}
+                    <AutocompleteInput
                         value={productSearch}
-                        onChange={e => setProductSearch(e.target.value)}
-                        placeholder="Buscar por produto ou SKU..."
-                        style={{
-                            padding: '8px 10px',
-                            background: 'var(--bg-card)',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--radius-sm)',
-                            color: 'var(--text-primary)',
-                            fontSize: '0.85rem',
-                            outline: 'none',
-                        }}
+                        onChange={setProductSearch}
+                        suggestions={uniqueProducts}
+                        placeholder="Buscar por produto..."
                     />
 
-                    {/* Buttons */}
+                    {/* Client search with autocomplete */}
+                    <AutocompleteInput
+                        value={clientSearch}
+                        onChange={setClientSearch}
+                        suggestions={uniqueClients}
+                        placeholder={activeTab === 'entrada' ? 'Buscar por fornecedor...' : 'Buscar por cliente...'}
+                    />
+
+                    {/* Clear */}
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button
                             onClick={handleClearFilters}
@@ -519,56 +767,58 @@ export default function ReportsPage() {
                         </div>
                     </div>
                 ) : (
-                    <>
-                        {/* ── Summary ── */}
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '10px 14px',
-                            background: 'var(--bg-card)',
-                            borderRadius: 'var(--radius-sm)',
-                            border: '1px solid var(--border-color)',
-                            marginBottom: 'var(--space-md)',
-                        }}>
-                            <div>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Movimentações</div>
-                                <div style={{
-                                    fontSize: '1.2rem',
-                                    fontWeight: 700,
-                                    color: activeTab === 'entrada' ? 'var(--success)' : 'var(--danger)',
-                                }}>{totalMovements}</div>
-                            </div>
-                            <div style={{
-                                width: 1,
-                                height: 30,
-                                background: 'var(--border-color)',
-                            }} />
-                            <div style={{ textAlign: 'right' }}>
-                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Total Unidades</div>
-                                <div style={{
-                                    fontSize: '1.2rem',
-                                    fontWeight: 700,
-                                    color: activeTab === 'entrada' ? 'var(--success)' : 'var(--danger)',
-                                    fontFamily: 'monospace',
-                                }}>{totalUnits}</div>
-                            </div>
-                        </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {renderGroups.map((group, gi) => {
+                            let groupTotalQty = 0;
+                            let groupTotalValue = 0;
+                            if (group.isClient) {
+                                group.items.forEach(i => {
+                                    const qty = Math.abs(i.mov.quantity);
+                                    groupTotalQty += qty;
+                                    groupTotalValue += getProductPrice(i.mov) * qty;
+                                });
+                            }
 
-                        {/* ── Movement List (Flattened from Sessions) ── */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            {filteredSessions.flatMap(session => 
-                                (session.stock_movements || []).map(mov => (
-                                    <MovementRow 
-                                        key={mov.id} 
-                                        mov={mov} 
-                                        session={session} 
-                                        activeTab={activeTab} 
-                                    />
-                                ))
-                            )}
-                        </div>
-                    </>
+                            return (
+                                <React.Fragment key={gi}>
+                                    {group.isClient && gi > 0 && <div style={{ height: 12 }} />}
+                                    <DaySeparator dateLabel={group.isClient ? `${activeTab === 'entrada' ? 'Fornecedor' : 'Cliente'}: ${group.label}` : group.label} />
+                                    {group.items.map(({ session, mov }, mi) => (
+                                        <MovementRow 
+                                            key={`${mov.id}-${mi}`} 
+                                            mov={mov} 
+                                            session={session} 
+                                            activeTab={activeTab} 
+                                        />
+                                    ))}
+                                    {group.isClient && (
+                                        <div style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            padding: '12px 14px',
+                                            background: 'var(--bg-secondary)',
+                                            border: '1px solid var(--border-color)',
+                                            borderRadius: 'var(--radius-md)',
+                                            marginTop: '4px',
+                                            fontWeight: 600,
+                                            fontSize: '0.85rem',
+                                            color: 'var(--text-primary)'
+                                        }}>
+                                            <div>Total {group.label}</div>
+                                            <div style={{ display: 'flex', gap: '16px' }}>
+                                                <span>{groupTotalQty} un</span>
+                                                {activeTab !== 'entrada' && (
+                                                    <span style={{ color: 'var(--danger)' }}>
+                                                        R$ {groupTotalValue.toFixed(2).replace('.', ',')}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </React.Fragment>
+                            );
+                        })}
+                    </div>
                 )}
             </div>
             </div>

@@ -85,6 +85,7 @@ export async function getStockSessionsAction(filters?: ReportFilters) {
                 operation,
                 status,
                 notes,
+                user_email,
                 stock_movements (
                     id,
                     quantity,

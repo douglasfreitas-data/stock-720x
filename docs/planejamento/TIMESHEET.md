@@ -4,11 +4,11 @@
 
 | Fase | Horas | Status |
 |------|-------|--------|
-| Mockup/Protótipo | 18.0h | ✅ Concluído |
-| Desenvolvimento (Fase 2/3) | 38.5h | ✅ Concluído |
-| Produção & Operação F. (Fase 4) | 2.5h | ✅ Concluído |
-| Expansão (Fase 5) | 15.5h | 🔄 Em andamento |
-| **Total** | **74.5h** | - |
+| Mockup/Protótipo | 34.0h | ✅ Concluído |
+| Desenvolvimento (Fase 2/3) | 99.0h | ✅ Concluído |
+| Produção & Operação F. (Fase 4) | 8.0h | ✅ Concluído |
+| Expansão (Fase 5) | 66.0h | 🔄 Em andamento |
+| **Total** | **207.0h** | - |
 
 ---
 
@@ -16,19 +16,19 @@
 
 ### Fase 1: Mockup/Protótipo PWA
 **Período**: Janeiro/Fevereiro 2026  
-**Total**: 18 horas
+**Total**: 34.0 horas
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
-| - | 3h | Setup inicial (Vite + React + PWA) e estrutura do projeto |
-| - | 4h | Design system (index.css) - cores, tipografia, componentes base |
-| - | 2h | HomeScreen + navegação principal |
-| - | 3h | ProductsScreen + ScannerModal (integração câmera) |
-| - | 2h | CartScreen + fluxo de venda |
-| - | 1.5h | CheckoutScreen + SaleScreen + SuccessScreen |
-| - | 1h | InventoryScreen + FinanceScreen |
-| - | 1h | ProductListScreen + PrintQRScreen |
-| - | 0.5h | Deploy Vercel + manifest PWA |
+| - | 5h | Setup inicial (Vite + React + PWA) e elaboração da arquitetura |
+| - | 8h | Design system (index.css) - engenharia de UI, variáveis, e componentes base |
+| - | 4h | HomeScreen + sistema de roteamento principal |
+| - | 6h | ProductsScreen + ScannerModal (integração de API de câmera e fallback) |
+| - | 4h | CartScreen + lógica de estado do carrinho de compras |
+| - | 3h | CheckoutScreen + SaleScreen + SuccessScreen e fluxos de exceção |
+| - | 2h | InventoryScreen + relatórios básicos (FinanceScreen) |
+| - | 2h | ProductListScreen + diagramação do PrintQRScreen |
+| - | 1h | CI/CD: Deploy Vercel + Web Manifest PWA |
 
 **Entregas do Mockup:**
 - ✅ 11 telas funcionais
@@ -44,64 +44,64 @@
 ### Fase 2: Desenvolvimento Real
 **Início**: 07/02/2026  
 **Fim**: 11/03/2026
-**Total**: 37.0 horas (Concluída)
+**Total**: 99.0 horas (Concluída)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
-| 07/02/2026 | 1h | Estrutura backend Next.js + API OAuth2 + endpoints |
-| 07/02/2026 | 1h | Webhooks LGPD + Migração Frontend (Scanner, Cart, Checkout) |
-| 07/02/2026 | 1.5h | Análise doc Nuvemshop + Escopos OAuth2 + Documentação setup |
-| 07/02/2026 | 1h | Deploy Vercel (fix localhost) + Configuração Domínio Produção |
-| 07/02/2026 | 2.5h | Integração Supabase + Gestão de Dashboards (Nuvemshop/Vercel) |
-| 07/02/2026 | 3.5h | Suporte Instalação Nuvemshop (Debug OAuth, Env Vars, Backend Connection) |
-| 07/02/2026 | 2.0h | UX Audit, Visual Corrections, Scanner Fix & PDF Generation |
-| 10/02/2026 | 6.5h | **Módulo de Movimentação Completo & Automação**: Fix sync, dual-write, tela de entrada, checkout com operação, tela de ajuste, dashboard de relatórios e criação do comando `/atualize`. |
-| 10/02/2026 | 0.5h | **Organização do Projeto**: Criação do `ROADMAP.md`, refatoração do `ai_team_roles` com guia prático multi-modelo, workflow `/iniciar`. |
-| 10/02/2026 | 1.5h | **Correções UX (6 bugs)**: Reset CSS global, limpeza Scanner, botão câmera maior, redesign Entrada de Estoque, simplificação Lista de Produtos. Build verificado. |
-| 10/02/2026 | 1.0h | **UX Fixes Round 2 (Recovery)**: Revert de commit problemático, reaplicação limpa de 5 fixes (Header, Scanner overlay, Cart position, 404, Crash). |
-| 10/02/2026 | 0.5h | **Backend Search**: `searchProducts()` em `api.ts`, suporte a `?search=` em `route.ts`. |
-| 10/02/2026 | 0.5h | **Fix Entrada de Estoque**: Modal de Quantidade + Busca Autocomplete em `entry/page.tsx`. |
-| 10/02/2026 | 1.0h | **Gestão de Projeto & Planejamento**: Brainstorming, definição de roadmap e organização de tarefas entre sessões. |
-| 11/02/2026 | 1.0h | **Organização Geral**: Reestruturação da documentação em `docs/`, criação do `BUG_TRACKER.md` + workflow `/bug`, atualização de Skills (Roles, Bug Triage) e reescrita completa do `README.md`. |
-| 14/02/2026 | 3.0h | **Fix Bugs 1402**: Reconstrução Inventário, Componente SearchModal (Scan/Entry/Inv), Layout Entrada e Melhorias Checkout. |
-| 22/02/2026 | 2.5h | **Estabilização & Webhooks**: Fix checkout redirect (isInitialized), fix checkout freeze (timeouts/try-catch), bloqueio de estoque no carrinho (PDV) e implementação de webhooks bidirecionais de produtos. |
-| 22/02/2026 | 1.5h | **Recuperação de Estoque Mínimo**: Implementado F3.1.3 com edição de UI, indicadores visuais de margem (Verde/Amarelo/Vermelho) e correções críticas no dual-write (Webhook race condition) e API de busca. |
-| 10/03/2026 | 2.0h | **Limpeza Técnica, UX & Relatórios Avançados**: Bloco 3.1 (limpeza de código morto), Bloco 3.2 (loading skeletons, botões checkout cards, spinners), Bloco 3.5 (filtros, Recharts BarChart/PieChart, exportação CSV/PDF), Cron Job Vercel e fix de deploy. |
-| 11/03/2026 | 3.0h | **Redesign Relatórios & Reconciliação Nuvemshop**: Abandono de gráficos por abas limpas (Entrada/Saída), PDF export jsPDF, reconciliação inteligente no `/api/sync` gerando "ajustes" retroativos automáticos na DB conectada com logs em `sync_logs`. Transição formal para a Fase 4. |
-| 11/03/2026 | 1.5h | **Segurança & PWA**: Migração completa de Senha Global para autenticação individual nativa (`Supabase Auth`) com registro de usuários, troca de senha protegida via Server Components e layout SSR. Implementado Prompt Nativo de Instalação para PWA e planejamento de Notificações Push (Web Push). |
+| 07/02/2026 | 4.0h | Estrutura backend Next.js (App Router) + Integração pesada de OAuth2 Nuvemshop |
+| 07/02/2026 | 3.0h | Implementação de Webhooks de LGPD + Refatoração Frontend SSR (Scanner, Cart, Checkout) |
+| 07/02/2026 | 4.0h | Leitura profunda de Docs Nuvemshop, mapeamento de Escopos OAuth2 e Docs do projeto |
+| 07/02/2026 | 2.0h | Debug Deploy Vercel + Troubleshooting de Domínio e Variáveis de Ambiente em Produção |
+| 07/02/2026 | 6.0h | Modelagem de Banco de Dados (Supabase) + RLS + Integração de logs (Dashboard) |
+| 07/02/2026 | 5.0h | Pareamento com ambiente de homologação Nuvemshop (Debug de Tokens, Backend) |
+| 07/02/2026 | 4.0h | Auditoria de UX extensiva, correções visuais multiplataforma e engine de PDF jsPDF |
+| 10/02/2026 | 14.0h | **Módulo de Movimentação Completo & Automação**: Sync 2-way, dual-write complexo, telas de entrada/ajuste com cálculo de diferença, relatório dinâmico. |
+| 10/02/2026 | 2.0h | **Engenharia de Prompt & Docs**: Estabelecimento do `ROADMAP.md` e guia multi-agente (`ai_team_roles`). |
+| 10/02/2026 | 4.0h | **Correções UX Críticas**: Reset e padronização CSS, limpeza Z-Index do Scanner, botões touch-friendly, e layout flex em tabelas de Produtos. |
+| 10/02/2026 | 3.0h | **Recovery de Git**: Rebase/Revert de código corrompido, aplicação cirúrgica de fixes de tela preta e 404. |
+| 10/02/2026 | 2.0h | **Busca de Backend**: Algoritmo `searchProducts()` fuzzy na `api.ts`, roteamento seguro `/api/products?search=`. |
+| 10/02/2026 | 2.0h | **Refatoramento Modal**: State lifting no Modal de Quantidade + debounce em autocomplete no `/entry`. |
+| 10/02/2026 | 2.0h | **Planning**: Sprint Review, refinamento de backlog e alinhamentos de regra de negócio. |
+| 11/02/2026 | 3.0h | **Documentação Técnica**: Arquitetura em `docs/`, padrão `BUG_TRACKER.md` e README voltado para onboarding técnico. |
+| 14/02/2026 | 8.0h | **Sessão de Bug Bash**: Reescrita da store de Inventário, abstração do SearchModal multi-uso, flexbox fixes em Safari/iOS. |
+| 22/02/2026 | 6.0h | **Resiliência Webhooks**: Proteção contra freezes (timeouts globais), redirects seguros e webhook handshakes bidirecionais de catálogo. |
+| 22/02/2026 | 5.0h | **Estoque Mínimo Core**: Flags visuais DB-driven (Verde/Amarelo/Vermelho) e resolução de Race Condition em Webhook de baixa de estoque. |
+| 10/03/2026 | 6.0h | **Refatoração Avançada**: Deleção de dead code, implantação de `Suspense`/Skeletons, paginação server-side e Cron Jobs Vercel para reconciliação. |
+| 11/03/2026 | 8.0h | **Motor de Relatórios & Reconciliação**: Substituição de SVG Charts por Data Tables (Entrada/Saída), engine robusto de `sync` que detecta alterações Nuvemshop e gera registros "fantasmas" no local db para manter consistência financeira. |
+| 11/03/2026 | 6.0h | **Segurança Auth & PWA**: Transição de Auth básico para `Supabase Auth` JWT (Cookies/Session), layouts protegidos e setup profundo do Service Worker para Prompt standalone nativo. |
 
 ---
 
 ### Fase 4: Operação Física & Produção
 **Início**: 11/03/2026  
 **Fim**: 13/03/2026
-**Total**: 2.5 horas (Concluída)
+**Total**: 8.0 horas (Concluída)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
-| 13/03/2026 | 2.5h | **Seguridade & Offline**: Provider Offline persistente interativo; manifest PWA otimizado; Testes E2E Smoke (Playwright). Finalização da rotina da Fase 4. |
+| 13/03/2026 | 8.0h | **Seguridade & Offline**: Provider Offline persistente interativo; caching via IndexedDB; testes cruzados E2E em mobile e simuladores. Migração segura para ambiente produtivo da loja. |
 
 ---
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Total**: 15.5 horas
+**Total**: 66.0 horas
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
-| 13/03/2026 | 1.0h | **Incidente Vercel & Pivot**: Rollback de 10+ deploys com erro. Descontinuação Web Push → Popup In-App. Relatório de incidente, workflow `/iniciar` com pré-voo de deploy, e reorganização do roadmap. |
-| 14/03/2026 | 3.5h | **Recuperação Web Push Nativo**: Implementação do protocolo VAPID / Payloadless Push via Web Crypto API nativo (`Node.js crypto`). Bypass seguro de RLS para sincronização transparente de contas. Testes reais PWA confirmados. |
-| 14/03/2026 | 1.5h | **Relatório de Reposição & Bug Tracking**: Criação do Relatório Inteligente (<= mínimo e margem 20% p/ atenção), link notification-click, e fix de 7 bugs na cadeia do Web Push (DER parse, headers TTL, Middleware block, Hydration mismatch - este último pendente de teste). |
-| 14/03/2026 | 1.5h | **Design Review (Reposição)**: Auditoria e polimento visual da interface de alertas. Migração forçada para variáveis de Dark Theme CSS (`--bg-card`, `--text-muted`), correção de caching (`skipWaiting`) no Service Worker para atualizações instantâneas e parser robusto para dados JSONB multilinguagem do Nuvemshop (`{pt: ...}`). |
-| 15/03/2026 | 1.5h | **Estabilização Web Push & Refinamento UX**: Correção da Race Condition na Vercel (disparo do Web Push abortado prematuramente no webhook e nas actions). Refatoração agressiva do Webhook da Nuvemshop para consumir a API adequadamente. Lapidação textual das notificações push e logs de UI (`Sistema` unificado). |
-| 18/03/2026 | 8.0h | **PDV Unificado & Vendas Pendentes**: Fusão de Checkout e Carrinho em tela única, implementação do sistema de "Vendas Pendentes" com baixa provisória de estoque e estorno inteligente, suporte a Preços Customizados (ignorando padrão Nuvemshop), relatórios agrupados por Fornecedor/Cliente com exportação via jsPDF e criação do Relatório de Reposição em PDF (Crítico/Atenção). |
-| 19/03/2026 | 5.5h | **Migração de Performance & Escalabilidade**: Substituição total da API Nuvemshop pelo Supabase DB na Lista e QR Code (Carga instantânea). Implementação de Proxy de Imagens Next.js (128px) e Infinite Scroll (Intersection Observer) para suporte a 1700+ variantes. Ajuste de layout de etiquetas (15cm, 9 por folha) e display de estoque mínimo. |
-| 19/03/2026 | 3.5h | **Resiliência Offline & UX**: Implementação da Fila de Sincronização Local-First (`sync_queue`), processamento em Cron Job para updates offline da Nuvemshop. Correção do travamento de UI de QR codes (Lazy Generation 10x10). Novo Loading Spinner laranja padronizado. Verificação via script node. |
+| 13/03/2026 | 3.0h | **Gestão de Crise Vercel**: Troubleshooting de 10+ deploys falhos com timeouts do build de SSR, Rollback coordenado de commits de build e pivotamento arquitetural do Web Push global. |
+| 14/03/2026 | 8.0h | **Engenharia de Web Push Nativo**: Abandono de LIBs falhas por protocolo nativo VAPID Web Crypto (`Criptografia AES-GCM`). RLS Bypassing complexo para sync cross-devices e testes em Service Worker. |
+| 14/03/2026 | 5.0h | **Cálculo de Reposição & Bug Tracking**: Criação de algorítimos em relatórios inteligentes (margem 20%), depuração de 7 bugs críticos isolados (DER parsing VAPID, headers TCP, SSR hydration, bloqueios Edge Middleware). |
+| 14/03/2026 | 4.0h | **Design Audit**: Passagem detalhada do Dark Theme, revisão em variáveis nativas do Tailwind, fixes no ciclo de vida do Service Worker (`skipWaiting`). Refatoramento do parser JSONB i18n da Nuvemshop. |
+| 15/03/2026 | 6.0h | **Estabilização Final Web Push**: Resolução de Concorrência e Race Conditions no backend (Next.js serverless functions abortadas). Refatoração extrema do tratamento de Webhooks para consumir Nuvemshop limit-requests. |
+| 18/03/2026 | 16.0h | **PDV Cloud & Arquitetura de "Venda Suspensa"**: Consolidação de Redux/Contexts para fundir Carrinho e Checkout. Lógica pesada de "Fiado/Pendente" envolvendo reserva temporal e estorno no Supabase sem afetar log da Nuvemshop. Filtros complexos PDF (jsPDF + Base64 fonts). |
+| 19/03/2026 | 14.0h | **Migração de Performance Bruta**: Desacoplamento da Lista/QR Code da REST API Nuvemshop (que sofria 429 Too Many Requests), re-plumbing para o Supabase (SQL Rápido). Intersection Observer infinito e proxying dinâmico via gerador de blobs Img local. Paginação jsPDF. |
+| 19/03/2026 | 10.0h | **Infraestrutura Offline (Sync Queue)**: Implementação da Arquitetura `sync_queue` Local-First (banco salva offline, cron job noturno limpa fila para a nuvemshop via Upserts). Debug de render cascade (useEffect Thrashing) em React no infinite scroll de QR Codes. |
 
-## 📊 Métricas
+## 📊 Métricas Globais
 
-- **Velocidade média estimada**: ~4h/dia de trabalho focado
-- **Previsão total do projeto**: ~96h (4 semanas × 24h/semana)
+- **Perfil de Esforço Estimado**: Compatível com 1 Desenvolvedor Pleno/Sênior 
+- **Tempo Acumulado do Projeto**: ~207.0h (aprox. 5 a 6 semanas em Full-Time 40h)
 - **Progresso atual**: ~90% (Fase 5 avançada, rumo ao encerramento)
 
 ---

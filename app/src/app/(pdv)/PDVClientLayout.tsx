@@ -69,7 +69,7 @@ function HeaderPendingButton() {
 
 function HeaderIcons() {
     return (
-        <div className="header-menu" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="header-menu" style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
             <HeaderCartButton />
             <HeaderPendingButton />
         </div>

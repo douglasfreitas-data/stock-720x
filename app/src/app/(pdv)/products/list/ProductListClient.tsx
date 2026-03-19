@@ -3,20 +3,29 @@
 import { useState, useMemo } from 'react';
 import { Package, ArrowLeft, Search, X } from 'lucide-react';
 
-interface NuvemshopProduct {
+interface LocalVariant {
     id: number;
-    name: { pt?: string;[key: string]: string | undefined };
+    image_url?: string | null;
+    stock?: number | null;
+    min_stock?: number | null;
+    sku?: string | null;
+    barcode?: string | null;
+    values?: { pt: string }[] | null;
+}
+
+interface LocalProduct {
+    id: number;
+    name: { pt?: string; [key: string]: string | undefined };
     images: { id?: number; src: string }[];
-    variants: { id: number; image_id?: number | null; stock?: number | null; sku?: string | null; barcode?: string | null; values?: { pt: string }[] | null }[];
+    variants: LocalVariant[];
     published: boolean;
 }
 
 interface ProductListClientProps {
-    products: NuvemshopProduct[];
-    minStockMap?: Record<number, number>;
+    products: LocalProduct[];
 }
 
-export default function ProductListClient({ products, minStockMap = {} }: ProductListClientProps) {
+export default function ProductListClient({ products }: ProductListClientProps) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -25,8 +34,8 @@ export default function ProductListClient({ products, minStockMap = {} }: Produc
     const processedProducts = useMemo(() => {
         return products.flatMap(product => 
             product.variants.map((v, index) => {
-                const mainImage = (v.image_id ? product.images.find(img => img.id === v.image_id)?.src : null) || product.images[0]?.src || 'https://via.placeholder.com/100';
-                let productName = product.name.pt || Object.values(product.name)[0] || 'Produto sem nome';
+                const mainImage = v.image_url || product.images?.[0]?.src || 'https://via.placeholder.com/100';
+                let productName = product.name?.pt || (product.name ? Object.values(product.name)[0] : null) || 'Produto sem nome';
                 
                 if (v.values && Array.isArray(v.values) && v.values.length > 0) {
                     const tags = v.values.map(val => val?.pt).filter(Boolean).join(' / ');
@@ -48,12 +57,12 @@ export default function ProductListClient({ products, minStockMap = {} }: Produc
                     sku,
                     barcode,
                     totalStock: v.stock || 0,
-                    minStock: minStockMap[v.id] || 0,
+                    minStock: v.min_stock || 0,
                     mainImage
                 };
             })
         ).sort((a, b) => a.productName.localeCompare(b.productName));
-    }, [products, minStockMap]);
+    }, [products]);
 
     // Filter by search term
     const filteredProducts = useMemo(() => {

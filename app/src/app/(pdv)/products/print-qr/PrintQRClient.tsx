@@ -5,16 +5,26 @@ import QRCode from 'qrcode';
 import { jsPDF } from 'jspdf';
 import { FileText, Loader, Search, X, CheckSquare, Square } from 'lucide-react';
 
-interface NuvemshopProduct {
+interface LocalVariant {
     id: number;
-    name: { pt?: string;[key: string]: string | undefined };
+    image_url?: string | null;
+    stock?: number | null;
+    min_stock?: number | null;
+    sku?: string | null;
+    barcode?: string | null;
+    values?: { pt: string }[] | null;
+}
+
+interface LocalProduct {
+    id: number;
+    name: { pt?: string; [key: string]: string | undefined };
     images: { id?: number; src: string }[];
-    variants: { id: number; image_id?: number | null; stock?: number | null; sku?: string | null; barcode?: string | null; values?: { pt: string }[] | null }[];
+    variants: LocalVariant[];
     published: boolean;
 }
 
 interface PrintQRClientProps {
-    products: NuvemshopProduct[];
+    products: LocalProduct[];
 }
 
 export default function PrintQRClient({ products }: PrintQRClientProps) {
@@ -27,28 +37,31 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
 
     // Transform and sort products for QR logic
     const productsForQR = useMemo(() => {
-        return products.flatMap(p => 
-            p.variants.map((v, index) => {
-                let baseName = p.name.pt || Object.values(p.name)[0] || 'Produto sem nome';
+        return products.flatMap(product => 
+            product.variants.map((v, index) => {
+                const mainImage = v.image_url || product.images?.[0]?.src || 'https://via.placeholder.com/100';
+                let productName = product.name?.pt || (product.name ? Object.values(product.name)[0] : null) || 'Produto sem nome';
                 
                 if (v.values && Array.isArray(v.values) && v.values.length > 0) {
                     const tags = v.values.map(val => val?.pt).filter(Boolean).join(' / ');
                     if (tags) {
-                        baseName = `${baseName} - ${tags}`;
+                        productName = `${productName} - ${tags}`;
                     }
-                } else if (p.variants.length > 1) {
-                    baseName = `${baseName} - Var ${index + 1}`;
+                } else if (product.variants.length > 1) {
+                    productName = `${productName} - Var ${index + 1}`;
                 }
+
+                const sku = v.sku || '-';
+                const barcode = v.barcode || '-';
 
                 return {
                     id: v.id,
-                    productId: p.id,
-                    name: baseName,
-                    sku: v.sku || `SKU-${p.id}-${index}`,
-                    barcode: v.barcode || v.sku || `${v.id}`,
-                    image: (v.image_id ? p.images.find(img => img.id === v.image_id)?.src : null) || p.images[0]?.src || 'https://via.placeholder.com/100',
-                    category: '',
-                    brand: ''
+                    productId: product.id,
+                    name: productName,
+                    sku,
+                    barcode,
+                    stock: v.stock || 0,
+                    mainImage
                 };
             })
         ).sort((a, b) => a.name.localeCompare(b.name));
@@ -181,10 +194,10 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 pdf.rect(x, y, itemWidth, itemHeight);
                 pdf.setLineDashPattern([], 0); // reset dash
 
-                // Add Image First
-                const imgDataUrl = await loadImage(product.image);
-                if (imgDataUrl) {
-                    pdf.addImage(imgDataUrl, 'JPEG', x + 2, y + 2, 26, 26);
+                // Load image
+                const imageBase64 = await loadImage(product.mainImage);
+                if (imageBase64) {
+                    pdf.addImage(imageBase64, 'JPEG', x + 2, y + 2, 26, 26);
                 }
 
                 const textX = x + 30;
@@ -363,7 +376,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                 >
                                     <X size={14} />
                                 </button>
-                                <img src={product.image} alt={product.name} className="print-preview-image" />
+                                <img src={product.mainImage} alt={product.name} className="product-qr-image" />
                                 <div className="print-preview-info">
                                     <h4 className="print-preview-name" style={{ paddingRight: '20px' }}>{product.name}</h4>
                                     {product.barcode && <p className="print-preview-barcode">{product.barcode}</p>}

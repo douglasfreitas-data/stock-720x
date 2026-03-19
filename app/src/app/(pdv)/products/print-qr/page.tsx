@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { getNuvemshopClient } from '@/lib/nuvemshop/server';
-import { NuvemshopProduct } from '@/lib/nuvemshop/api';
 import PrintQRClient from './PrintQRClient';
+import { supabaseAdmin } from '@/lib/supabase/client';
 import { ArrowLeft, QrCode } from 'lucide-react';
 
 export default async function PrintQRPage() {
@@ -19,11 +19,40 @@ export default async function PrintQRPage() {
         );
     }
 
-    let products: NuvemshopProduct[] = [];
+    let products: any[] = [];
     try {
-        products = await client.getProducts(1, 100);
+        const { data: dbProducts, error } = await supabaseAdmin
+            .from('products')
+            .select(`
+                id,
+                name,
+                images,
+                published,
+                variants:product_variants(id, image_url, stock, min_stock, sku, barcode, values)
+            `)
+            .order('id', { ascending: false });
+
+        if (error) {
+            console.error('Erro ao buscar produtos do banco:', error);
+        } else if (dbProducts) {
+            products = dbProducts.map(p => ({
+                id: p.id,
+                name: typeof p.name === 'string' ? JSON.parse(p.name) : (p.name || {}),
+                images: typeof p.images === 'string' ? JSON.parse(p.images) : (p.images || []),
+                published: p.published,
+                variants: (p.variants || []).map((v: any) => ({
+                    id: v.id,
+                    stock: v.stock,
+                    min_stock: v.min_stock,
+                    sku: v.sku,
+                    barcode: v.barcode,
+                    values: typeof v.values === 'string' ? JSON.parse(v.values) : (v.values || null),
+                    image_url: v.image_url,
+                }))
+            }));
+        }
     } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
+        console.error('Erro ao processar produtos:', error);
     }
 
     return (

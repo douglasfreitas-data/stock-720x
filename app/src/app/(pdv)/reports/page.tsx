@@ -359,7 +359,7 @@ export default function ReportsPage() {
     };
 
     // ── Group by day or client for rendering ──
-    const isGroupedByClient = clientSearch.trim().toLowerCase() === 'todos';
+    const isGroupedByClient = clientSearch.trim() !== '';
 
     const renderGroups = useMemo(() => {
         if (!isGroupedByClient) {
@@ -439,53 +439,35 @@ export default function ReportsPage() {
             doc.setFont('helvetica', 'normal');
         };
         
-        if (isGroupedByClient) {
-            // Group data by cliente
-            const clientGroups = new Map<string, { session: StockSession; mov: StockMovement }[]>();
+        let grandTotalUnits = 0;
+        let grandTotalValue = 0;
+        let grandTotalMovements = 0;
+
+        renderGroups.forEach((group) => {
+            let groupTotalUnits = 0;
+            let groupTotalValue = 0;
+
+            const groupPrefix = group.isClient ? (activeTab === 'entrada' ? 'Fornecedor' : 'Cliente') : 'Data';
             
-            filteredSessions.forEach(s => {
-                s.stock_movements?.forEach(m => {
-                    const cli = extractClient(s) || (activeTab === 'entrada' ? 'Sem Fornecedor' : 'Sem Cliente');
-                    if (!clientGroups.has(cli)) clientGroups.set(cli, []);
-                    clientGroups.get(cli)!.push({ session: s, mov: m });
+            if (y > 170) { doc.addPage(); y = 20; }
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`${groupPrefix}: ${group.label}`, 14, y);
+            y += 6;
+
+            drawHeader(group.isClient);
+
+            group.items.forEach(({ session: s, mov: m }) => {
+                if (y > 185) { doc.addPage(); y = 20; drawHeader(group.isClient); }
+                
+                const date = new Date(s.created_at).toLocaleString('pt-BR', {
+                    day: '2-digit', month: '2-digit', year: '2-digit',
+                    hour: '2-digit', minute: '2-digit',
                 });
-            });
-
-            clientGroups.forEach((items, cliente) => {
-                const groupLabel = activeTab === 'entrada' ? 'Fornecedor' : 'Cliente';
-                // Cliente header
-                if (y > 170) { doc.addPage(); y = 20; }
-                doc.setFontSize(10);
-                doc.setFont('helvetica', 'bold');
-                doc.text(`${groupLabel}: ${cliente}`, 14, y);
-                y += 6;
-
-                drawHeader(true);
-                currentPdfDay = '';
-
-                let totalUnitsClient = 0;
-                let totalValueClient = 0;
-
-                items.forEach(({ session: s, mov: m }) => {
-                    const dayKey = getDateKey(s.created_at);
-                    if (dayKey !== currentPdfDay) {
-                        if (currentPdfDay !== '') {
-                            y += 2;
-                            doc.setDrawColor(180, 180, 180);
-                            doc.line(14, y, 285, y);
-                            y += 4;
-                        }
-                        currentPdfDay = dayKey;
-                    }
-
-                    if (y > 185) { doc.addPage(); y = 20; drawHeader(true); }
-                    
-                    const date = new Date(s.created_at).toLocaleString('pt-BR', {
-                        day: '2-digit', month: '2-digit', year: '2-digit',
-                        hour: '2-digit', minute: '2-digit',
-                    });
-                    const price = getProductPrice(m);
-                    const qty = Math.abs(m.quantity);
+                const price = getProductPrice(m);
+                const qty = Math.abs(m.quantity);
+                
+                if (group.isClient) {
                     doc.text(date, 14, y);
                     doc.text((OPERATION_LABELS[s.operation] || s.operation).substring(0, 22), 55, y);
                     doc.text(getProductName(m).substring(0, 42), 100, y);
@@ -493,55 +475,7 @@ export default function ReportsPage() {
                     if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 212, y);
                     doc.text(String(m.new_stock), 235, y);
                     doc.text(shortUser(s.user_email).substring(0, 20), 255, y);
-                    totalUnitsClient += qty;
-                    totalValueClient += (price * qty);
-                    y += 5;
-                });
-
-                // Total line for this cliente
-                y += 2;
-                doc.setDrawColor(100, 100, 100);
-                doc.line(14, y, 285, y);
-                y += 5;
-                doc.setFont('helvetica', 'bold');
-                let totalStr = `Total ${cliente}: ${items.length} movimentações | ${totalUnitsClient} un`;
-                if (activeTab !== 'entrada') totalStr += ` | Valor Total: R$ ${totalValueClient.toFixed(2)}`;
-                doc.text(totalStr, 14, y);
-                doc.setFont('helvetica', 'normal');
-                y += 10;
-            });
-        } else {
-            // Standard ungrouped PDF
-            drawHeader(false);
-
-            let totalUnits = 0;
-            let totalValue = 0;
-            let numMovements = 0;
-
-            filteredSessions.forEach(s => {
-                s.stock_movements?.forEach(m => {
-                    numMovements++;
-                    const dayKey = getDateKey(s.created_at);
-                    
-                    if (dayKey !== currentPdfDay) {
-                        if (currentPdfDay !== '') {
-                            y += 2;
-                            doc.setDrawColor(180, 180, 180);
-                            doc.line(14, y, 285, y);
-                            y += 4;
-                        }
-                        currentPdfDay = dayKey;
-                    }
-
-                    if (y > 185) { doc.addPage(); y = 20; drawHeader(false); }
-                    
-                    const date = new Date(s.created_at).toLocaleString('pt-BR', {
-                        day: '2-digit', month: '2-digit', year: '2-digit',
-                        hour: '2-digit', minute: '2-digit',
-                    });
-                    const price = getProductPrice(m);
-                    const qty = Math.abs(m.quantity);
-                    
+                } else {
                     doc.text(date, 14, y);
                     doc.text(extractClient(s).substring(0, 25) || '-', 35, y);
                     doc.text((OPERATION_LABELS[s.operation] || s.operation).substring(0, 20), 75, y);
@@ -550,24 +484,38 @@ export default function ReportsPage() {
                     if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 212, y);
                     doc.text(String(m.new_stock), 235, y);
                     doc.text(shortUser(s.user_email).substring(0, 20), 255, y);
-                    
-                    totalUnits += qty;
-                    totalValue += (price * qty);
-                    y += 5;
-                });
+                }
+                
+                groupTotalUnits += qty;
+                groupTotalValue += (price * qty);
+                grandTotalUnits += qty;
+                grandTotalValue += (price * qty);
+                grandTotalMovements++;
+                y += 5;
             });
 
-            // Total line for Custom Filter
+            // Total line for this group
             y += 2;
             doc.setDrawColor(100, 100, 100);
             doc.line(14, y, 285, y);
             y += 5;
             doc.setFont('helvetica', 'bold');
-            let totalStr = `Total Geral: ${numMovements} movimentações | ${totalUnits} un`;
-            if (activeTab !== 'entrada') totalStr += ` | Valor Total: R$ ${totalValue.toFixed(2)}`;
+            let totalStr = `Total ${group.label}: ${group.items.length} movimentações | ${groupTotalUnits} un`;
+            if (activeTab !== 'entrada') totalStr += ` | Valor Total: R$ ${groupTotalValue.toFixed(2)}`;
             doc.text(totalStr, 14, y);
             doc.setFont('helvetica', 'normal');
-        }
+            y += 10;
+        });
+
+        // Grand Total
+        y += 2;
+        doc.setDrawColor(0, 0, 0);
+        doc.line(14, y, 285, y);
+        y += 5;
+        doc.setFont('helvetica', 'bold');
+        let grandTotalStr = `Total Geral: ${grandTotalMovements} movimentações | ${grandTotalUnits} un`;
+        if (activeTab !== 'entrada') grandTotalStr += ` | Valor Total: R$ ${grandTotalValue.toFixed(2)}`;
+        doc.text(grandTotalStr, 14, y);
 
         doc.save(`relatorio_${activeTab}_${new Date().toISOString().slice(0, 10)}.pdf`);
     };
@@ -792,13 +740,11 @@ export default function ReportsPage() {
                         {renderGroups.map((group, gi) => {
                             let groupTotalQty = 0;
                             let groupTotalValue = 0;
-                            if (group.isClient) {
-                                group.items.forEach(i => {
-                                    const qty = Math.abs(i.mov.quantity);
-                                    groupTotalQty += qty;
-                                    groupTotalValue += getProductPrice(i.mov) * qty;
-                                });
-                            }
+                            group.items.forEach(i => {
+                                const qty = Math.abs(i.mov.quantity);
+                                groupTotalQty += qty;
+                                groupTotalValue += getProductPrice(i.mov) * qty;
+                            });
 
                             return (
                                 <React.Fragment key={gi}>
@@ -812,30 +758,28 @@ export default function ReportsPage() {
                                             activeTab={activeTab} 
                                         />
                                     ))}
-                                    {group.isClient && (
-                                        <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            padding: '12px 14px',
-                                            background: 'var(--bg-secondary)',
-                                            border: '1px solid var(--border-color)',
-                                            borderRadius: 'var(--radius-md)',
-                                            marginTop: '4px',
-                                            fontWeight: 600,
-                                            fontSize: '0.85rem',
-                                            color: 'var(--text-primary)'
-                                        }}>
-                                            <div>Total {group.label}</div>
-                                            <div style={{ display: 'flex', gap: '16px' }}>
-                                                <span>{groupTotalQty} un</span>
-                                                {activeTab !== 'entrada' && (
-                                                    <span style={{ color: 'var(--danger)' }}>
-                                                        R$ {groupTotalValue.toFixed(2).replace('.', ',')}
-                                                    </span>
-                                                )}
-                                            </div>
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        padding: '12px 14px',
+                                        background: 'var(--bg-secondary)',
+                                        border: '1px solid var(--border-color)',
+                                        borderRadius: 'var(--radius-md)',
+                                        marginTop: '4px',
+                                        fontWeight: 600,
+                                        fontSize: '0.85rem',
+                                        color: 'var(--text-primary)'
+                                    }}>
+                                        <div>Total {group.isClient ? group.label : "do dia"}</div>
+                                        <div style={{ display: 'flex', gap: '16px' }}>
+                                            <span>{groupTotalQty} un</span>
+                                            {activeTab !== 'entrada' && (
+                                                <span style={{ color: 'var(--danger)' }}>
+                                                    R$ {groupTotalValue.toFixed(2).replace('.', ',')}
+                                                </span>
+                                            )}
                                         </div>
-                                    )}
+                                    </div>
                                 </React.Fragment>
                             );
                         })}

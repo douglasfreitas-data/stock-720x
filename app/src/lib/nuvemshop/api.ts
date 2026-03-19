@@ -21,6 +21,7 @@ export interface NuvemshopVariant {
     price: string;
     stock: number | null;
     stock_management: boolean;
+    values?: { pt: string }[] | null;
 }
 
 export interface NuvemshopOrder {

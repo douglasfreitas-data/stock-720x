@@ -140,6 +140,7 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
             price: parseFloat(variant.price),
             stock: variant.stock,
             stock_management: variant.stock_management,
+            values: variant.values,
             // NOTA IMPORTANTE: Nós NÃO enviamos `min_stock` aqui!
             updated_at: new Date().toISOString()
         }));

@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
                     stock,
                     stock_management,
                     min_stock,
+                    values,
                     products (name, images)
                 `)
                 .ilike('products.name->>pt', `%${search}%`)
@@ -57,9 +58,17 @@ export async function GET(request: NextRequest) {
                     image = `https:${image}`;
                 }
 
+                let baseName = row.products?.name?.pt || 'Sem nome';
+                if (row.values && Array.isArray(row.values) && row.values.length > 0) {
+                    const variantTags = row.values.map((v: any) => v.pt).filter(Boolean).join(' / ');
+                    if (variantTags) {
+                        baseName = `${baseName} - ${variantTags}`;
+                    }
+                }
+
                 return {
                     id: row.id,
-                    name: row.products?.name?.pt || 'Sem nome',
+                    name: baseName,
                     sku: row.sku || '',
                     barcode: row.barcode || '',
                     price: parseFloat(row.price) || 0,

@@ -8,7 +8,7 @@ export interface NuvemshopProduct {
     id: number;
     name: { pt: string };
     variants: NuvemshopVariant[];
-    images: { src: string }[];
+    images: { id: number; src: string }[];
     handle: string;
     published: boolean;
 }
@@ -22,6 +22,7 @@ export interface NuvemshopVariant {
     stock: number | null;
     stock_management: boolean;
     values?: { pt: string }[] | null;
+    image_id?: number | null;
 }
 
 export interface NuvemshopOrder {

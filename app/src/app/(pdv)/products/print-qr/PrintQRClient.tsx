@@ -8,8 +8,8 @@ import { FileText, Loader, Search, X, CheckSquare, Square } from 'lucide-react';
 interface NuvemshopProduct {
     id: number;
     name: { pt?: string;[key: string]: string | undefined };
-    images: { src: string }[];
-    variants: { id: number; stock?: number | null; sku?: string | null; barcode?: string | null; values?: { pt: string }[] | null }[];
+    images: { id?: number; src: string }[];
+    variants: { id: number; image_id?: number | null; stock?: number | null; sku?: string | null; barcode?: string | null; values?: { pt: string }[] | null }[];
     published: boolean;
 }
 
@@ -46,7 +46,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                     name: baseName,
                     sku: v.sku || `SKU-${p.id}-${index}`,
                     barcode: v.barcode || v.sku || `${v.id}`,
-                    image: p.images[0]?.src || 'https://via.placeholder.com/100',
+                    image: (v.image_id ? p.images.find(img => img.id === v.image_id)?.src : null) || p.images[0]?.src || 'https://via.placeholder.com/100',
                     category: '',
                     brand: ''
                 };

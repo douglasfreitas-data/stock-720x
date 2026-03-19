@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
                     stock_management,
                     min_stock,
                     values,
+                    image_url,
                     products (name, images)
                 `)
                 .ilike('products.name->>pt', `%${search}%`)
@@ -53,7 +54,10 @@ export async function GET(request: NextRequest) {
                 } catch {
                     images = [];
                 }
-                let image = images.length > 0 ? images[0].src : '';
+                let image = row.image_url;
+                if (!image) {
+                    image = images.length > 0 ? images[0].src : '';
+                }
                 if (image && image.startsWith('//')) {
                     image = `https:${image}`;
                 }

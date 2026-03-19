@@ -6,8 +6,8 @@ import { Package, ArrowLeft, Search, X } from 'lucide-react';
 interface NuvemshopProduct {
     id: number;
     name: { pt?: string;[key: string]: string | undefined };
-    images: { src: string }[];
-    variants: { id: number; stock?: number | null; sku?: string | null; barcode?: string | null; values?: { pt: string }[] | null }[];
+    images: { id?: number; src: string }[];
+    variants: { id: number; image_id?: number | null; stock?: number | null; sku?: string | null; barcode?: string | null; values?: { pt: string }[] | null }[];
     published: boolean;
 }
 
@@ -24,7 +24,7 @@ export default function ProductListClient({ products }: ProductListClientProps) 
     const processedProducts = useMemo(() => {
         return products.flatMap(product => 
             product.variants.map((v, index) => {
-                const mainImage = product.images[0]?.src || 'https://via.placeholder.com/100';
+                const mainImage = (v.image_id ? product.images.find(img => img.id === v.image_id)?.src : null) || product.images[0]?.src || 'https://via.placeholder.com/100';
                 let productName = product.name.pt || Object.values(product.name)[0] || 'Produto sem nome';
                 
                 if (v.values && Array.isArray(v.values) && v.values.length > 0) {

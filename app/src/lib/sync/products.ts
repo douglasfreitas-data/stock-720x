@@ -141,6 +141,7 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
             stock: variant.stock,
             stock_management: variant.stock_management,
             values: variant.values,
+            image_url: variant.image_id ? product.images.find(img => img.id === variant.image_id)?.src : null,
             // NOTA IMPORTANTE: Nós NÃO enviamos `min_stock` aqui!
             updated_at: new Date().toISOString()
         }));

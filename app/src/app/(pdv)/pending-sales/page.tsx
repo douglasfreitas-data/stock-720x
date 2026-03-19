@@ -91,7 +91,7 @@ export default function PendingSalesPage() {
         return (
             <div className="modal-overlay">
                 <div className="modal-header">
-                    <Link href="/cart" className="modal-close"><ArrowLeft size={24} /></Link>
+                    <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
                     <h3 className="modal-title">Vendas Pendentes</h3>
                     <div style={{ width: 40 }}></div>
                 </div>
@@ -105,7 +105,7 @@ export default function PendingSalesPage() {
     return (
         <div className="modal-overlay" style={{ backgroundColor: 'var(--bg-primary)' }}>
             <div className="modal-header">
-                <Link href="/cart" className="modal-close"><ArrowLeft size={24} /></Link>
+                <Link href="/" className="modal-close"><ArrowLeft size={24} /></Link>
                 <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Clock size={20} /> Vendas Pendentes
                 </h3>

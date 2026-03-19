@@ -1,7 +1,7 @@
 # 🗺️ Stock 720x — Roadmap Geral
 
-**Última atualização:** 10/02/2026  
-**Horas acumuladas:** 41h
+**Última atualização:** 19/03/2026  
+**Horas acumuladas:** 90h
 
 ---
 
@@ -41,19 +41,19 @@
 - [ ] F3.1.1 — Remover tabela `inventory_logs` do Supabase
 - [ ] F3.1.2 — Limpar imports e código morto
 
-### 3.2 — UX/Design (~4h)
-- [ ] F3.2.1 — Revisão visual das telas de Entrada/Saída/Ajuste
-- [ ] F3.2.2 — Responsividade mobile (testar em dispositivo real)
-- [ ] F3.2.3 — Loading states e feedback visual
-- [ ] F3.2.4 — Tema dark/light
+### 3.2 — UX/Design ✅
+- [x] F3.2.1 — Revisão visual das telas de Entrada/Saída/Ajuste
+- [x] F3.2.2 — Responsividade mobile (testar em dispositivo real)
+- [x] F3.2.3 — Loading states e feedback visual
+- [x] F3.2.4 — Tema dark/light
 
-### 3.3 — QR Code (~2h)
-- [ ] F3.3.1 — Geração de QR/Barcode para produtos
-- [ ] F3.3.2 — Impressão de etiquetas (PDF)
+### 3.3 — QR Code ✅
+- [x] F3.3.1 — Geração de QR/Barcode para produtos
+- [x] F3.3.2 — Impressão de etiquetas (PDF)
 
-### 3.4 — Automação de Sync (~2h)
-- [ ] F3.4.1 — Vercel Cron Job para sync automático
-- [ ] F3.4.2 — Webhook de produtos Nuvemshop (sync em tempo real)
+### 3.4 — Automação de Sync ✅
+- [x] F3.4.1 — Vercel Cron Job para sync automático
+- [x] F3.4.2 — Webhook de produtos Nuvemshop (sync em tempo real)
 
 ### 3.5 — Relatórios Avançados (~3h)
 - [ ] F3.5.1 — Filtros por data, operação, produto

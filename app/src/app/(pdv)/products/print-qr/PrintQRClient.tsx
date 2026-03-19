@@ -34,7 +34,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
     const [showDropdown, setShowDropdown] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
-    const [visibleCount, setVisibleCount] = useState(20);
+    const [visibleCount, setVisibleCount] = useState(10);
     const observerTarget = useRef<HTMLDivElement>(null);
 
     // Transform and sort products for QR logic
@@ -102,7 +102,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
         const observer = new IntersectionObserver(
             entries => {
                 if (entries[0].isIntersecting && visibleCount < selectedProductsArr.length) {
-                    setVisibleCount(prev => prev + 20);
+                    setVisibleCount(prev => prev + 10);
                 }
             },
             { threshold: 0.1 }
@@ -420,8 +420,9 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                             </div>
                         ))}
                         {visibleCount < selectedProductsArr.length && (
-                            <div ref={observerTarget} style={{ padding: '20px', display: 'flex', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                                <Loader size={20} className="animate-spin" />
+                            <div ref={observerTarget} className="loading-spinner-container">
+                                <div className="loading-spinner" />
+                                <span className="loading-spinner-text">Carregando...</span>
                             </div>
                         )}
                     </div>

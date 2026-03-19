@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { Package, ArrowLeft, Search, X, Loader } from 'lucide-react';
+import { Package, ArrowLeft, Search, X } from 'lucide-react';
 
 interface LocalVariant {
     id: number;
@@ -47,12 +47,12 @@ interface ProductListClientProps {
 export default function ProductListClient({ products }: { products: LocalProduct[] }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedProduct, setSelectedProduct] = useState<ProcessedProduct | null>(null);
-    const [visibleCount, setVisibleCount] = useState(20);
+    const [visibleCount, setVisibleCount] = useState(10);
     const observerTarget = useRef<HTMLDivElement>(null);
 
     // Reset visible count when searching
     useEffect(() => {
-        setVisibleCount(20);
+        setVisibleCount(10);
     }, [searchTerm]);
 
     // Transform and sort products alphabetically
@@ -106,7 +106,7 @@ export default function ProductListClient({ products }: { products: LocalProduct
         const observer = new IntersectionObserver(
             entries => {
                 if (entries[0].isIntersecting && visibleCount < filteredProducts.length) {
-                    setVisibleCount(prev => prev + 20);
+                    setVisibleCount(prev => prev + 10);
                 }
             },
             { threshold: 0.1 }
@@ -188,8 +188,9 @@ export default function ProductListClient({ products }: { products: LocalProduct
                             </div>
                         ))}
                         {visibleCount < filteredProducts.length && (
-                            <div ref={observerTarget} style={{ padding: '20px', display: 'flex', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                                <Loader size={20} className="animate-spin" />
+                            <div ref={observerTarget} className="loading-spinner-container">
+                                <div className="loading-spinner" />
+                                <span className="loading-spinner-text">Carregando...</span>
                             </div>
                         )}
                     </>

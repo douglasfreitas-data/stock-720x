@@ -95,13 +95,14 @@
 | 14/03/2026 | 1.5h | **Design Review (Reposição)**: Auditoria e polimento visual da interface de alertas. Migração forçada para variáveis de Dark Theme CSS (`--bg-card`, `--text-muted`), correção de caching (`skipWaiting`) no Service Worker para atualizações instantâneas e parser robusto para dados JSONB multilinguagem do Nuvemshop (`{pt: ...}`). |
 | 15/03/2026 | 1.5h | **Estabilização Web Push & Refinamento UX**: Correção da Race Condition na Vercel (disparo do Web Push abortado prematuramente no webhook e nas actions). Refatoração agressiva do Webhook da Nuvemshop para consumir a API adequadamente. Lapidação textual das notificações push e logs de UI (`Sistema` unificado). |
 | 18/03/2026 | 8.0h | **PDV Unificado & Vendas Pendentes**: Fusão de Checkout e Carrinho em tela única, implementação do sistema de "Vendas Pendentes" com baixa provisória de estoque e estorno inteligente, suporte a Preços Customizados (ignorando padrão Nuvemshop), relatórios agrupados por Fornecedor/Cliente com exportação via jsPDF e criação do Relatório de Reposição em PDF (Crítico/Atenção). |
+| 19/03/2026 | 5.5h | **Migração de Performance & Escalabilidade**: Substituição total da API Nuvemshop pelo Supabase DB na Lista e QR Code (Carga instantânea). Implementação de Proxy de Imagens Next.js (128px) e Infinite Scroll (Intersection Observer) para suporte a 1700+ variantes. Ajuste de layout de etiquetas (15cm, 9 por folha) e display de estoque mínimo. |
 
 ## 📊 Métricas
 
 - **Velocidade média estimada**: ~4h/dia de trabalho focado
 - **Previsão total do projeto**: ~96h (4 semanas × 24h/semana)
-- **Progresso atual**: ~70% (Fase 5.1 e 5.2 concluídas)
+- **Progresso atual**: ~85% (Fase 5 avançada)
 
 ---
 
-*Última atualização: 15/03/2026 21:10*
+*Última atualização: 19/03/2026 02:55*

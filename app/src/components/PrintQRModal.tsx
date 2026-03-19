@@ -29,7 +29,7 @@ export default function PrintQRModal({ products, onClose }: PrintQRModalProps) {
             const codes: Record<number, string> = {};
             for (const product of products) {
                 try {
-                    codes[product.id] = await QRCode.toDataURL(product.barcode || product.sku, {
+                    codes[product.id] = await QRCode.toDataURL(product.barcode || product.sku || String(product.id), {
                         width: 200,
                         margin: 2,
                         color: { dark: '#000000', light: '#ffffff' }
@@ -132,7 +132,7 @@ export default function PrintQRModal({ products, onClose }: PrintQRModalProps) {
                 pdf.text('Stock 720x', textX, y + 27);
 
                 // QR Code
-                const qrDataUrl = await QRCode.toDataURL(product.barcode || product.sku, {
+                const qrDataUrl = await QRCode.toDataURL(product.barcode || product.sku || String(product.id), {
                     width: 200,
                     margin: 1,
                     color: { dark: '#000000', light: '#ffffff' }

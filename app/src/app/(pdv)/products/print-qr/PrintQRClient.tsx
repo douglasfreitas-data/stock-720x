@@ -51,8 +51,8 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                     productName = `${productName} - Var ${index + 1}`;
                 }
 
-                const sku = v.sku || '-';
-                const barcode = v.barcode || '-';
+                const sku = v.sku || `SKU-${product.id}-${index}`;
+                const barcode = v.barcode || v.sku || `${v.id}`;
 
                 return {
                     id: v.id,
@@ -138,21 +138,21 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
         generateQRCodes();
     }, [selectedProductsArr]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const loadImage = (url: string): Promise<string | null> => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = img.width;
-                canvas.height = img.height;
-                const ctx = canvas.getContext('2d');
-                ctx?.drawImage(img, 0, 0);
-                resolve(canvas.toDataURL('image/jpeg', 0.8));
-            };
-            img.onerror = () => resolve(null);
-            img.src = url;
-        });
+    const loadImage = async (url: string | null): Promise<string | null> => {
+        if (!url) return null;
+        try {
+            const optimizedUrl = `/_next/image?url=${encodeURIComponent(url)}&w=128&q=75`;
+            const response = await fetch(optimizedUrl);
+            const blob = await response.blob();
+            return await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result as string);
+                reader.readAsDataURL(blob);
+            });
+        } catch (e) {
+            console.error('Error loading image:', e);
+            return null;
+        }
     };
 
     const generatePDF = async () => {
@@ -386,7 +386,6 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                 <div className="print-preview-info">
                                     <h4 className="print-preview-name" style={{ paddingRight: '20px' }}>{product.name}</h4>
                                     {product.barcode && <p className="print-preview-barcode">{product.barcode}</p>}
-                                    <p className="print-preview-barcode">{product.barcode}</p>
                                 </div>
                                 <div className="print-preview-qr">
                                     {qrCodes[product.id] ? (

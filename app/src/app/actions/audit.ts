@@ -37,7 +37,7 @@ export async function getStockDifferencesAction() {
                 stock, 
                 price,
                 product_id,
-                products:product_id (name, published, nuvemshop_id)
+                products!inner (name, published)
             `)
             .eq('products.published', true);
 
@@ -99,7 +99,7 @@ export async function getStockDifferencesAction() {
                     differences.push({
                         productId: lv.product_id,
                         variantId: lv.id,
-                        name: product.name,
+                        name: typeof product.name === 'object' ? (product.name?.pt || JSON.stringify(product.name)) : product.name,
                         localStock: lv.stock || 0,
                         nuvemshopStock: nv.stock,
                         difference: diff,

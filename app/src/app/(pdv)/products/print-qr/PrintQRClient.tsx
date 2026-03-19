@@ -269,7 +269,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(9);
                 pdf.setTextColor(80);
-                pdf.text(`Cód: ${product.barcode}`, textX, textY);
+                pdf.text(`Cód: ${product.barcode}`, textX, y + 23);
 
                 // Footer
                 pdf.setFont('helvetica', 'normal');

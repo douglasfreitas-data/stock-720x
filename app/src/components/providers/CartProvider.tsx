@@ -25,10 +25,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                 const savedCart = localStorage.getItem('cart');
                 if (savedCart) {
                     const parsed = JSON.parse(savedCart) as CartItem[];
-                    // Garante que itens antigos tenham customPrice = 0
+                    // Garante que itens antigos tenham customPrice = price do produto
                     return parsed.map(item => ({
                         ...item,
-                        customPrice: item.customPrice !== undefined ? item.customPrice : 0
+                        customPrice: item.customPrice !== undefined ? item.customPrice : (item.product?.price || 0)
                     }));
                 }
                 return [];
@@ -77,7 +77,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
                     productId: product.id,
                     quantity: Math.min(quantity, maxStock),
                     product,
-                    customPrice: 0
+                    customPrice: product.price || 0
                 }];
             }
         });

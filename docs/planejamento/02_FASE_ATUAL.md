@@ -42,3 +42,10 @@
 - [x] Novo recurso: Vendas Pendentes ("Salvar Pendente" reserva o estoque temporariamente).
 - [x] Rotinas Server-Side de Cancelamento (Estorno) de venda pendente para retorno de estoque físico limpo.
 - [x] Refatoramento inteligente dos arquivos e componentes de UI das listas e do relatorio PDF dinâmico (`Fornecedor` na entrada).
+
+## 🚀 Bloco 5.5: Performance & Resiliência Offline (Sync Queue) — CONCLUÍDO
+> Otimizações extremas para lidar com 1700+ variantes e apagões da API Nuvemshop.
+- [x] Fila de Sincronização Local-First (`sync_queue`): Operações no PDV agora salvam no Supabase mesmo com Nuvemshop offline, e re-tentam via Cron Job.
+- [x] Lazy Loading Otimizado (10 em 10) na Lista de Produtos e na Impressão de Etiquetas.
+- [x] Lazy Generation de código QR Base64 para evitar congelamento da UI ao "Selecionar Todos".
+- [x] Design: Spinner Laranja corporativo padronizado nas listas e fallbacks de imagens.

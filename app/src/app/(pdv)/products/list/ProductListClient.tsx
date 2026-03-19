@@ -105,8 +105,8 @@ export default function ProductListClient({ products }: { products: LocalProduct
     useEffect(() => {
         const observer = new IntersectionObserver(
             entries => {
-                if (entries[0].isIntersecting && visibleCount < filteredProducts.length) {
-                    setVisibleCount(prev => prev + 10);
+                if (entries[0].isIntersecting) {
+                    setVisibleCount(prev => prev < filteredProducts.length ? prev + 10 : prev);
                 }
             },
             { threshold: 0.1 }
@@ -117,7 +117,7 @@ export default function ProductListClient({ products }: { products: LocalProduct
         }
 
         return () => observer.disconnect();
-    }, [visibleCount, filteredProducts.length]);
+    }, [filteredProducts.length]);
 
     return (
         <div className="modal-body p-0">

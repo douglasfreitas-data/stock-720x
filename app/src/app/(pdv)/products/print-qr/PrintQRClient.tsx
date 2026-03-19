@@ -101,8 +101,8 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
     useEffect(() => {
         const observer = new IntersectionObserver(
             entries => {
-                if (entries[0].isIntersecting && visibleCount < selectedProductsArr.length) {
-                    setVisibleCount(prev => prev + 10);
+                if (entries[0].isIntersecting) {
+                    setVisibleCount(prev => prev < selectedProductsArr.length ? prev + 10 : prev);
                 }
             },
             { threshold: 0.1 }
@@ -113,7 +113,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
         }
 
         return () => observer.disconnect();
-    }, [visibleCount, selectedProductsArr.length]);
+    }, [selectedProductsArr.length]);
 
     const handleSelectProduct = (id: number) => {
         const newSet = new Set(selectedIds);

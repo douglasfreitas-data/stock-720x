@@ -376,7 +376,12 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                 >
                                     <X size={14} />
                                 </button>
-                                <img src={product.mainImage} alt={product.name} className="product-qr-image" />
+                                <img 
+                                    src={`/_next/image?url=${encodeURIComponent(product.mainImage)}&w=128&q=75`} 
+                                    alt={product.name} 
+                                    className="product-qr-image" 
+                                    loading="lazy"
+                                />
                                 <div className="print-preview-info">
                                     <h4 className="print-preview-name" style={{ paddingRight: '20px' }}>{product.name}</h4>
                                     {product.barcode && <p className="print-preview-barcode">{product.barcode}</p>}

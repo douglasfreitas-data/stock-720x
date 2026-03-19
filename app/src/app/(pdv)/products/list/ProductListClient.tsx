@@ -115,13 +115,18 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                         Nenhum produto encontrado.
                     </div>
                 ) : (
-                    filteredProducts.map(product => (
-                        <div
-                            key={product.id}
+                    filteredProducts.map((product, index) => (
+                        <div 
+                            key={`prod-${product.id}-${index}`} 
                             className="product-list-item"
                             onClick={() => setSelectedProduct(product)}
                         >
-                            <img src={product.mainImage} alt={product.productName} className="product-list-image" />
+                            <img 
+                                src={`/_next/image?url=${encodeURIComponent(product.mainImage)}&w=128&q=75`} 
+                                alt={product.productName} 
+                                className="product-list-image" 
+                                loading="lazy"
+                            />
                             <div className="product-list-info">
                                 <h3 className="product-list-name">{product.productName}</h3>
                                 <p className="product-list-stock" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>

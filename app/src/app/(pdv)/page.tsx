@@ -4,15 +4,11 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { signout, getAdminStatus } from '@/app/actions/auth';
 import { getReplenishmentDataAction } from '@/app/actions/reports';
-import { getPendingSalesCountAction } from '@/app/actions/pendingSales';
-import { useCart } from '@/components/providers/CartProvider';
-import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key, Users, Activity, Clock } from 'lucide-react';
+import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key, Users, Activity } from 'lucide-react';
 
 export default function HomeScreen() {
     const [hasCriticalItems, setHasCriticalItems] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
-    const [pendingCount, setPendingCount] = useState(0);
-    const { cartCount } = useCart();
 
     useEffect(() => {
         async function checkCriticalStock() {
@@ -36,40 +32,12 @@ export default function HomeScreen() {
             }
         }
 
-        async function loadPendingCount() {
-            try {
-                const result = await getPendingSalesCountAction();
-                if (result.success) {
-                    setPendingCount(result.count);
-                }
-            } catch (err) {
-                console.error("Erro ao contar vendas pendentes:", err);
-            }
-        }
-
         checkCriticalStock();
         loadAdminStatus();
-        loadPendingCount();
     }, []);
 
     return (
         <div className="home-screen">
-            {/* Floating icons - Cart & Pending Sales */}
-            <div className="floating-icons">
-                <Link href="/cart" className="floating-icon-btn" title="Carrinho">
-                    <ShoppingCart size={22} />
-                    {cartCount > 0 && (
-                        <span className="floating-badge">{cartCount > 99 ? '99+' : cartCount}</span>
-                    )}
-                </Link>
-                <Link href="/pending-sales" className="floating-icon-btn" title="Vendas Pendentes">
-                    <Clock size={22} />
-                    {pendingCount > 0 && (
-                        <span className="floating-badge">{pendingCount > 99 ? '99+' : pendingCount}</span>
-                    )}
-                </Link>
-            </div>
-
             <div className="menu-grid">
                 {/* Venda */}
                 <Link href="/scan?mode=sale" className="menu-card decoration-none">

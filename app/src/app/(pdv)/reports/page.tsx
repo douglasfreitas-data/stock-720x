@@ -514,8 +514,13 @@ export default function ReportsPage() {
             // Standard ungrouped PDF
             drawHeader(false);
 
+            let totalUnits = 0;
+            let totalValue = 0;
+            let numMovements = 0;
+
             filteredSessions.forEach(s => {
                 s.stock_movements?.forEach(m => {
+                    numMovements++;
                     const dayKey = getDateKey(s.created_at);
                     
                     if (dayKey !== currentPdfDay) {
@@ -535,6 +540,8 @@ export default function ReportsPage() {
                         hour: '2-digit', minute: '2-digit',
                     });
                     const price = getProductPrice(m);
+                    const qty = Math.abs(m.quantity);
+                    
                     doc.text(date, 14, y);
                     doc.text(extractClient(s).substring(0, 25) || '-', 35, y);
                     doc.text((OPERATION_LABELS[s.operation] || s.operation).substring(0, 20), 75, y);
@@ -543,9 +550,23 @@ export default function ReportsPage() {
                     if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 212, y);
                     doc.text(String(m.new_stock), 235, y);
                     doc.text(shortUser(s.user_email).substring(0, 20), 255, y);
+                    
+                    totalUnits += qty;
+                    totalValue += (price * qty);
                     y += 5;
                 });
             });
+
+            // Total line for Custom Filter
+            y += 2;
+            doc.setDrawColor(100, 100, 100);
+            doc.line(14, y, 285, y);
+            y += 5;
+            doc.setFont('helvetica', 'bold');
+            let totalStr = `Total Geral: ${numMovements} movimentações | ${totalUnits} un`;
+            if (activeTab !== 'entrada') totalStr += ` | Valor Total: R$ ${totalValue.toFixed(2)}`;
+            doc.text(totalStr, 14, y);
+            doc.setFont('helvetica', 'normal');
         }
 
         doc.save(`relatorio_${activeTab}_${new Date().toISOString().slice(0, 10)}.pdf`);

@@ -137,6 +137,12 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
         }
     };
 
+    const handleSelectTestLongest = () => {
+        const sorted = [...productsForQR].sort((a, b) => b.name.length - a.name.length);
+        const top18 = sorted.slice(0, 18).map(p => p.id);
+        setSelectedIds(new Set(top18));
+    };
+
     // Generate QR codes only for selected products
     useEffect(() => {
         const generateQRCodes = async () => {
@@ -189,11 +195,12 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const pageWidth = 210;
             const pageHeight = 297;
-            const itemWidth = 150;
-            const itemHeight = 30;
-            const cols = 1;
-            const marginX = (pageWidth - itemWidth) / 2; // 30mm
-            const marginY = (pageHeight - (9 * itemHeight)) / 2; // 13.5mm
+            const itemWidth = 95;  // 2 columns
+            const itemHeight = 30; // 9 rows -> 2 cols * 9 rows = 18 labels
+            const cols = 2;
+            const rowsPerPage = 9;
+            const marginX = (pageWidth - (itemWidth * cols)) / 2; // e.g. 10mm
+            const marginY = (pageHeight - (rowsPerPage * itemHeight)) / 2; // e.g. 13.5mm
             
             let currentItemCount = 0;
 
@@ -201,13 +208,15 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 const product = selectedProductsArr[i];
                 
                 // Calculate position
-                const row = currentItemCount % 9;
+                const itemsOnPage = currentItemCount % (cols * rowsPerPage);
+                const col = itemsOnPage % cols;
+                const row = Math.floor(itemsOnPage / cols);
                 
-                let x = marginX;
+                let x = marginX + (col * itemWidth);
                 let y = marginY + (row * itemHeight);
                 
                 // Check if we need a new page
-                if (row === 0 && currentItemCount > 0) {
+                if (itemsOnPage === 0 && currentItemCount > 0) {
                     pdf.addPage();
                 }
 
@@ -223,32 +232,48 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                     pdf.addImage(imageBase64, 'JPEG', x + 2, y + 2, 26, 26);
                 }
 
+                const qrSize = 24;
+                const qrX = x + itemWidth - qrSize - 3;
                 const textX = x + 30;
+                const maxTextWidth = itemWidth - 30 - qrSize - 6;
+
                 let textY = y + 7;
                 
-                // Product Name
-                pdf.setFontSize(12);
+                // Product Name (Dynamic Size)
+                let fontSize = 11;
                 pdf.setFont('helvetica', 'bold');
                 pdf.setTextColor(0);
 
-                let splitTitle = pdf.splitTextToSize(product.name, 90);
+                pdf.setFontSize(fontSize);
+                let splitTitle = pdf.splitTextToSize(product.name, maxTextWidth);
+                
+                // Reduce font until it fits in max 3 lines, minimum size 6
+                while (splitTitle.length > 3 && fontSize > 6) {
+                    fontSize -= 0.5;
+                    pdf.setFontSize(fontSize);
+                    splitTitle = pdf.splitTextToSize(product.name, maxTextWidth);
+                }
+
                 if (splitTitle.length > 3) {
                     splitTitle = splitTitle.slice(0, 3);
                     splitTitle[2] = splitTitle[2].slice(0, -3) + '...';
                 }
+                
+                // Calculate total height of text block so we vertically center it or push down
+                const lineHeight = (fontSize * 0.35); // Approx mm height per line
                 pdf.text(splitTitle, textX, textY);
 
-                textY += (splitTitle.length * 4.5) + 2;
+                textY += (splitTitle.length * lineHeight) + 2;
 
                 // Barcode / ID
                 pdf.setFont('helvetica', 'bold');
-                pdf.setFontSize(11);
+                pdf.setFontSize(9);
                 pdf.setTextColor(80);
                 pdf.text(`Cód: ${product.barcode}`, textX, textY);
 
                 // Footer
                 pdf.setFont('helvetica', 'normal');
-                pdf.setFontSize(7);
+                pdf.setFontSize(6);
                 pdf.setTextColor(150);
                 pdf.text('Stock 720x', textX, y + 27);
 
@@ -263,8 +288,6 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 }
 
                 if (qrDataUrl) {
-                    const qrSize = 24;
-                    const qrX = x + itemWidth - qrSize - 3;
                     const qrY = y + (itemHeight - qrSize) / 2;
                     pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
                 }
@@ -357,19 +380,30 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <button
-                        onClick={handleSelectAll}
-                        style={{
-                            background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', fontWeight: 'bold'
-                        }}
-                    >
-                        {selectedIds.size === productsForQR.length ? (
-                            <><CheckSquare size={18} /> Limpar Seleção</>
-                        ) : (
-                            <><Square size={18} /> Selecionar Todos</>
-                        )}
-                    </button>
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <button
+                            onClick={handleSelectTestLongest}
+                            style={{
+                                background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '4px', padding: '4px 8px', color: 'var(--text-secondary)', cursor: 'pointer',
+                                fontSize: '0.8rem', fontWeight: 'bold'
+                            }}
+                        >
+                            Teste 18 Maiores
+                        </button>
+                        <button
+                            onClick={handleSelectAll}
+                            style={{
+                                background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer',
+                                display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', fontWeight: 'bold'
+                            }}
+                        >
+                            {selectedIds.size === productsForQR.length ? (
+                                <><CheckSquare size={18} /> Limpar Seleção</>
+                            ) : (
+                                <><Square size={18} /> Selecionar Todos</>
+                            )}
+                        </button>
+                    </div>
 
                     <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                         {selectedIds.size} selecionado(s)

@@ -7,8 +7,8 @@
 | Mockup/Protótipo | 34.0h | ✅ Concluído |
 | Desenvolvimento (Fase 2/3) | 99.0h | ✅ Concluído |
 | Produção & Operação F. (Fase 4) | 8.0h | ✅ Concluído |
-| Expansão (Fase 5) | 66.0h | 🔄 Em andamento |
-| **Total** | **207.0h** | - |
+| Expansão (Fase 5) | 71.0h | 🔄 Em andamento |
+| **Total** | **212.0h** | - |
 
 ---
 
@@ -85,7 +85,7 @@
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Total**: 66.0 horas
+**Total**: 71.0 horas
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -97,11 +97,12 @@
 | 18/03/2026 | 16.0h | **PDV Cloud & Arquitetura de "Venda Suspensa"**: Consolidação de Redux/Contexts para fundir Carrinho e Checkout. Lógica pesada de "Fiado/Pendente" envolvendo reserva temporal e estorno no Supabase sem afetar log da Nuvemshop. Filtros complexos PDF (jsPDF + Base64 fonts). |
 | 19/03/2026 | 14.0h | **Migração de Performance Bruta**: Desacoplamento da Lista/QR Code da REST API Nuvemshop (que sofria 429 Too Many Requests), re-plumbing para o Supabase (SQL Rápido). Intersection Observer infinito e proxying dinâmico via gerador de blobs Img local. Paginação jsPDF. |
 | 19/03/2026 | 10.0h | **Infraestrutura Offline (Sync Queue)**: Implementação da Arquitetura `sync_queue` Local-First (banco salva offline, cron job noturno limpa fila para a nuvemshop via Upserts). Debug de render cascade (useEffect Thrashing) em React no infinite scroll de QR Codes. |
+| 19/03/2026 | 5.0h | **Engenharia de Webhooks Nuvemshop & App PDV**: Resolução de conflitos de concorrência em pedidos online. Implementação de "Máquina de Estados de Reserva" (Open, Paid, Canceled) mapeando comportamento de carrinho para o PDV físico. Criação de Dashboard de Auditoria de Estoque Automatizado Administrativo cruzando base de dados locais com a API da Nuvemshop. |
 
 ## 📊 Métricas Globais
 
 - **Perfil de Esforço Estimado**: Compatível com 1 Desenvolvedor Pleno/Sênior 
-- **Tempo Acumulado do Projeto**: ~207.0h (aprox. 5 a 6 semanas em Full-Time 40h)
+- **Tempo Acumulado do Projeto**: ~212.0h (aprox. 5 a 6 semanas em Full-Time 40h)
 - **Progresso atual**: ~90% (Fase 5 avançada, rumo ao encerramento)
 
 ---

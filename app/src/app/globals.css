@@ -1580,6 +1580,16 @@ a {
   animation: spinOrange 0.8s linear infinite;
 }
 
+.loading-spinner-sm {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 85, 0, 0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spinOrange 0.8s linear infinite;
+  display: inline-block;
+}
+
 .loading-spinner-text {
   font-size: 0.85rem;
   color: var(--accent);

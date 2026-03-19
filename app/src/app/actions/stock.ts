@@ -38,9 +38,24 @@ export async function updateStockAction(params: StockUpdateParams) {
         const oldStock = variantData.stock || 0;
         const productId = variantData.product_id;
 
-        // 2. DUAL WRITE: Atualizar na Nuvemshop PRIMEIRO (fonte de verdade)
+        // 2. DUAL WRITE: Atualizar na Nuvemshop PRIMEIRO (fonte da verdade quando online)
         const nuvemshop = await getNuvemshopClient();
         let nuvemshopUpdated = false;
+
+        const queueForSync = async () => {
+            console.log(`[Stock] Adicionando variante ${variantId} à fila de sincronização (sync_queue)`);
+            const { error: queueError } = await supabaseAdmin
+                .from('sync_queue')
+                .upsert({
+                    variant_id: variantId,
+                    product_id: productId,
+                    stock: newStock
+                }, { onConflict: 'variant_id' }); // Mantém sempre o estoque em espera mais recente
+            
+            if (queueError) {
+                console.error('[Stock] Erro crítico ao adicionar na sync_queue:', queueError);
+            }
+        };
 
         if (nuvemshop) {
             try {
@@ -49,10 +64,12 @@ export async function updateStockAction(params: StockUpdateParams) {
                 console.log(`[Stock] Nuvemshop atualizado: variant ${variantId} → ${newStock}`);
             } catch (nsError) {
                 console.error('[Stock] Erro ao atualizar Nuvemshop:', nsError);
-                // Continua mesmo se falhar — registra no log para reconciliação
+                // Falhou (timeout ou erro 500) -> Fila local-first
+                await queueForSync();
             }
         } else {
-            console.warn('[Stock] Nuvemshop client não disponível. Atualizando apenas Supabase.');
+            console.warn('[Stock] Nuvemshop client não disponível. Atualizando apenas Supabase e adicionando à fila.');
+            await queueForSync();
         }
 
         // 3. Atualizar estoque no Supabase (cache local)

@@ -17,6 +17,9 @@ export async function syncAllProducts(storeId: string, accessToken: string) {
 
     console.log(`[Sync] Iniciando sincronização de produtos para loja ${storeId}...`);
 
+    // 1. Drenar a fila pendente local (Local-First Priority)
+    await processSyncQueue(api);
+
     while (hasMore) {
         try {
             // Busca página de produtos
@@ -156,4 +159,56 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
     }
 
     return { discrepancies, sessionIds };
+}
+
+/**
+ * Processa a fila de atualizações pendentes (local-first).
+ * Tenta enviar para a Nuvemshop; remove da fila em caso de sucesso.
+ */
+async function processSyncQueue(api: NuvemshopAPI) {
+    console.log('[Sync Queue] Verificando fila de sincronização pendente (operações offline)...');
+    
+    const { data: queueItems, error: fetchError } = await supabaseAdmin
+        .from('sync_queue')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+    if (fetchError) {
+        console.error('[Sync Queue] Erro ao buscar fila:', fetchError);
+        return;
+    }
+
+    if (!queueItems || queueItems.length === 0) {
+        console.log('[Sync Queue] Fila vazia. Nenhum ajuste offline pendente.');
+        return;
+    }
+
+    console.log(`[Sync Queue] Encontrados ${queueItems.length} itens na fila. Enviando para Nuvemshop...`);
+
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const item of queueItems) {
+        try {
+            console.log(`  -> Atualizando Nuvemshop: variante ${item.variant_id} = ${item.stock}`);
+            await api.updateVariantStock(Number(item.product_id), Number(item.variant_id), Number(item.stock));
+            
+            // Sucesso: deleta da fila
+            const { error: deleteError } = await supabaseAdmin
+                .from('sync_queue')
+                .delete()
+                .eq('id', item.id);
+                
+            if (deleteError) {
+                console.error(`  -> Erro ao deletar item ${item.id} da fila:`, deleteError);
+            } else {
+                successCount++;
+            }
+        } catch (error) {
+            console.error(`  -> Falha contínua na Nuvemshop para a variante ${item.variant_id}:`, error);
+            errorCount++;
+        }
+    }
+
+    console.log(`[Sync Queue] Fila processada: ${successCount} atualizados, ${errorCount} erros remanescentes.`);
 }

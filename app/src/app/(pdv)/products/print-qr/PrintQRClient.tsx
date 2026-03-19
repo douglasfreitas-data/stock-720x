@@ -142,7 +142,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
         const generateQRCodes = async () => {
             const codes: Record<number, string> = { ...qrCodes };
             let hasNew = false;
-            for (const product of selectedProductsArr) {
+            for (const product of visibleSelectedProducts) {
                 if (!codes[product.id]) {
                     try {
                         codes[product.id] = await QRCode.toDataURL(String(product.id), {
@@ -159,7 +159,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
             if (hasNew) setQrCodes(codes);
         };
         generateQRCodes();
-    }, [selectedProductsArr]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [visibleSelectedProducts]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const loadImage = async (url: string | null): Promise<string | null> => {
         if (!url) return null;
@@ -253,7 +253,15 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 pdf.text('Stock 720x', textX, y + 27);
 
                 // QR Code
-                const qrDataUrl = qrCodes[product.id];
+                let qrDataUrl = qrCodes[product.id];
+                if (!qrDataUrl) {
+                    qrDataUrl = await QRCode.toDataURL(String(product.id), {
+                        width: 200,
+                        margin: 2,
+                        color: { dark: '#000000', light: '#ffffff' }
+                    });
+                }
+
                 if (qrDataUrl) {
                     const qrSize = 24;
                     const qrX = x + itemWidth - qrSize - 3;
@@ -376,7 +384,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 style={{ marginBottom: '24px', opacity: selectedIds.size === 0 ? 0.6 : 1 }}
             >
                 {generatingPdf ? (
-                    <><Loader size={16} className="animate-spin" style={{ display: 'inline' }} /> Gerando PDF...</>
+                    <><div className="loading-spinner-sm" style={{ marginRight: '8px', verticalAlign: 'text-bottom' }} /> Gerando PDF...</>
                 ) : (
                     <><FileText size={16} style={{ display: 'inline' }} /> Gerar PDF dos Selecionados</>
                 )}
@@ -414,7 +422,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                     {qrCodes[product.id] ? (
                                         <img src={qrCodes[product.id]} alt="QR" className="qr-preview" style={{ width: '48px', height: '48px' }} />
                                     ) : (
-                                        <div className="qr-loading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Loader size={16} /></div>
+                                        <div className="qr-loading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px' }}><div className="loading-spinner-sm" /></div>
                                     )}
                                 </div>
                             </div>

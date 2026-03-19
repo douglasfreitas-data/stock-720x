@@ -13,9 +13,10 @@ interface NuvemshopProduct {
 
 interface ProductListClientProps {
     products: NuvemshopProduct[];
+    minStockMap?: Record<number, number>;
 }
 
-export default function ProductListClient({ products }: ProductListClientProps) {
+export default function ProductListClient({ products, minStockMap = {} }: ProductListClientProps) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -47,11 +48,12 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                     sku,
                     barcode,
                     totalStock: v.stock || 0,
+                    minStock: minStockMap[v.id] || 0,
                     mainImage
                 };
             })
         ).sort((a, b) => a.productName.localeCompare(b.productName));
-    }, [products]);
+    }, [products, minStockMap]);
 
     // Filter by search term
     const filteredProducts = useMemo(() => {
@@ -113,7 +115,14 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                             <img src={product.mainImage} alt={product.productName} className="product-list-image" />
                             <div className="product-list-info">
                                 <h3 className="product-list-name">{product.productName}</h3>
-                                <p className="product-list-stock" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Package size={14} /> {product.totalStock} em estoque</p>
+                                <p className="product-list-stock" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <Package size={14} /> {product.totalStock} em estoque
+                                </p>
+                                {product.minStock > 0 && (
+                                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                                        Mín. Ideal: {product.minStock}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     ))

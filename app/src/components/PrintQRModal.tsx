@@ -68,29 +68,26 @@ export default function PrintQRModal({ products, onClose }: PrintQRModalProps) {
             const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
             const pageWidth = 210;
             const pageHeight = 297;
-            const margin = 5;
-            const itemWidth = 100;
+            const itemWidth = 150;
             const itemHeight = 30;
-            const cols = 2;
+            const cols = 1;
+            const marginX = (pageWidth - itemWidth) / 2; // 30mm
+            const marginY = (pageHeight - (9 * itemHeight)) / 2; // 13.5mm
             
             let currentItemCount = 0;
 
             for (let i = 0; i < products.length; i++) {
                 const product = products[i];
                 
-                // Calculate position based on grid (2 cols)
-                const col = currentItemCount % cols;
-                const row = Math.floor(currentItemCount / cols);
+                // Calculate position
+                const row = currentItemCount % 9;
                 
-                let x = margin + (col * itemWidth);
-                let y = margin + (row * itemHeight);
+                let x = marginX;
+                let y = marginY + (row * itemHeight);
                 
                 // Check if we need a new page
-                if (y + itemHeight > pageHeight - margin) {
+                if (row === 0 && currentItemCount > 0) {
                     pdf.addPage();
-                    currentItemCount = 0;
-                    x = margin;
-                    y = margin;
                 }
 
                 // Draw dashed border for cutting
@@ -109,22 +106,22 @@ export default function PrintQRModal({ products, onClose }: PrintQRModalProps) {
                 let textY = y + 7;
                 
                 // Product Name
-                pdf.setFontSize(11);
+                pdf.setFontSize(12);
                 pdf.setFont('helvetica', 'bold');
                 pdf.setTextColor(0);
 
-                let splitTitle = pdf.splitTextToSize(product.name, 41);
+                let splitTitle = pdf.splitTextToSize(product.name, 90);
                 if (splitTitle.length > 3) {
                     splitTitle = splitTitle.slice(0, 3);
                     splitTitle[2] = splitTitle[2].slice(0, -3) + '...';
                 }
                 pdf.text(splitTitle, textX, textY);
 
-                textY += (splitTitle.length * 4.2) + 2;
+                textY += (splitTitle.length * 4.5) + 2;
 
                 // Barcode / ID
                 pdf.setFont('helvetica', 'bold');
-                pdf.setFontSize(10);
+                pdf.setFontSize(11);
                 pdf.setTextColor(80);
                 pdf.text(`Cód: ${product.barcode}`, textX, textY);
 

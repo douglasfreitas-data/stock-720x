@@ -34,6 +34,8 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
     const [showDropdown, setShowDropdown] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const [visibleCount, setVisibleCount] = useState(20);
+    const observerTarget = useRef<HTMLDivElement>(null);
 
     // Transform and sort products for QR logic
     const productsForQR = useMemo(() => {
@@ -91,6 +93,27 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
     const selectedProductsArr = useMemo(() => {
         return productsForQR.filter(p => selectedIds.has(p.id));
     }, [productsForQR, selectedIds]);
+
+    const visibleSelectedProducts = useMemo(() => {
+        return selectedProductsArr.slice(0, visibleCount);
+    }, [selectedProductsArr, visibleCount]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && visibleCount < selectedProductsArr.length) {
+                    setVisibleCount(prev => prev + 20);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
+        }
+
+        return () => observer.disconnect();
+    }, [visibleCount, selectedProductsArr.length]);
 
     const handleSelectProduct = (id: number) => {
         const newSet = new Set(selectedIds);
@@ -363,7 +386,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 <>
                     <h4 className="print-preview-title">Prévia ({selectedProductsArr.length} produtos)</h4>
                     <div className="print-preview-list">
-                        {selectedProductsArr.map(product => (
+                        {visibleSelectedProducts.map(product => (
                             <div key={product.id} className="print-preview-item" style={{ position: 'relative' }}>
                                 <button
                                     onClick={() => handleRemoveProduct(product.id)}
@@ -396,6 +419,11 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                 </div>
                             </div>
                         ))}
+                        {visibleCount < selectedProductsArr.length && (
+                            <div ref={observerTarget} style={{ padding: '20px', display: 'flex', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                                <Loader size={20} className="animate-spin" />
+                            </div>
+                        )}
                     </div>
                 </>
             )}

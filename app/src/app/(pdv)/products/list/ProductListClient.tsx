@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Package, ArrowLeft, Search, X } from 'lucide-react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { Package, ArrowLeft, Search, X, Loader } from 'lucide-react';
 
 interface LocalVariant {
     id: number;
@@ -21,18 +21,43 @@ interface LocalProduct {
     published: boolean;
 }
 
+// Define a type for the processed product, as it's used for selectedProduct
+interface ProcessedProduct {
+    id: number;
+    productId: number;
+    productName: string;
+    sku: string;
+    barcode: string;
+    totalStock: number;
+    minStock: number;
+    mainImage: string;
+    // Add other properties from LocalProduct if needed for selectedProduct details
+    // For example, if you want to show original product name or other details
+    name: { pt?: string; [key: string]: string | undefined };
+    images: { id?: number; src: string }[];
+    variants: LocalVariant[];
+    published: boolean;
+}
+
+
 interface ProductListClientProps {
     products: LocalProduct[];
 }
 
-export default function ProductListClient({ products }: ProductListClientProps) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [selectedProduct, setSelectedProduct] = useState<any>(null);
+export default function ProductListClient({ products }: { products: LocalProduct[] }) {
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedProduct, setSelectedProduct] = useState<ProcessedProduct | null>(null);
+    const [visibleCount, setVisibleCount] = useState(20);
+    const observerTarget = useRef<HTMLDivElement>(null);
+
+    // Reset visible count when searching
+    useEffect(() => {
+        setVisibleCount(20);
+    }, [searchTerm]);
 
     // Transform and sort products alphabetically
     const processedProducts = useMemo(() => {
-        return products.flatMap(product => 
+        return products.flatMap(product =>
             product.variants.map((v, index) => {
                 const mainImage = v.image_url || product.images?.[0]?.src || 'https://via.placeholder.com/100';
                 let productName = product.name?.pt || (product.name ? Object.values(product.name)[0] : null) || 'Produto sem nome';
@@ -72,6 +97,27 @@ export default function ProductListClient({ products }: ProductListClientProps) 
             p.productName.toLowerCase().includes(q)
         );
     }, [processedProducts, searchTerm]);
+
+    const visibleProducts = useMemo(() => {
+        return filteredProducts.slice(0, visibleCount);
+    }, [filteredProducts, visibleCount]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && visibleCount < filteredProducts.length) {
+                    setVisibleCount(prev => prev + 20);
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
+        }
+
+        return () => observer.disconnect();
+    }, [visibleCount, filteredProducts.length]);
 
     return (
         <div className="modal-body p-0">
@@ -115,31 +161,38 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                         Nenhum produto encontrado.
                     </div>
                 ) : (
-                    filteredProducts.map((product, index) => (
-                        <div 
-                            key={`prod-${product.id}-${index}`} 
-                            className="product-list-item"
-                            onClick={() => setSelectedProduct(product)}
-                        >
-                            <img 
-                                src={`/_next/image?url=${encodeURIComponent(product.mainImage)}&w=128&q=75`} 
-                                alt={product.productName} 
-                                className="product-list-image" 
-                                loading="lazy"
-                            />
-                            <div className="product-list-info">
-                                <h3 className="product-list-name">{product.productName}</h3>
-                                <p className="product-list-stock" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    <Package size={14} /> {product.totalStock} em estoque
-                                </p>
-                                {product.minStock > 0 && (
-                                    <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                                        Mín. Ideal: {product.minStock}
+                    <>
+                        {visibleProducts.map((product, index) => (
+                            <div 
+                                key={`prod-${product.id}-${index}`} 
+                                className="product-list-item"
+                                onClick={() => setSelectedProduct(product)}
+                            >
+                                <img 
+                                    src={`/_next/image?url=${encodeURIComponent(product.mainImage)}&w=128&q=75`} 
+                                    alt={product.productName} 
+                                    className="product-list-image" 
+                                    loading="lazy"
+                                />
+                                <div className="product-list-info">
+                                    <h3 className="product-list-name">{product.productName}</h3>
+                                    <p className="product-list-stock" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <Package size={14} /> {product.totalStock} em estoque
                                     </p>
-                                )}
+                                    {product.minStock > 0 && (
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                                            Mín. Ideal: {product.minStock}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))
+                        ))}
+                        {visibleCount < filteredProducts.length && (
+                            <div ref={observerTarget} style={{ padding: '20px', display: 'flex', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                                <Loader size={20} className="animate-spin" />
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
 

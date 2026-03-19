@@ -17,6 +17,7 @@ interface StockMovement {
         sku?: string;
         barcode?: string;
         price?: number;
+        values?: any;
         products?: { name?: { pt?: string; [key: string]: string | undefined } };
     };
 }
@@ -48,13 +49,29 @@ const OPERATION_LABELS: Record<string, string> = {
     ajuste: 'Ajuste',
     reserva: 'Reserva',
     estorno_reserva: 'Estorno Reserva',
-    sync_auto: '🔄 Sync Nuvemshop',
+    sync_auto: 'Sync',
+    sync_nuvemshop: 'Sync',
+    auditoria_admin: 'Auditoria Admin',
     outro: 'Outro',
 };
 
 // ── Helpers ──
 function getProductName(m: StockMovement): string {
-    return m.product_variants?.products?.name?.pt || 'Produto s/ Nome';
+    const pName = m.product_variants?.products?.name?.pt || 'Produto s/ Nome';
+    const vals = m.product_variants?.values;
+
+    let variantStr = '';
+    if (Array.isArray(vals) && vals.length > 0) {
+        // As variantes da Nuvemshop podem vir como [{"pt": "Azul"}, {"pt": "M"}]
+        const opts = vals.map(v => typeof v === 'object' ? (v.pt || v.es || v.en || String(v)) : String(v)).filter(Boolean);
+        if (opts.length > 0) {
+            variantStr = ` (${opts.join(' - ')})`;
+        }
+    } else if (typeof vals === 'string') {
+        variantStr = ` (${vals})`;
+    }
+
+    return `${pName}${variantStr}`;
 }
 
 function getProductPrice(m: StockMovement): number {
@@ -76,7 +93,7 @@ function getDateKey(iso: string): string {
 }
 
 function extractClient(session: { notes: string | null; operation?: string }): string {
-    if (session.operation === 'venda_online') return 'Site';
+    if (session.operation && ['venda_online', 'sync_nuvemshop', 'sync_auto'].includes(session.operation)) return 'Site';
     if (!session.notes) return '';
     const match = session.notes.match(/Cliente:\s*([^|]+)/i);
     return match ? match[1].trim() : '';

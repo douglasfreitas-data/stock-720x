@@ -165,6 +165,11 @@ export default function ProductListClient({ products, minStockMap = {} }: Produc
                             <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <Package size={14} /> {selectedProduct.totalStock} em estoque
                             </p>
+                            {selectedProduct.minStock > 0 && (
+                                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
+                                    Mín. Ideal: {selectedProduct.minStock}
+                                </p>
+                            )}
                         </div>
 
                         {/* Actions */}

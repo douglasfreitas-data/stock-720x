@@ -110,9 +110,10 @@ export class NuvemshopAPI {
     /**
      * Lista todos os produtos (paginado)
      */
-    async getProducts(page = 1, perPage = 50): Promise<NuvemshopProduct[]> {
+    async getProducts(page = 1, perPage = 50, fetchOptions?: RequestInit): Promise<NuvemshopProduct[]> {
         return this.request<NuvemshopProduct[]>(
-            `/products?page=${page}&per_page=${perPage}`
+            `/products?page=${page}&per_page=${perPage}`,
+            fetchOptions
         );
     }
 

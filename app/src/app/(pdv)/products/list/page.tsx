@@ -22,7 +22,7 @@ export default async function ProductList() {
 
     let products: NuvemshopProduct[] = [];
     try {
-        products = await client.getProducts(1, 100);
+        products = await client.getProducts(1, 100, { next: { revalidate: 60, tags: ['products'] } });
     } catch (error) {
         console.error('Erro ao buscar produtos:', error);
     }

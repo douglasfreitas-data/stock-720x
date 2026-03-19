@@ -9,7 +9,7 @@ interface NuvemshopProduct {
     id: number;
     name: { pt?: string;[key: string]: string | undefined };
     images: { src: string }[];
-    variants: { stock?: number | null; sku?: string | null; barcode?: string | null }[];
+    variants: { id: number; stock?: number | null; sku?: string | null; barcode?: string | null; values?: { pt: string }[] | null }[];
     published: boolean;
 }
 
@@ -27,15 +27,31 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
 
     // Transform and sort products for QR logic
     const productsForQR = useMemo(() => {
-        return products.map(p => ({
-            id: p.id,
-            name: p.name.pt || Object.values(p.name)[0] || 'Produto sem nome',
-            sku: p.variants[0]?.sku || `SKU-${p.id}`,
-            barcode: p.variants[0]?.barcode || p.variants[0]?.sku || `${p.id}`,
-            image: p.images[0]?.src || 'https://via.placeholder.com/100',
-            category: '',
-            brand: ''
-        })).sort((a, b) => a.name.localeCompare(b.name));
+        return products.flatMap(p => 
+            p.variants.map((v, index) => {
+                let baseName = p.name.pt || Object.values(p.name)[0] || 'Produto sem nome';
+                
+                if (v.values && Array.isArray(v.values) && v.values.length > 0) {
+                    const tags = v.values.map(val => val?.pt).filter(Boolean).join(' / ');
+                    if (tags) {
+                        baseName = `${baseName} - ${tags}`;
+                    }
+                } else if (p.variants.length > 1) {
+                    baseName = `${baseName} - Var ${index + 1}`;
+                }
+
+                return {
+                    id: v.id,
+                    productId: p.id,
+                    name: baseName,
+                    sku: v.sku || `SKU-${p.id}-${index}`,
+                    barcode: v.barcode || v.sku || `${v.id}`,
+                    image: p.images[0]?.src || 'https://via.placeholder.com/100',
+                    category: '',
+                    brand: ''
+                };
+            })
+        ).sort((a, b) => a.name.localeCompare(b.name));
     }, [products]);
 
     // Close dropdown when clicking outside

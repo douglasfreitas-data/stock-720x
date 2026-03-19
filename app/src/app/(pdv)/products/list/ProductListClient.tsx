@@ -7,7 +7,7 @@ interface NuvemshopProduct {
     id: number;
     name: { pt?: string;[key: string]: string | undefined };
     images: { src: string }[];
-    variants: { stock?: number | null; sku?: string | null; barcode?: string | null }[];
+    variants: { id: number; stock?: number | null; sku?: string | null; barcode?: string | null; values?: { pt: string }[] | null }[];
     published: boolean;
 }
 
@@ -22,22 +22,35 @@ export default function ProductListClient({ products }: ProductListClientProps) 
 
     // Transform and sort products alphabetically
     const processedProducts = useMemo(() => {
-        return products.map(product => {
-            const mainImage = product.images[0]?.src || 'https://via.placeholder.com/100';
-            const totalStock = product.variants.reduce((acc, v) => acc + (v.stock || 0), 0);
-            const productName = product.name.pt || Object.values(product.name)[0] || 'Produto sem nome';
-            const sku = product.variants[0]?.sku || '-';
-            const barcode = product.variants[0]?.barcode || '-';
+        return products.flatMap(product => 
+            product.variants.map((v, index) => {
+                const mainImage = product.images[0]?.src || 'https://via.placeholder.com/100';
+                let productName = product.name.pt || Object.values(product.name)[0] || 'Produto sem nome';
+                
+                if (v.values && Array.isArray(v.values) && v.values.length > 0) {
+                    const tags = v.values.map(val => val?.pt).filter(Boolean).join(' / ');
+                    if (tags) {
+                        productName = `${productName} - ${tags}`;
+                    }
+                } else if (product.variants.length > 1) {
+                    productName = `${productName} - Var ${index + 1}`;
+                }
 
-            return {
-                ...product,
-                productName,
-                sku,
-                barcode,
-                totalStock,
-                mainImage
-            };
-        }).sort((a, b) => a.productName.localeCompare(b.productName));
+                const sku = v.sku || '-';
+                const barcode = v.barcode || '-';
+
+                return {
+                    ...product,
+                    id: v.id,
+                    productId: product.id,
+                    productName,
+                    sku,
+                    barcode,
+                    totalStock: v.stock || 0,
+                    mainImage
+                };
+            })
+        ).sort((a, b) => a.productName.localeCompare(b.productName));
     }, [products]);
 
     // Filter by search term

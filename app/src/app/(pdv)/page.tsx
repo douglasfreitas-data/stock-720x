@@ -107,6 +107,16 @@ export default function HomeScreen() {
                         <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>Gestão de Usuários</span>
                     </Link>
                     
+                    <Link href="/admin/audit" style={{ 
+                        display: 'flex', alignItems: 'center', gap: '8px', 
+                        padding: 'var(--space-sm) var(--space-md)',
+                        borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
+                        color: 'var(--text-secondary)', textDecoration: 'none', background: 'var(--surface)'
+                    }}>
+                        <AlertTriangle size={16} color="var(--accent)" />
+                        <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>Auditoria API</span>
+                    </Link>
+
                     <Link href="/admin/logs" style={{ 
                         display: 'flex', alignItems: 'center', gap: '8px', 
                         padding: 'var(--space-sm) var(--space-md)',

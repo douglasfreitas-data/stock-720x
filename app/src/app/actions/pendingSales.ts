@@ -215,7 +215,8 @@ export async function getPendingSalesCountAction() {
         const { count, error } = await supabaseAdmin
             .from('pending_sales')
             .select('*', { count: 'exact', head: true })
-            .eq('status', 'pending');
+            .eq('status', 'pending')
+            .neq('payment_method', 'Nuvemshop');
 
         if (error) {
             console.error('Erro ao contar vendas pendentes:', error);
@@ -235,6 +236,7 @@ export async function getPendingSalesAction() {
             .from('pending_sales')
             .select('*')
             .eq('status', 'pending')
+            .neq('payment_method', 'Nuvemshop')
             .order('created_at', { ascending: false });
 
         if (error) {

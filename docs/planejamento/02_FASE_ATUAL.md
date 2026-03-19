@@ -33,7 +33,7 @@
 - [x] Refinamento visual: Adaptação de cores ao Dark Theme global (var(--bg-card)), remoção de emojis pesados, substituição da visualização crua pelo formato JSONB polido (Nuvemshop Sync), e ajuste tipográfico.
 
 ## 🏢 Bloco 5.3: Multi-loja
-- [ ] Estruturação (a definir requisitos)
+- [x] Estruturação (a definir requisitos) - Não será mais necessario
 
 ## 🛒 Bloco 5.4: PDV Unificado & Vendas Pendentes — CONCLUÍDO
 > Transformação do fluxo de venda rápida no aplicativo, permitindo separar itens sem pagar na hora.

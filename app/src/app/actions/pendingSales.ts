@@ -210,6 +210,25 @@ export async function cancelPendingSaleAction(id: string) {
     }
 }
 
+export async function getPendingSalesCountAction() {
+    try {
+        const { count, error } = await supabaseAdmin
+            .from('pending_sales')
+            .select('*', { count: 'exact', head: true })
+            .eq('status', 'pending');
+
+        if (error) {
+            console.error('Erro ao contar vendas pendentes:', error);
+            return { success: false, count: 0 };
+        }
+
+        return { success: true, count: count ?? 0 };
+    } catch (error) {
+        console.error('Erro interno ao contar vendas pendentes:', error);
+        return { success: false, count: 0 };
+    }
+}
+
 export async function getPendingSalesAction() {
     try {
         const { data, error } = await supabaseAdmin

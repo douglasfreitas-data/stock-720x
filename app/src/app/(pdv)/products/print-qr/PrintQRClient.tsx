@@ -380,6 +380,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                     src={`/_next/image?url=${encodeURIComponent(product.mainImage)}&w=128&q=75`} 
                                     alt={product.name} 
                                     className="product-qr-image" 
+                                    style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px' }}
                                     loading="lazy"
                                 />
                                 <div className="print-preview-info">
@@ -389,7 +390,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                 </div>
                                 <div className="print-preview-qr">
                                     {qrCodes[product.id] ? (
-                                        <img src={qrCodes[product.id]} alt="QR" className="qr-preview" />
+                                        <img src={qrCodes[product.id]} alt="QR" className="qr-preview" style={{ width: '48px', height: '48px' }} />
                                     ) : (
                                         <div className="qr-loading" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Loader size={16} /></div>
                                     )}

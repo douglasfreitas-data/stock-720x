@@ -211,6 +211,17 @@ export async function POST(request: NextRequest) {
                     console.log(`✅ [Webhook Orders] Pedido confirmado #${order.number}. Finalizando Reserva pendente.`);
                     // Apenas atualiza o status, o estoque JÁ FOI debitado na reserva!
                     await supabaseAdmin.from('pending_sales').update({ status: 'completed', updated_at: new Date().toISOString() }).eq('id', existingSale.id);
+                    
+                    // Modifica a operação no log de movimentações de 'reserva' para venda fechada
+                    await supabaseAdmin
+                        .from('stock_sessions')
+                        .update({ 
+                            operation: 'venda_online',
+                            notes: `Venda Online - ${clientName}`
+                        })
+                        .eq('notes', `Reserva - ${clientName}`)
+                        .eq('operation', 'reserva');
+
                     return NextResponse.json({ success: true, message: 'Reserva finalizada com sucesso (paga)' });
                 } else {
                     console.log(`[Webhook Orders] Pedido #${order.number} já estava ${existingSale.status}. Ignorando.`);

@@ -56,28 +56,47 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: true, message: 'No products in order' });
         }
 
-        console.log(`✅ Pedido #${order.number} — sincronizando estoque local`);
+        const isCanceled = order.status === 'canceled';
+        const operationType = isCanceled ? 'cancelamento_venda' : 'venda_online';
+        const notesText = isCanceled ? `Cancelamento Nuvemshop #${order.number}` : `Pedido Nuvemshop #${order.number}`;
 
-        // Criar uma sessão de estoque para registrar a venda online
+        // Verificar Idempotência: Checar se ESTA operação já foi processada
+        const { data: existingSession } = await supabaseAdmin
+            .from('stock_sessions')
+            .select('id')
+            .eq('operation', operationType)
+            .eq('notes', notesText)
+            .maybeSingle();
+
+        if (existingSession) {
+            console.log(`[Webhook Orders] Operação ${operationType} do Pedido #${order.number} já processada. Ignorando para evitar duplicidade.`);
+            return NextResponse.json({ success: true, message: 'Order operation already processed' });
+        }
+
+        console.log(`✅ Pedido #${order.number} (${operationType}) — sincronizando estoque local`);
+
+        const sessionType = isCanceled ? 'entrada' : 'saida';
+
+        // Criar uma sessão de estoque para registrar a venda ou cancelamento
         const { data: session, error: sessionError } = await supabaseAdmin
             .from('stock_sessions')
             .insert({
-                type: 'saida',
-                operation: 'venda_online',
+                type: sessionType,
+                operation: operationType,
                 status: 'closed',
-                notes: `Pedido Nuvemshop #${order.number}`
+                notes: notesText
             })
             .select('id')
             .single();
 
         if (sessionError) {
-            console.error('Falha ao criar sessão de estoque para venda online:', sessionError);
+            console.error('Falha ao criar sessão de estoque:', sessionError);
         }
 
         let pushTriggered = false;
 
         for (const product of order.products) {
-            console.log(`  - Produto ${product.product_id}: -${product.quantity} unidades (variante ${product.variant_id})`);
+            console.log(`  - Produto ${product.product_id}: ${isCanceled ? '+' : '-'}${product.quantity} unidades (variante ${product.variant_id})`);
             
             // 1. Busca estoque atual do cache local
             const { data: variant, error: getError } = await supabaseAdmin
@@ -91,8 +110,10 @@ export async function POST(request: NextRequest) {
                 continue;
             }
 
-            // 2. Decrementa
-            const newStock = Math.max(0, (variant.stock || 0) - product.quantity);
+            // 2. Atualiza o estoque (soma se cancelado, subtrai se venda)
+            const newStock = isCanceled 
+                ? (variant.stock || 0) + product.quantity 
+                : Math.max(0, (variant.stock || 0) - product.quantity);
             
             const { error: updateError } = await supabaseAdmin
                 .from('product_variants')
@@ -100,18 +121,19 @@ export async function POST(request: NextRequest) {
                 .eq('id', variant.id);
 
             if (updateError) {
-                console.error(`    ↳ Falha ao dar baixa de estoque na variante ${variant.id}:`, updateError);
+                console.error(`    ↳ Falha ao atualizar estoque na variante ${variant.id}:`, updateError);
             } else {
                 console.log(`    ↳ Estoque atualizado no Supabase: antes ${variant.stock} -> agora ${newStock}`);
 
                 // 3. Registrar movimentação
                 if (session) {
+                    const quantityDelta = isCanceled ? product.quantity : -product.quantity;
                     await supabaseAdmin
                         .from('stock_movements')
                         .insert({
                             session_id: session.id,
                             variant_id: variant.id,
-                            quantity: -product.quantity,
+                            quantity: quantityDelta,
                             old_stock: variant.stock || 0,
                             new_stock: newStock,
                         });

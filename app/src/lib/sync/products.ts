@@ -66,7 +66,7 @@ export async function syncAllProducts(storeId: string, accessToken: string) {
  * Salva ou atualiza um único produto e suas variantes no Supabase.
  * Retorna se houve discrepância de estoque.
  */
-export async function upsertProduct(storeId: string, product: NuvemshopProduct) {
+export async function upsertProduct(storeId: string, product: NuvemshopProduct, ignoreStockSync: boolean = false) {
     let discrepancies = 0;
     const sessionIds: string[] = [];
 
@@ -104,7 +104,7 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
             const remoteStock = variant.stock || 0;
 
             // Se a variante já existe localmente E tem divergência de estoque
-            if (localStock !== undefined && localStock !== remoteStock) {
+            if (!ignoreStockSync && localStock !== undefined && localStock !== remoteStock) {
                 const diff = remoteStock - localStock;
                 const type = diff > 0 ? 'entrada' : 'saida';
                 const sessionId = uuidv4();
@@ -134,20 +134,23 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct) 
             }
         }
 
-        const variantsToUpsert = product.variants.map(variant => ({
-            id: variant.id,
-            product_id: product.id,
-            store_id: storeId,
-            sku: variant.sku,
-            barcode: variant.barcode,
-            price: parseFloat(variant.price),
-            stock: variant.stock,
-            stock_management: variant.stock_management,
-            values: variant.values,
-            image_url: variant.image_id ? product.images.find(img => img.id === variant.image_id)?.src : null,
-            // NOTA IMPORTANTE: Nós NÃO enviamos `min_stock` aqui!
-            updated_at: new Date().toISOString()
-        }));
+        const variantsToUpsert = product.variants.map(variant => {
+            const localStock = localStockMap.get(variant.id);
+            return {
+                id: variant.id,
+                product_id: product.id,
+                store_id: storeId,
+                sku: variant.sku,
+                barcode: variant.barcode,
+                price: parseFloat(variant.price),
+                stock: ignoreStockSync ? (localStock ?? variant.stock) : variant.stock,
+                stock_management: variant.stock_management,
+                values: variant.values,
+                image_url: variant.image_id ? product.images.find(img => img.id === variant.image_id)?.src : null,
+                // NOTA IMPORTANTE: Nós NÃO enviamos `min_stock` aqui!
+                updated_at: new Date().toISOString()
+            };
+        });
 
         const { error: varError } = await supabaseAdmin
             .from('product_variants')

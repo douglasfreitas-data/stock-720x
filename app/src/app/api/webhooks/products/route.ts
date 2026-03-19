@@ -50,8 +50,9 @@ export async function POST(request: NextRequest) {
 
         try {
             const productData = await api.getProduct(productId);
-            // Salva/Substitui o produto e variantes no Supabase
-            await upsertProduct(currentStoreId, productData);
+            // Salva/Substitui o produto e variantes no Supabase ignorando o estoque
+            // para evitar conflitos (race conditions) com o webhook de pedidos
+            await upsertProduct(currentStoreId, productData, true);
 
             console.log(`✅ Produto ${productId} sincronizado via Webhook.`);
         } catch (fetchErr) {

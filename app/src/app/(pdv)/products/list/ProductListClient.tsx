@@ -58,8 +58,7 @@ export default function ProductListClient({ products }: ProductListClientProps) 
         if (!searchTerm.trim()) return processedProducts;
         const q = searchTerm.toLowerCase();
         return processedProducts.filter(p =>
-            p.productName.toLowerCase().includes(q) ||
-            p.sku.toLowerCase().includes(q)
+            p.productName.toLowerCase().includes(q)
         );
     }, [processedProducts, searchTerm]);
 
@@ -70,9 +69,7 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                     <Search size={18} color="var(--text-secondary)" style={{ position: 'absolute', left: '12px' }} />
                     <input
-                        type="text"
-                        placeholder="Buscar produto por nome ou SKU..."
-                        value={searchTerm}
+                        placeholder="Buscar produto por nome..."
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
                             width: '100%',
@@ -116,7 +113,6 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                             <img src={product.mainImage} alt={product.productName} className="product-list-image" />
                             <div className="product-list-info">
                                 <h3 className="product-list-name">{product.productName}</h3>
-                                <p className="product-list-sku">SKU: {product.sku}</p>
                                 <p className="product-list-stock" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Package size={14} /> {product.totalStock} em estoque</p>
                             </div>
                         </div>
@@ -155,10 +151,7 @@ export default function ProductListClient({ products }: ProductListClientProps) 
                                 {selectedProduct.productName}
                             </h2>
                             <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: 'var(--space-xs)' }}>
-                                SKU: {selectedProduct.sku}
-                            </p>
-                            <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: 'var(--space-xs)' }}>
-                                Barcode: {selectedProduct.barcode}
+                                Código: {selectedProduct.id}
                             </p>
                             <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <Package size={14} /> {selectedProduct.totalStock} em estoque

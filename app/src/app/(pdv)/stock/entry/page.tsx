@@ -348,9 +348,9 @@ function EntryContent() {
                         <h4 style={{ margin: '0 0 4px', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
                             {pendingProduct.name}
                         </h4>
-                        <p style={{ margin: '0 0 var(--space-md)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                            {pendingProduct.barcode || pendingProduct.sku || '—'}
-                        </p>
+                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 4 }}>
+                                Código: {pendingProduct.id}
+                            </div>
 
                         <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 'var(--space-sm)' }}>
                             Quantidade a entrar:
@@ -448,9 +448,9 @@ function EntryContent() {
                         <h4 style={{ margin: '0 0 4px', fontSize: '1.1rem', color: 'var(--text-primary)' }}>
                             {editingItem.product?.name}
                         </h4>
-                        <p style={{ margin: '0 0 var(--space-md)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                            {editingItem.product?.barcode || editingItem.product?.sku || '—'}
-                        </p>
+                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: 4 }}>
+                                Código: {editingItem.product?.id}
+                            </div>
 
                         <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 'var(--space-sm)' }}>
                             Alterar quantidade:

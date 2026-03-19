@@ -184,38 +184,40 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 pdf.rect(x, y, itemWidth, itemHeight);
                 pdf.setLineDashPattern([], 0); // reset dash
 
-                const textX = x + 4;
-                const textY = y + 8;
+                // Add Image First
+                const imgDataUrl = await loadImage(product.image);
+                if (imgDataUrl) {
+                    pdf.addImage(imgDataUrl, 'JPEG', x + 2, y + 2, 26, 26);
+                }
+
+                const textX = x + 30;
+                let textY = y + 7;
                 
                 // Product Name
-                pdf.setFontSize(10);
+                pdf.setFontSize(11);
                 pdf.setFont('helvetica', 'bold');
                 pdf.setTextColor(0);
 
-                let name = product.name;
-                if (pdf.getTextWidth(name) > 65) {
-                    while (pdf.getTextWidth(name + '...') > 65 && name.length > 0) name = name.slice(0, -1);
-                    name += '...';
+                let splitTitle = pdf.splitTextToSize(product.name, 41);
+                if (splitTitle.length > 3) {
+                    splitTitle = splitTitle.slice(0, 3);
+                    splitTitle[2] = splitTitle[2].slice(0, -3) + '...';
                 }
-                pdf.text(name, textX, textY);
+                pdf.text(splitTitle, textX, textY);
 
-                // SKU
-                pdf.setFontSize(9);
-                pdf.setFont('helvetica', 'normal');
+                textY += (splitTitle.length * 4.2) + 2;
+
+                // Barcode / ID
+                pdf.setFont('helvetica', 'bold');
+                pdf.setFontSize(10);
                 pdf.setTextColor(80);
-                pdf.text(`SKU: ${product.sku}`, textX, textY + 6);
-
-                // Barcode
-                pdf.setFont('courier', 'bold');
-                pdf.setFontSize(9);
-                pdf.setTextColor(0);
-                pdf.text(product.barcode, textX, textY + 13);
+                pdf.text(`Cód: ${product.barcode}`, textX, textY);
 
                 // Footer
                 pdf.setFont('helvetica', 'normal');
                 pdf.setFontSize(7);
-                pdf.setTextColor(120);
-                pdf.text('720x.com.br', textX, textY + 19);
+                pdf.setTextColor(150);
+                pdf.text('Stock 720x', textX, y + 27);
 
                 // QR Code
                 const qrDataUrl = qrCodes[product.id];
@@ -301,7 +303,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                                 alignItems: 'center'
                                             }}
                                         >
-                                            <span style={{ fontSize: '0.9rem', color: '#333' }}>{p.name} <span style={{ color: '#888', fontSize: '0.8rem' }}>({p.sku})</span></span>
+                                            <span style={{ fontSize: '0.9rem', color: '#333' }}>{p.name} {p.barcode && <span style={{ color: '#888', fontSize: '0.8rem' }}>({p.barcode})</span>}</span>
                                             {selectedIds.has(p.id) && <CheckSquare size={16} color="var(--accent)" />}
                                         </div>
                                     ))
@@ -367,7 +369,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                 <img src={product.image} alt={product.name} className="print-preview-image" />
                                 <div className="print-preview-info">
                                     <h4 className="print-preview-name" style={{ paddingRight: '20px' }}>{product.name}</h4>
-                                    <p className="print-preview-sku">{product.sku}</p>
+                                    {product.barcode && <p className="print-preview-barcode">{product.barcode}</p>}
                                     <p className="print-preview-barcode">{product.barcode}</p>
                                 </div>
                                 <div className="print-preview-qr">

@@ -60,7 +60,6 @@ export default function ProductsList({ products }: ProductsListProps) {
                                 <img src={mainImage} alt={productName} className="product-list-image" />
                                 <div className="product-list-info">
                                     <h3 className="product-list-name">{productName}</h3>
-                                    <p className="product-list-sku">SKU: {sku}</p>
                                     <p className="product-list-stock">{variantsCount} variantes • Estoque: {totalStock}</p>
                                     {barcode && <p className="product-list-barcode">{barcode}</p>}
                                 </div>

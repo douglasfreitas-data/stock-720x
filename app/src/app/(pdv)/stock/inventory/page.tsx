@@ -187,7 +187,7 @@ function InventoryContent() {
                             <div>
                                 <div style={{ fontWeight: 'bold', fontSize: '1rem' }}>{selectedProduct.name}</div>
                                 <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                                    SKU: {selectedProduct.sku} | Código: {selectedProduct.barcode}
+                                    Código: {selectedProduct.id}
                                 </div>
                                 <div style={{ marginTop: 4, fontSize: '1.1rem' }}>
                                     {(() => {

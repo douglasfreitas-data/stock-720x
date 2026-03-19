@@ -187,7 +187,7 @@ export default function SearchModal({ onSelect, placeholder = 'Digite o nome do 
                                         {product.name}
                                     </div>
                                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                                        {product.barcode || product.sku || '—'}
+                                        Código: {product.id}
                                     </div>
                                 </div>
                                 <div style={{

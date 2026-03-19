@@ -109,7 +109,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
             for (const product of selectedProductsArr) {
                 if (!codes[product.id]) {
                     try {
-                        codes[product.id] = await QRCode.toDataURL(product.barcode, {
+                        codes[product.id] = await QRCode.toDataURL(String(product.id), {
                             width: 200,
                             margin: 2,
                             color: { dark: '#000000', light: '#ffffff' }

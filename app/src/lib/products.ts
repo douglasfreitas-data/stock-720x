@@ -11,8 +11,10 @@ import { Product } from '@/lib/types';
  * Para uso em Client Components, use a API /api/products?barcode=xxx
  */
 
-export async function getProductByBarcode(barcode: string): Promise<Product | null> {
-    const { data, error } = await supabaseAdmin
+// ...
+export async function getProductByBarcode(term: string): Promise<Product | null> {
+    // Search by barcode OR sku OR id
+    let query = supabaseAdmin
         .from('product_variants')
         .select(`
             *,
@@ -20,12 +22,20 @@ export async function getProductByBarcode(barcode: string): Promise<Product | nu
                 name,
                 images
             )
-        `)
-        .eq('barcode', barcode)
-        .single();
+        `);
+    
+    // Se o termo for numérico, pode bater com o ID
+    const isNum = !isNaN(Number(term));
+    if (isNum) {
+        query = query.or(`barcode.eq.${term},sku.eq.${term},id.eq.${term}`);
+    } else {
+        query = query.or(`barcode.eq.${term},sku.eq.${term}`);
+    }
+
+    const { data, error } = await query.limit(1).maybeSingle();
 
     if (error || !data) {
-        console.error('Error fetching product by barcode:', error);
+        console.error('Error fetching product by barcode/sku/id:', error);
         return null;
     }
 
@@ -57,8 +67,15 @@ export async function getProductById(id: number): Promise<Product | null> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapVariantToProduct(data: any): Product {
     const productData = data.products;
-    const name = productData?.name?.pt || 'Produto sem nome';
+    let name = productData?.name?.pt || 'Produto sem nome';
     
+    if (data.values && Array.isArray(data.values) && data.values.length > 0) {
+        const variantTags = data.values.map((v: any) => v.pt).filter(Boolean).join(' / ');
+        if (variantTags) {
+            name = `${name} - ${variantTags}`;
+        }
+    }
+
     // Garantir que images seja array (pode vir como string do Supabase em alguns casos)
     let images = [];
     try {
@@ -69,7 +86,10 @@ function mapVariantToProduct(data: any): Product {
         images = [];
     }
     
-    let image = images.length > 0 ? images[0].src : '';
+    let image = data.image_url;
+    if (!image) {
+        image = images.length > 0 ? images[0].src : '';
+    }
     if (image && image.startsWith('//')) {
         image = `https:${image}`;
     }

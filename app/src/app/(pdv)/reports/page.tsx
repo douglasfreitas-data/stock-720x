@@ -695,7 +695,7 @@ export default function ReportsPage() {
                         value={productSearch}
                         onChange={setProductSearch}
                         suggestions={uniqueProducts}
-                        placeholder="Buscar por produto..."
+                        placeholder="Buscar por produto ou código..."
                     />
 
                     {/* Client search with autocomplete */}

@@ -129,7 +129,7 @@ export default function ProductListClient({ products }: { products: LocalProduct
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                     <Search size={18} color="var(--text-secondary)" style={{ position: 'absolute', left: '12px' }} />
                     <input
-                        placeholder="Buscar produto por nome, código ou barras..."
+                        placeholder="Buscar produto por nome ou código..."
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
                             width: '100%',

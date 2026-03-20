@@ -123,7 +123,7 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct, 
                 await supabaseAdmin.from('stock_movements').insert({
                     session_id: sessionId,
                     variant_id: variant.id,
-                    quantity: Math.abs(diff),
+                    quantity: diff,
                     old_stock: localStock,
                     new_stock: remoteStock
                 });

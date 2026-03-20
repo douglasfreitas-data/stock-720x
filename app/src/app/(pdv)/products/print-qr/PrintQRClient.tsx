@@ -139,8 +139,8 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
 
     const handleSelectTestLongest = () => {
         const sorted = [...productsForQR].sort((a, b) => b.name.length - a.name.length);
-        const top18 = sorted.slice(0, 18).map(p => p.id);
-        setSelectedIds(new Set(top18));
+        const top16 = sorted.slice(0, 16).map(p => p.id);
+        setSelectedIds(new Set(top16));
     };
 
     // Generate QR codes only for selected products
@@ -196,9 +196,9 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
             const pageWidth = 210;
             const pageHeight = 297;
             const itemWidth = 95;  // 2 columns
-            const itemHeight = 30; // 9 rows -> 2 cols * 9 rows = 18 labels
+            const itemHeight = 33.75; // 8 rows -> 2 cols * 8 rows = 16 labels
             const cols = 2;
-            const rowsPerPage = 9;
+            const rowsPerPage = 8;
             const marginX = (pageWidth - (itemWidth * cols)) / 2; // e.g. 10mm
             const marginY = (pageHeight - (rowsPerPage * itemHeight)) / 2; // e.g. 13.5mm
             
@@ -229,10 +229,11 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 // Load image
                 const imageBase64 = await loadImage(product.mainImage);
                 if (imageBase64) {
-                    pdf.addImage(imageBase64, 'JPEG', x + 2, y + 2, 26, 26);
+                    const imgY = y + (itemHeight - 26) / 2;
+                    pdf.addImage(imageBase64, 'JPEG', x + 2, imgY, 26, 26);
                 }
 
-                const qrSize = 24;
+                const qrSize = 27;
                 const qrX = x + itemWidth - qrSize - 3;
                 const textX = x + 30;
                 const maxTextWidth = itemWidth - 30 - qrSize - 6;
@@ -269,13 +270,13 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(9);
                 pdf.setTextColor(80);
-                pdf.text(`Cód: ${product.barcode}`, textX, y + 23);
+                pdf.text(`Cód: ${product.barcode}`, textX, y + 26);
 
                 // Footer
                 pdf.setFont('helvetica', 'normal');
                 pdf.setFontSize(6);
                 pdf.setTextColor(150);
-                pdf.text('Stock 720x', textX, y + 27);
+                pdf.text('Stock 720x', textX, y + 30);
 
                 // QR Code
                 let qrDataUrl = qrCodes[product.id];
@@ -388,7 +389,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                                 fontSize: '0.8rem', fontWeight: 'bold'
                             }}
                         >
-                            Teste 18 Maiores
+                            Teste 16 Maiores
                         </button>
                         <button
                             onClick={handleSelectAll}

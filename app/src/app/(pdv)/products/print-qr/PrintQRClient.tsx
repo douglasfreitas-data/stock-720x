@@ -248,9 +248,9 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                     pdf.addImage(imageBase64, 'JPEG', imgX, imgY, 26, 26);
                 }
 
-                const qrSize = 15;
+                const qrSize = 21;
                 const qrX = isRightCol ? x + 3 : x + itemWidth - qrSize - 3;
-                const qrY = y + itemHeight - qrSize - 3;
+                const qrY = y + (itemHeight - qrSize) / 2;
 
                 let qrDataUrl = qrCodes[product.id];
                 if (!qrDataUrl) {
@@ -261,7 +261,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 }
 
                 const textX = isRightCol ? x + itemWidth - 30 : x + 30; // 95 - 30 = 65 for right col
-                const maxTextWidth = itemWidth - 30 - 3; // 62
+                const maxTextWidth = itemWidth - 30 - qrSize - 6; // 38
                 let textY = y + 7;
                 
                 // Set text alignment based on column (Right column gets right-aligned text)

@@ -233,10 +233,11 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                     pdf.addImage(imageBase64, 'JPEG', x + 2, imgY, 26, 26);
                 }
 
-                const qrSize = 27;
+                const qrSize = 15;
                 const qrX = x + itemWidth - qrSize - 3;
                 const textX = x + 30;
-                const maxTextWidth = itemWidth - 30 - qrSize - 6;
+                // Text width now spans to the right margin since QR code moved down
+                const maxTextWidth = itemWidth - 30 - 3;
 
                 let textY = y + 7;
                 
@@ -289,7 +290,7 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 }
 
                 if (qrDataUrl) {
-                    const qrY = y + (itemHeight - qrSize) / 2;
+                    const qrY = y + itemHeight - qrSize - 3; // Align to bottom
                     pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
                 }
 

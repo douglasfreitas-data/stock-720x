@@ -220,28 +220,53 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                     pdf.addPage();
                 }
 
-                // Draw dashed border for cutting
-                pdf.setDrawColor(200, 200, 200);
-                pdf.setLineDashPattern([2, 2], 0);
-                pdf.rect(x, y, itemWidth, itemHeight);
-                pdf.setLineDashPattern([], 0); // reset dash
+                if (itemsOnPage === 0) {
+                    // Draw cutting guidelines grid once per page
+                    pdf.setDrawColor(200, 200, 200);
+                    pdf.setLineWidth(0.3);
+                    pdf.setLineDashPattern([2, 2], 0);
 
-                // Check symmetry for hole punching
+                    // Central vertical cut line
+                    pdf.line(marginX + itemWidth, marginY, marginX + itemWidth, marginY + (rowsPerPage * itemHeight));
+
+                    // Horizontal cut lines (including top and bottom edges)
+                    for (let r = 0; r <= rowsPerPage; r++) {
+                        const lineY = marginY + (r * itemHeight);
+                        pdf.line(marginX, lineY, marginX + (itemWidth * cols), lineY);
+                    }
+                    pdf.setLineDashPattern([], 0); // reset dash
+                }
+
+                // Check symmetry for hole punching (180 degree rotation)
                 const isRightCol = col === 1;
 
                 // Load image
                 const imageBase64 = await loadImage(product.mainImage);
                 if (imageBase64) {
-                    const imgX = isRightCol ? x + itemWidth - 28 : x + 2;
-                    pdf.addImage(imageBase64, 'JPEG', imgX, y + 2, 26, 26);
+                    const imgX = isRightCol ? x + itemWidth - 2 - 26 : x + 2;
+                    const imgY = y + (itemHeight - 26) / 2;
+                    // Rotation angle is relative to the center of the image bounds
+                    const angle = isRightCol ? 180 : 0;
+                    pdf.addImage(imageBase64, 'JPEG', imgX, imgY, 26, 26, undefined, 'FAST', angle);
                 }
 
-                const qrSize = 24;
+                const qrSize = 15;
                 const qrX = isRightCol ? x + 3 : x + itemWidth - qrSize - 3;
-                const textX = isRightCol ? x + 30 : x + 30;
-                const maxTextWidth = itemWidth - 30 - qrSize - 6;
+                const qrY = isRightCol ? y + 3 : y + itemHeight - qrSize - 3;
 
-                let textY = y + 7;
+                let qrDataUrl = qrCodes[product.id];
+                if (!qrDataUrl) {
+                    qrDataUrl = await QRCode.toDataURL(String(product.id), { width: 200, margin: 2, color: { dark: '#000000', light: '#ffffff' } });
+                }
+                if (qrDataUrl) {
+                    const angle = isRightCol ? 180 : 0;
+                    pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize, undefined, 'FAST', angle);
+                }
+
+                const textX = isRightCol ? x + itemWidth - 30 : x + 30; // 95 - 30 = 65
+                const maxTextWidth = itemWidth - 30 - 3;
+                let textY = isRightCol ? y + itemHeight - 7 : y + 7;
+                const textOpts = isRightCol ? { angle: 180 } : undefined;
                 
                 // Product Name (Dynamic Size)
                 let fontSize = 11;
@@ -263,38 +288,22 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                     splitTitle[2] = splitTitle[2].slice(0, -3) + '...';
                 }
                 
-                // Calculate total height of text block so we vertically center it or push down
-                const lineHeight = (fontSize * 0.35); // Approx mm height per line
-                pdf.text(splitTitle, textX, textY);
-
-                textY += (splitTitle.length * lineHeight) + 2;
+                // Draw text elements (angles rotated for right column)
+                pdf.text(splitTitle, textX, textY, textOpts);
 
                 // Barcode / ID
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(9);
                 pdf.setTextColor(80);
-                pdf.text(`Cód: ${product.barcode}`, textX, y + 23);
+                const barcodeY = isRightCol ? y + itemHeight - 26 : y + 26;
+                pdf.text(`Cód: ${product.barcode}`, textX, barcodeY, textOpts);
 
                 // Footer
                 pdf.setFont('helvetica', 'normal');
                 pdf.setFontSize(6);
                 pdf.setTextColor(150);
-                pdf.text('Stock 720x', textX, y + 27);
-
-                // QR Code
-                let qrDataUrl = qrCodes[product.id];
-                if (!qrDataUrl) {
-                    qrDataUrl = await QRCode.toDataURL(String(product.id), {
-                        width: 200,
-                        margin: 2,
-                        color: { dark: '#000000', light: '#ffffff' }
-                    });
-                }
-
-                if (qrDataUrl) {
-                    const qrY = y + (itemHeight - qrSize) / 2;
-                    pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
-                }
+                const footerY = isRightCol ? y + itemHeight - 30 : y + 30;
+                pdf.text('Stock 720x', textX, footerY, textOpts);
 
                 currentItemCount++;
             }

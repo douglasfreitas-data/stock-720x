@@ -7,8 +7,8 @@
 | Mockup/Protótipo | 34.0h | ✅ Concluído |
 | Desenvolvimento (Fase 2/3) | 99.0h | ✅ Concluído |
 | Produção & Operação F. (Fase 4) | 8.0h | ✅ Concluído |
-| Expansão (Fase 5) | 75.0h | 🔄 Em andamento |
-| **Total** | **216.0h** | - |
+| Expansão (Fase 5) | 81.0h | ✅ Concluído |
+| **Total** | **222.0h** | - |
 
 ---
 
@@ -85,7 +85,8 @@
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Total**: 75.0 horas
+**Fim**: 20/03/2026
+**Total**: 81.0 horas (Concluída)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -99,13 +100,16 @@
 | 19/03/2026 | 10.0h | **Infraestrutura Offline (Sync Queue)**: Implementação da Arquitetura `sync_queue` Local-First (banco salva offline, cron job noturno limpa fila para a nuvemshop via Upserts). Debug de render cascade (useEffect Thrashing) em React no infinite scroll de QR Codes. |
 | 19/03/2026 | 5.0h | **Engenharia de Webhooks Nuvemshop & App PDV**: Resolução de conflitos de concorrência em pedidos online. Implementação de "Máquina de Estados de Reserva" (Open, Paid, Canceled) mapeando comportamento de carrinho para o PDV físico. Criação de Dashboard de Auditoria de Estoque Automatizado Administrativo cruzando base de dados locais com a API da Nuvemshop. |
 | 19/03/2026 | 4.0h | **Refinamento UI & Lifecycle Nuvemshop**: Reparo na reatividade de pagamentos (status vs payment_status), inserção de flags visuais dinâmicas em relatórios PDF/UI (Reserva Estornada em destaque) e análise arquitetural e documental de responsividade para web desktops (03_RESPONSIVIDADE_DESKTOP.md). Reconciliação direta no DB de webhooks retroativos. |
+| 20/03/2026 | 3.0h | **Sincronização & Inteligência de Estoque**: Implementação do tratamento de "Estoque Infinito" (Nuvemshop `stock_management: false`) em todo o ecossistema (vendas, auditoria, push notifications e relatórios). |
+| 20/03/2026 | 2.0h | **Engine de Busca & UI/UX**: Expansão da busca global (SKU, Código de Barras e ID), atualização de placeholders e limpeza de notificações toast para agilizar operação. |
+| 20/03/2026 | 1.0h | **Manutenção de Docs**: Varredura de código e atualização de Roadmap, Fase Atual e Timesheet. |
 
 ## 📊 Métricas Globais
 
 - **Perfil de Esforço Estimado**: Compatível com 1 Desenvolvedor Pleno/Sênior 
-- **Tempo Acumulado do Projeto**: ~216.0h (aprox. 5 a 6 semanas em Full-Time 40h)
-- **Progresso atual**: ~92% (Fase 5 avançada, rumo ao encerramento)
+- **Tempo Acumulado do Projeto**: ~222.0h (aprox. 6 semanas em Full-Time 40h)
+- **Progresso atual**: ~98% (Fase 5 finalizada, pronto para operação plena)
 
 ---
 
-*Última atualização: 19/03/2026 21:28*
+*Última atualização: 20/03/2026 16:30*

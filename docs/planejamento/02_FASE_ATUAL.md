@@ -1,6 +1,6 @@
 # 🎯 Fase 5: Expansão
 
-**Foco da Semana:** Estabilizar deploy e implementar Alertas de Estoque Mínimo (Popup).
+**Foco da Semana:** Finalizar inteligência de busca e tratamento de estoque infinito (Nuvemshop).
 
 ---
 
@@ -59,6 +59,16 @@
 - [x] Dashboard de Auditoria de Estoque Automatizado (Admin): Varredura das 1700+ variantes contra a API Nuvemshop apontando divergências reais.
 - [x] Ocultação de "Reservas Nuvemshop" da UI do PDV físico para manter usabilidade do caixa local.
 
-## 🖥️ Bloco 5.7: UX & Responsividade Desktop — BKP/ROADMAP
+## 🚀 Bloco 5.8: Inteligência de Busca & Estoque Infinito — CONCLUÍDO
+> Expansão da capacidade de localização de itens e tratamento de modelos sem controle de estoque.
+- [x] **Nova Busca em todo o App**: Além do nome, agora é possível buscar por **SKU**, **Código de Barras** e **ID do Produto** nas telas de PDV, Entrada, Inventário e Relatórios.
+- [x] **Suporte a Estoque Infinito**: Implementação da regra de negócio para produtos com `stock_management: false` na Nuvemshop.
+  - O app ignora alertas de estoque baixo e permite vendas mesmo com saldo "0" (Tratando como `Infinity`).
+  - Símbolo **"∞"** exibido nas listas para clareza visual.
+  - Sincronização automática ignora divergências para estes itens.
+- [x] **Refinamento de UX (Toast)**: Redução de pop-ups intrusivos (removido "Produto Adicionado/Encontrado") para agilizar a operação de caixa.
+- [x] **Placeholders Inteligentes**: Atualização de todos os inputs de busca para informar os novos critérios (Nome, Código ou Barras).
+
+## 🖥️ Bloco 5.9: UX & Responsividade Desktop — BKP/ROADMAP
 > Adaptações necessárias caso o PDV web passe a ser utilizado extensivamente num navegador de Desktop ou Totem.
 - [ ] Implementação de **CSS Grid** e `max-width` global (ver specs em `docs/planejamento/03_RESPONSIVIDADE_DESKTOP.md`).

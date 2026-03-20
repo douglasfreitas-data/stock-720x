@@ -31,18 +31,22 @@
 - [x] **Seguridade Operacional**: Tratamento de Erros Offline e visualização robusta.
 - [x] **Onboarding & Docs**: Otimização PWA (Manifest) e Tutorial Interativo (In-App).
 
-## Fase 5: Expansão 🔲
-> **Status:** EM ANDAMENTO
-- [ ] **🛡️ CI/CD e Proteção de Deploy** *(Prioridade 0)*
-  - Criar branch `dev` para desenvolvimento isolado.
-  - Configurar GitHub Actions (`next build` em PRs para `main`).
-  - Tags de release para rollback facilitado.
-- [x] ~~**Notificações Push Nativas (Web Push)**~~ ❌ *Descontinuado (incompatível com Vercel/Edge)*
-- [ ] **Alertas de Estoque Mínimo (Popup In-App)** *(substitui Push)*
-  - Popup persistente ao logar avisando produtos ≤ estoque mínimo.
-  - Botão "Lembrar Depois" e "Não avisar mais sobre este produto".
-  - Tabela `alert_preferences` no Supabase.
-- [ ] **Relatório Inteligente de Reposição (Estoque Mínimo)**
-  - Criar relatório de produtos no estoque mínimo ou próximos a ele.
-  - Definir lógica de cálculo para o estoque "próximo ao mínimo".
-- [ ] Multi-loja
+## Fase 5: Expansão ✅
+> **Status:** Concluída (Mar/2026)
+- [x] **🛡️ CI/CD e Proteção de Deploy**
+  - [x] Limpeza de `vercel.json` e estabilização de builds SSR.
+  - [ ] Criar branch `dev` para desenvolvimento isolado (Pendente operacional).
+- [x] **Web Push Nativo & Alertas**
+  - [x] Implementação de Criptografia VAPID nativa (bypass limitações Vercel).
+  - [x] Alertas de Estoque Mínimo via Push e Dashboard.
+- [x] **Inteligência de Busca & Estoque Infinito**
+  - [x] Busca por SKU, Código de Barras e ID em todo o app.
+  - [x] Tratamento de `stock_management: false` (Estoque Infinito Nuvemshop).
+- [x] **PDV Cloud & Vendas Pendentes**
+  - [x] Lógica de Reserva e Estorno de estoque físico.
+  - [x] Edição manual de preços.
+
+## Fase 6: Próximos Passos (Pronto para Início) 🔲
+- [ ] Multi-loja (Análise de viabilidade).
+- [ ] Relatórios Avançados de Performance de Vendas por Período.
+- [ ] Dashboards de BI Customizados.

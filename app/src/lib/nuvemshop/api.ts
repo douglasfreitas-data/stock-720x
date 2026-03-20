@@ -29,6 +29,7 @@ export interface NuvemshopOrder {
     id: number;
     number: string;
     status: string;
+    payment_status: string;
     total: string;
     products: {
         product_id: number;

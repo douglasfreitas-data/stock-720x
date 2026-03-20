@@ -49,9 +49,10 @@ export async function POST(request: NextRequest) {
         }
 
         const clientName = `Pedido Nuvemshop #${order.number}`;
-        const isConfirmed = ['paid', 'packed', 'shipped', 'closed'].includes(order.status);
-        const isOpen = order.status === 'open';
+        
+        const isConfirmed = order.payment_status === 'paid' || order.status === 'closed';
         const isCanceled = order.status === 'canceled';
+        const isOpen = order.status === 'open' && !isConfirmed; // Se for pago, ignora block open e vai pro block confirmed
 
         // 1. Procurar venda pendente existente
         const { data: existingSale } = await supabaseAdmin

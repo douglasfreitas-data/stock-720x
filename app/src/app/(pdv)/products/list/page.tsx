@@ -29,7 +29,7 @@ export default async function ProductList() {
                 name,
                 images,
                 published,
-                variants:product_variants(id, image_url, stock, min_stock, sku, barcode, values)
+                variants:product_variants(id, image_url, stock, stock_management, min_stock, sku, barcode, values)
             `)
             .order('id', { ascending: false });
 

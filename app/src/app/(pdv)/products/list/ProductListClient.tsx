@@ -11,6 +11,7 @@ interface LocalVariant {
     sku?: string | null;
     barcode?: string | null;
     values?: { pt: string }[] | null;
+    stock_management?: boolean;
 }
 
 interface LocalProduct {
@@ -30,6 +31,7 @@ interface ProcessedProduct {
     barcode: string;
     totalStock: number;
     minStock: number;
+    stock_management?: boolean;
     mainImage: string;
     // Add other properties from LocalProduct if needed for selectedProduct details
     // For example, if you want to show original product name or other details
@@ -83,6 +85,7 @@ export default function ProductListClient({ products }: { products: LocalProduct
                     barcode,
                     totalStock: v.stock || 0,
                     minStock: v.min_stock || 0,
+                    stock_management: v.stock_management,
                     mainImage
                 };
             })
@@ -180,7 +183,7 @@ export default function ProductListClient({ products }: { products: LocalProduct
                                 <div className="product-list-info">
                                     <h3 className="product-list-name">{product.productName}</h3>
                                     <p className="product-list-stock" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                        <Package size={14} /> {product.totalStock} em estoque
+                                        <Package size={14} /> {product.stock_management === false ? '∞' : product.totalStock} em estoque
                                     </p>
                                     {product.minStock > 0 && (
                                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>

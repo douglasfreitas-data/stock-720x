@@ -15,6 +15,7 @@ export async function getReplenishmentDataAction() {
             .from('product_variants')
             .select('id, sku, price, stock, min_stock, products(name, images)')
             .gt('min_stock', 0)
+            .eq('stock_management', true)
             .order('stock', { ascending: true });
 
         if (error) {

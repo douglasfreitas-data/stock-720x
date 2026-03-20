@@ -8,6 +8,7 @@ export interface Product {
     minStock: number;
     image: string;
     nuvemshopId?: string;
+    stock_management?: boolean;
 }
 
 export interface CartItem {

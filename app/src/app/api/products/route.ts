@@ -90,6 +90,7 @@ export async function GET(request: NextRequest) {
                     price: parseFloat(row.price) || 0,
                     stock: row.stock || 0,
                     minStock: row.min_stock ?? 5,
+                    stock_management: row.stock_management,
                     image: image,
                     nuvemshopId: '',
                 };

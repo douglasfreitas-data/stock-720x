@@ -35,6 +35,7 @@ export async function POST(req: Request) {
                 products ( name )
             `)
             .gt('min_stock', 0)
+            .eq('stock_management', true)
 
         // Supabase doesn't easily let us do "stock <= min_stock" directly in .select() if they are both columns
         // unless we use rpc or raw sql, so we filter it in js

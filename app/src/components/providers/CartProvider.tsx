@@ -57,7 +57,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // Validação de estoque Síncrona baseada no state mais recente disponível
         const existingItem = cart.find(item => item.productId === product.id);
         const currentQty = existingItem ? existingItem.quantity : 0;
-        const maxStock = product.stock ?? 9999;
+        const maxStock = product.stock_management === false ? Infinity : (product.stock ?? 9999);
 
         if (currentQty + quantity > maxStock || maxStock <= 0) {
             return false; // Indicativo de falha para a UI exibir o erro
@@ -92,7 +92,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const updateCartQuantity = (productId: number, quantity: number) => {
         setCart(prev => prev.map(item => {
             if (item.productId === productId) {
-                const maxStock = item.product?.stock ?? 9999;
+                const maxStock = item.product?.stock_management === false ? Infinity : (item.product?.stock ?? 9999);
                 return { ...item, quantity: Math.min(Math.max(1, quantity), maxStock) };
             }
             return item;

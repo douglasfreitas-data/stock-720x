@@ -103,8 +103,8 @@ export async function upsertProduct(storeId: string, product: NuvemshopProduct, 
             const localStock = localStockMap.get(variant.id);
             const remoteStock = variant.stock || 0;
 
-            // Se a variante já existe localmente E tem divergência de estoque
-            if (!ignoreStockSync && localStock !== undefined && localStock !== remoteStock) {
+            // Se a variante já existe localmente E tem divergência de estoque E é gerenciada
+            if (!ignoreStockSync && variant.stock_management !== false && localStock !== undefined && localStock !== remoteStock) {
                 const diff = remoteStock - localStock;
                 const type = diff > 0 ? 'entrada' : 'saida';
                 const sessionId = uuidv4();

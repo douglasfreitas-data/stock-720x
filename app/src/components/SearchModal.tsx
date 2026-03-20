@@ -196,7 +196,7 @@ export default function SearchModal({ onSelect, placeholder = 'Nome ou código..
                                     fontSize: '0.8rem',
                                     color: 'var(--text-muted)'
                                 }}>
-                                    <div>Est: <strong style={{ color: 'var(--accent)' }}>{product.stock}</strong></div>
+                                    <div>Est: <strong style={{ color: 'var(--accent)' }}>{product.stock_management === false ? '∞' : product.stock}</strong></div>
                                 </div>
                             </button>
                         ))}

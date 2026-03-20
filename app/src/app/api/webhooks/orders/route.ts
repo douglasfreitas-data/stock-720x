@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
             for (const item of cartItems) {
                 const { data: variant } = await supabaseAdmin
                     .from('product_variants')
-                    .select('id, stock, min_stock')
+                    .select('id, stock, min_stock, stock_management')
                     .eq('id', item.productId)
                     .single();
 
@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
                     });
                 }
 
-                if (variant.min_stock && newStock <= variant.min_stock && !pushTriggered) {
+                if (variant.stock_management !== false && variant.min_stock && newStock <= variant.min_stock && !pushTriggered) {
                     pushTriggered = true;
                     // Trigger push em background
                     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';

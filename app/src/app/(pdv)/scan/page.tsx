@@ -32,13 +32,11 @@ function ScanContent() {
         if (mode === 'sale') {
             const success = addToCart(product);
             if (success) {
-                showToast(`${product.name} adicionado!`, 'success');
                 router.push('/cart');
             } else {
-                showToast(`Estoque insuficiente para ${product.name}`, 'error');
+                showToast(`Sem estoque para ${product.name}`, 'error');
             }
         } else {
-            showToast(`Produto encontrado: ${product.name}`, 'info');
             router.push('/stock/inventory');
         }
     };
@@ -56,17 +54,15 @@ function ScanContent() {
                 if (mode === 'sale') {
                     const success = addToCart(product);
                     if (success) {
-                        showToast(`${product.name} adicionado!`, 'success');
                         router.push('/cart');
                     } else {
-                        showToast(`Estoque insuficiente para ${product.name}`, 'error');
+                        showToast(`Sem estoque para ${product.name}`, 'error');
                     }
                 } else {
-                    showToast(`Produto encontrado: ${product.name}`, 'info');
                     router.push('/stock/inventory');
                 }
             } else {
-                showToast('Produto não encontrado no sistema', 'error');
+                showToast('Produto não encontrado', 'error');
             }
         } catch (error) {
             console.error('Scan error:', error);

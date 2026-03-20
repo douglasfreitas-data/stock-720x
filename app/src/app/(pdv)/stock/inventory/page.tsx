@@ -325,8 +325,6 @@ function InventoryContent() {
                         <div style={{ padding: '0 16px', marginTop: '12px' }}>
                             <SearchModal
                                 onSelect={handleSearchSelect}
-                                label="Ou busque por nome:"
-                                placeholder="Digite o nome do produto..."
                             />
                         </div>
 

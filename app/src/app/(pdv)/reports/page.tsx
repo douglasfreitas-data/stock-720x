@@ -318,7 +318,10 @@ export default function ReportsPage() {
             const q = productSearch.toLowerCase();
             result = result.filter(s =>
                 s.stock_movements?.some(m =>
-                    getProductName(m).toLowerCase().includes(q)
+                    getProductName(m).toLowerCase().includes(q) ||
+                    m.product_variants?.sku?.toLowerCase().includes(q) ||
+                    m.product_variants?.barcode?.toLowerCase().includes(q) ||
+                    m.variant_id.toString() === q
                 )
             );
         }

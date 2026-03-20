@@ -21,28 +21,40 @@ export async function GET(request: NextRequest) {
     // ===== Busca por nome — usa Supabase direto (não precisa autenticação Nuvemshop) =====
     if (search) {
         try {
-            const { data, error } = await supabaseAdmin
+            // O Supabase não suporta .or() cruzando tabelas facilmente.
+            // Para resolver isso de forma eficiente e buscar por CÓDIGO e NOME, fazemos duas queries e juntamos.
+            
+            // 1. Busca por NOME
+            const nameQuery = supabaseAdmin
                 .from('product_variants')
-                .select(`
-                    id,
-                    sku,
-                    barcode,
-                    price,
-                    stock,
-                    stock_management,
-                    min_stock,
-                    values,
-                    image_url,
-                    products (name, images)
-                `)
+                .select('id, sku, barcode, price, stock, stock_management, min_stock, values, image_url, products!inner(name, images)')
                 .ilike('products.name->>pt', `%${search}%`)
-                .not('products', 'is', null)
                 .limit(20);
 
-            if (error) {
-                console.error('[API Products Search] Erro Supabase:', error);
-                return NextResponse.json({ products: [], page: 1 });
+            // 2. Busca por REFERÊNCIA (sku, barcode, id)
+            const searchNumber = Number(search);
+            let codeOrString = `sku.ilike.%${search}%,barcode.ilike.%${search}%`;
+            if (!isNaN(searchNumber)) {
+                codeOrString += `,id.eq.${searchNumber}`;
             }
+            const codeQuery = supabaseAdmin
+                .from('product_variants')
+                .select('id, sku, barcode, price, stock, stock_management, min_stock, values, image_url, products!inner(name, images)')
+                .or(codeOrString)
+                .limit(20);
+
+            const [nameRes, codeRes] = await Promise.all([nameQuery, codeQuery]);
+
+            if (nameRes.error) console.error('[API Products Search] Erro Supabase NOME:', nameRes.error);
+            if (codeRes.error) console.error('[API Products Search] Erro Supabase CODIGO:', codeRes.error);
+
+            // Junta e remove duplicados
+            const merged = [...(nameRes.data || []), ...(codeRes.data || [])];
+            const uniqueMap = new Map();
+            merged.forEach(row => {
+                if (!uniqueMap.has(row.id)) uniqueMap.set(row.id, row);
+            });
+            const data = Array.from(uniqueMap.values()).slice(0, 20);
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const products: Product[] = (data || []).map((row: any) => {

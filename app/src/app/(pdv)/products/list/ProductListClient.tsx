@@ -94,7 +94,10 @@ export default function ProductListClient({ products }: { products: LocalProduct
         if (!searchTerm.trim()) return processedProducts;
         const q = searchTerm.toLowerCase();
         return processedProducts.filter(p =>
-            p.productName.toLowerCase().includes(q)
+            p.productName.toLowerCase().includes(q) ||
+            p.sku.toLowerCase().includes(q) ||
+            p.barcode.toLowerCase().includes(q) ||
+            p.id.toString() === q
         );
     }, [processedProducts, searchTerm]);
 
@@ -126,7 +129,7 @@ export default function ProductListClient({ products }: { products: LocalProduct
                 <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                     <Search size={18} color="var(--text-secondary)" style={{ position: 'absolute', left: '12px' }} />
                     <input
-                        placeholder="Buscar produto por nome..."
+                        placeholder="Buscar produto por nome, código ou barras..."
                         onChange={(e) => setSearchTerm(e.target.value)}
                         style={{
                             width: '100%',

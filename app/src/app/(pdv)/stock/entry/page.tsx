@@ -235,8 +235,6 @@ function EntryContent() {
                 {/* Busca por nome — SearchModal (popup fullscreen) */}
                 <SearchModal
                     onSelect={handleSearchSelect}
-                    label="Ou busque por nome:"
-                    placeholder="Digite o nome do produto..."
                 />
 
                 {/* Itens na Sessão — layout compacto, clique para editar */}

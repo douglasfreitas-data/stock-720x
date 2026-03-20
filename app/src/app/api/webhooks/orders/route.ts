@@ -198,6 +198,13 @@ export async function POST(request: NextRequest) {
                 }
             }
 
+            // Marcar a reserva original como Estornada para destaque nos relatórios
+            await supabaseAdmin
+                .from('stock_sessions')
+                .update({ notes: `Reserva - ${clientName} (Estornada)` })
+                .eq('notes', `Reserva - ${clientName}`)
+                .eq('operation', 'reserva');
+
             return NextResponse.json({ success: true, message: 'Reserva cancelada e itens devolvidos ao estoque' });
         }
 

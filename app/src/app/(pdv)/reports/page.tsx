@@ -193,7 +193,7 @@ function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session:
                     )}
                     {session.notes && (
                         <div style={{ marginTop: '4px', paddingTop: '6px', borderTop: '1px dashed var(--border-color)' }}>
-                            <strong style={{color: 'var(--text-primary)'}}>Obs:</strong> <span style={{ fontStyle: 'italic' }}>{session.notes}</span>
+                            <strong style={{color: 'var(--text-primary)'}}>Obs:</strong> <span style={{ fontStyle: 'italic', color: session.notes.includes('Estornada') ? 'var(--danger)' : 'inherit' }}>{session.notes}</span>
                         </div>
                     )}
                 </div>

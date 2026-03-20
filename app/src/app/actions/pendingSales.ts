@@ -195,8 +195,16 @@ export async function cancelPendingSaleAction(id: string) {
             }
         }
 
+        // 4. Marcar a reserva original como Estornada para destaque nos relatórios
+        await supabaseAdmin
+            .from('stock_sessions')
+            .update({ notes: `Reserva - Cliente: ${sale.client_name} (Estornada)` })
+            .eq('notes', `Reserva - Cliente: ${sale.client_name}`)
+            .eq('operation', 'reserva');
+
         revalidatePath('/products');
         revalidatePath('/scan');
+        revalidatePath('/reports');
 
         if (errors.length > 0) {
             return { success: false, message: `Cancelado, porém erros ao repor estoque: ${errors.join(', ')}` };

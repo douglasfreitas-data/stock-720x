@@ -41,6 +41,7 @@
 - [x] Novo recurso: Editar Preço Manualmente (sobreescreve Nuvemshop).
 - [x] Novo recurso: Vendas Pendentes ("Salvar Pendente" reserva o estoque temporariamente).
 - [x] Rotinas Server-Side de Cancelamento (Estorno) de venda pendente para retorno de estoque físico limpo.
+- [x] UI/UX: Destaque visual vermelho dinâmico para "Reservas Estornadas" em relatórios a fim de auditar vendas canceladas.
 - [x] Refatoramento inteligente dos arquivos e componentes de UI das listas e do relatorio PDF dinâmico (`Fornecedor` na entrada).
 
 ## 🚀 Bloco 5.5: Performance & Resiliência Offline (Sync Queue) — CONCLUÍDO
@@ -53,6 +54,11 @@
 ## 🔍 Bloco 5.6: Auditoria & Integridade Nuvemshop — CONCLUÍDO
 > Resolução de conflitos de estoque gerados por webhooks corrompidos e criação de ferramentas de segurança.
 - [x] Máquina de Estados de Reserva para Webhooks: Pedidos Online "open" viram "Vendas Pendentes" no backend com estorno automático no `canceled`.
+- [x] Bugfix crítico de Lifecycle da Nuvemshop (Mapeamento de `payment_status === 'paid'` transacionando em background enquanto o pedido fica estático em `open`).
 - [x] Prevenção de race condition e Idempotência cravada: webhook ignora repetições da Vercel.
 - [x] Dashboard de Auditoria de Estoque Automatizado (Admin): Varredura das 1700+ variantes contra a API Nuvemshop apontando divergências reais.
 - [x] Ocultação de "Reservas Nuvemshop" da UI do PDV físico para manter usabilidade do caixa local.
+
+## 🖥️ Bloco 5.7: UX & Responsividade Desktop — BKP/ROADMAP
+> Adaptações necessárias caso o PDV web passe a ser utilizado extensivamente num navegador de Desktop ou Totem.
+- [ ] Implementação de **CSS Grid** e `max-width` global (ver specs em `docs/planejamento/03_RESPONSIVIDADE_DESKTOP.md`).

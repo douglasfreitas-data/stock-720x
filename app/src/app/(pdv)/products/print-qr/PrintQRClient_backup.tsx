@@ -237,50 +237,36 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                     pdf.setLineDashPattern([], 0); // reset dash
                 }
 
+                // Check symmetry for horizontal mirroring (instead of 180 rotation)
                 const isRightCol = col === 1;
-
-                // Center of the current label block for symmetrical mirroring
-                const cx = x + itemWidth / 2;
-                const cy = y + itemHeight / 2;
-
-                // Matemathical reflection coordinates for a 180-degree turn
-                const getX = (val: number, objWidth = 0) => isRightCol ? 2 * cx - val - objWidth : val;
-                const getY = (val: number, objHeight = 0) => isRightCol ? 2 * cy - val - objHeight : val;
-                const getTextX = (val: number) => isRightCol ? 2 * cx - val : val;
-                const getTextY = (val: number) => isRightCol ? 2 * cy - val : val;
-                const angle = isRightCol ? 180 : 0;
-                
-                // Standard template (same as previous left column)
-                // Left Space: x to x+12 approx (empty for punch hole if printing right side up)
-                const baseImgX = x + 2; 
-                const baseImgY = y + (itemHeight - 26) / 2;
-                
-                const qrSize = 21;
-                const baseQrX = x + itemWidth - qrSize - 3;
-                const baseQrY = y + (itemHeight - qrSize) / 2;
-
-                const baseTextX = x + 30;
-                let textY = y + 7;
 
                 // Load image
                 const imageBase64 = await loadImage(product.mainImage);
                 if (imageBase64) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (pdf as any).addImage(imageBase64, 'JPEG', getX(baseImgX, 26), getY(baseImgY, 26), 26, 26, undefined, 'FAST', angle);
+                    const imgX = isRightCol ? x + itemWidth - 28 : x + 2; 
+                    const imgY = y + (itemHeight - 26) / 2;
+                    pdf.addImage(imageBase64, 'JPEG', imgX, imgY, 26, 26);
                 }
+
+                const qrSize = 21;
+                const qrX = isRightCol ? x + 3 : x + itemWidth - qrSize - 3;
+                const qrY = y + (itemHeight - qrSize) / 2;
 
                 let qrDataUrl = qrCodes[product.id];
                 if (!qrDataUrl) {
                     qrDataUrl = await QRCode.toDataURL(String(product.id), { width: 200, margin: 2, color: { dark: '#000000', light: '#ffffff' } });
                 }
                 if (qrDataUrl) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (pdf as any).addImage(qrDataUrl, 'PNG', getX(baseQrX, qrSize), getY(baseQrY, qrSize), qrSize, qrSize, undefined, 'FAST', angle);
+                    pdf.addImage(qrDataUrl, 'PNG', qrX, qrY, qrSize, qrSize);
                 }
 
+                const textX = isRightCol ? x + itemWidth - 30 : x + 30; // 95 - 30 = 65 for right col
                 const maxTextWidth = itemWidth - 30 - qrSize - 6; // 38
+                let textY = y + 7;
+                
+                // Set text alignment based on column (Right column gets right-aligned text)
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const textOpts: any = { align: 'left', angle: angle } as any;
+                const textOpts: any = isRightCol ? { align: 'right' } : { align: 'left' };
                 
                 // Product Name (Dynamic Size)
                 let fontSize = 11;
@@ -303,21 +289,21 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
                 }
                 
                 // Draw text elements
-                pdf.text(splitTitle, getTextX(baseTextX), getTextY(textY), textOpts);
+                pdf.text(splitTitle, textX, textY, textOpts);
 
                 // Barcode / ID
                 pdf.setFont('helvetica', 'bold');
                 pdf.setFontSize(9);
                 pdf.setTextColor(80);
                 const barcodeY = y + itemHeight - 7.5;
-                pdf.text(`Cód: ${product.barcode}`, getTextX(baseTextX), getTextY(barcodeY), textOpts);
+                pdf.text(`Cód: ${product.barcode}`, textX, barcodeY, textOpts);
 
                 // Footer
                 pdf.setFont('helvetica', 'normal');
                 pdf.setFontSize(6);
                 pdf.setTextColor(150);
                 const footerY = y + itemHeight - 3.5;
-                pdf.text('Stock 720x', getTextX(baseTextX), getTextY(footerY), textOpts);
+                pdf.text('Stock 720x', textX, footerY, textOpts);
 
                 currentItemCount++;
             }

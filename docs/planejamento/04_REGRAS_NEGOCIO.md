@@ -93,4 +93,13 @@ O sistema possui uma ferramenta administrativa em `/admin/audit` que realiza o c
 
 ---
 
-> **Última Atualização:** 20/03/2026 22:50
+## 9. Motor de Busca de Produtos
+
+O sistema possui um motor de busca "Agnóstico e Multi-Termos", desenhado para tolerar digitação rápida ou imperfeita no balcão:
+- **Normalização Automática**: Ignora totalmente acentos (ex: `Açúcar` = `acucar`) e caracteres especiais/traços (ex: `Cabo-USB` = `cabo usb`).
+- **Múltiplos Termos Independentes**: A busca divide a entrada em palavras. Digitar `lamina escola` obriga que ambas as palavras existam no cadastro, mas ignora a ordem ou se há outras palavras entre elas.
+- **Campos Indexados na Busca**: Nome Variante/Produto, `SKU`, `Código de Barras` e `id`.
+
+---
+
+> **Última Atualização:** 20/03/2026 23:50

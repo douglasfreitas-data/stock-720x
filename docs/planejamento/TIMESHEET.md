@@ -104,13 +104,14 @@
 | 20/03/2026 | 2.0h | **Engine de Busca & UI/UX**: Expansão da busca global (SKU, Código de Barras e ID), atualização de placeholders e limpeza de notificações toast para agilizar operação. |
 | 20/03/2026 | 1.0h | **Manutenção de Docs**: Varredura de código e atualização de Roadmap, Fase Atual e Timesheet. |
 | 20/03/2026 | 3.0h | **Melhorias PDF & Etiquetas QR**: Ampliação em 40% do campo Produto nos PDFs, correção de saldo ∞ em relatórios, rotação 180° da coluna direita das etiquetas QR Code via CTM (Matriz de Transformação PDF). |
+| 20/03/2026 | 2.5h | **Busca Avançada Multi-Termos**: Refatoração do motor de busca para suportar filtragem independente de palavras-chave, insensível a acentos (NFD) e ignorando traços. Substituição de constraints SQL (`ilike`) por processamento in-memory (`normalizeSearchString`) na API para uniformidade com o frontend. |
 
 ## 📊 Métricas Globais
 
 - **Perfil de Esforço Estimado**: Compatível com 1 Desenvolvedor Pleno/Sênior 
-- **Tempo Acumulado do Projeto**: ~225.0h (aprox. 6 semanas em Full-Time 40h)
+- **Tempo Acumulado do Projeto**: ~227.5h (aprox. 6 semanas em Full-Time 40h)
 - **Progresso atual**: ~98% (Fase 5 finalizada, pronto para operação plena)
 
 ---
 
-*Última atualização: 20/03/2026 22:50*
+*Última atualização: 20/03/2026 23:50*

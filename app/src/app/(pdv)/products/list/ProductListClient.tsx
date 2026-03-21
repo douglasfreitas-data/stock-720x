@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { Package, ArrowLeft, Search, X } from 'lucide-react';
+import { normalizeSearchString } from '@/lib/stringUtils';
 
 interface LocalVariant {
     id: number;
@@ -95,13 +96,22 @@ export default function ProductListClient({ products }: { products: LocalProduct
     // Filter by search term
     const filteredProducts = useMemo(() => {
         if (!searchTerm.trim()) return processedProducts;
-        const q = searchTerm.toLowerCase();
-        return processedProducts.filter(p =>
-            p.productName.toLowerCase().includes(q) ||
-            p.sku.toLowerCase().includes(q) ||
-            p.barcode.toLowerCase().includes(q) ||
-            p.id.toString() === q
-        );
+        const terms = normalizeSearchString(searchTerm).split(' ').filter(Boolean);
+        if (terms.length === 0) return processedProducts;
+
+        return processedProducts.filter(p => {
+            const nName = normalizeSearchString(p.productName);
+            const nSku = normalizeSearchString(p.sku);
+            const nBarcode = normalizeSearchString(p.barcode);
+            const isIdMatch = p.id.toString() === searchTerm.trim() && terms.length === 1;
+
+            return terms.every(term => 
+                nName.includes(term) ||
+                nSku.includes(term) ||
+                nBarcode.includes(term) ||
+                isIdMatch
+            );
+        });
     }, [processedProducts, searchTerm]);
 
     const visibleProducts = useMemo(() => {

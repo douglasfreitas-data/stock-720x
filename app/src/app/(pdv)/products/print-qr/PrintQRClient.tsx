@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import QRCode from 'qrcode';
 import { jsPDF } from 'jspdf';
 import { FileText, Loader, Search, X, CheckSquare, Square } from 'lucide-react';
+import { normalizeSearchString } from '@/lib/stringUtils';
 
 interface LocalVariant {
     id: number;
@@ -83,11 +84,17 @@ export default function PrintQRClient({ products }: PrintQRClientProps) {
     // Derived states
     const filteredProducts = useMemo(() => {
         if (!searchTerm.trim()) return [];
-        const q = searchTerm.toLowerCase();
-        return productsForQR.filter(p =>
-            p.name.toLowerCase().includes(q) ||
-            p.sku.toLowerCase().includes(q)
-        ).slice(0, 10);
+        const terms = normalizeSearchString(searchTerm).split(' ').filter(Boolean);
+        if (terms.length === 0) return [];
+
+        return productsForQR.filter(p => {
+            const nName = normalizeSearchString(p.name);
+            const nSku = normalizeSearchString(p.sku);
+
+            return terms.every(term => 
+                nName.includes(term) || nSku.includes(term)
+            );
+        }).slice(0, 50);
     }, [productsForQR, searchTerm]);
 
     const selectedProductsArr = useMemo(() => {

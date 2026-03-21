@@ -8,6 +8,7 @@ import { NuvemshopAPI } from '@/lib/nuvemshop';
 import { Product } from '@/lib/types';
 import { supabaseAdmin } from '@/lib/supabase/client';
 import { cookies } from 'next/headers';
+import { normalizeSearchString } from '@/lib/stringUtils';
 
 interface TokenData {
     access_token: string;
@@ -21,40 +22,52 @@ export async function GET(request: NextRequest) {
     // ===== Busca por nome — usa Supabase direto (não precisa autenticação Nuvemshop) =====
     if (search) {
         try {
-            // O Supabase não suporta .or() cruzando tabelas facilmente.
-            // Para resolver isso de forma eficiente e buscar por CÓDIGO e NOME, fazemos duas queries e juntamos.
+            // Busca TODOS os produtos para filtragem em memória (suportando ignorar acentos/traços)
+            const { data: allVariants, error: fetchError } = await supabaseAdmin
+                .from('product_variants')
+                .select('id, sku, barcode, price, stock, stock_management, min_stock, values, image_url, products!inner(name, images)');
             
-            // 1. Busca por NOME
-            const nameQuery = supabaseAdmin
-                .from('product_variants')
-                .select('id, sku, barcode, price, stock, stock_management, min_stock, values, image_url, products!inner(name, images)')
-                .ilike('products.name->>pt', `%${search}%`)
-                .limit(20);
-
-            // 2. Busca por REFERÊNCIA (sku, barcode, id)
-            const searchNumber = Number(search);
-            let codeOrString = `sku.ilike.%${search}%,barcode.ilike.%${search}%`;
-            if (!isNaN(searchNumber)) {
-                codeOrString += `,id.eq.${searchNumber}`;
+            if (fetchError) {
+                console.error('[API Products Search] Erro Supabase:', fetchError);
             }
-            const codeQuery = supabaseAdmin
-                .from('product_variants')
-                .select('id, sku, barcode, price, stock, stock_management, min_stock, values, image_url, products!inner(name, images)')
-                .or(codeOrString)
-                .limit(20);
 
-            const [nameRes, codeRes] = await Promise.all([nameQuery, codeQuery]);
+            const terms = normalizeSearchString(search).split(' ').filter(Boolean);
+            const searchNumber = Number(search);
 
-            if (nameRes.error) console.error('[API Products Search] Erro Supabase NOME:', nameRes.error);
-            if (codeRes.error) console.error('[API Products Search] Erro Supabase CODIGO:', codeRes.error);
+            const allFiltered = (allVariants || []).filter((v: any) => {
+                const name = typeof v.products?.name === 'string' 
+                    ? JSON.parse(v.products.name)?.pt 
+                    : v.products?.name?.pt;
+                
+                let fullName = name || '';
+                if (v.values && Array.isArray(v.values) && v.values.length > 0) {
+                    const variantTags = v.values.map((val: any) => val?.pt).filter(Boolean).join(' / ');
+                    if (variantTags) {
+                        fullName = `${fullName} - ${variantTags}`;
+                    }
+                }
 
-            // Junta e remove duplicados
-            const merged = [...(nameRes.data || []), ...(codeRes.data || [])];
+                const nFullName = normalizeSearchString(fullName);
+                const nSku = normalizeSearchString(v.sku || '');
+                const nBarcode = normalizeSearchString(v.barcode || '');
+
+                if (terms.length === 0) return true;
+
+                // Todos os termos digitados devem estar presentes em algum campo (AND)
+                return terms.every(term => 
+                    nFullName.includes(term) ||
+                    nSku.includes(term) ||
+                    nBarcode.includes(term) ||
+                    (!isNaN(searchNumber) && v.id === searchNumber && terms.length === 1)
+                );
+            });
+
+            // Junta e remove duplicados (caso hajam, para segurança)
             const uniqueMap = new Map();
-            merged.forEach(row => {
+            allFiltered.forEach((row: any) => {
                 if (!uniqueMap.has(row.id)) uniqueMap.set(row.id, row);
             });
-            const data = Array.from(uniqueMap.values()).slice(0, 20);
+            const data = Array.from(uniqueMap.values()).slice(0, 50);
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const products: Product[] = (data || []).map((row: any) => {

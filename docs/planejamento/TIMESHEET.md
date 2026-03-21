@@ -105,14 +105,15 @@
 | 20/03/2026 | 1.0h | **Manutenção de Docs**: Varredura de código e atualização de Roadmap, Fase Atual e Timesheet. |
 | 20/03/2026 | 3.0h | **Melhorias PDF & Etiquetas QR**: Ampliação em 40% do campo Produto nos PDFs, correção de saldo ∞ em relatórios, rotação 180° da coluna direita das etiquetas QR Code via CTM (Matriz de Transformação PDF). |
 | 20/03/2026 | 2.5h | **Busca Avançada Multi-Termos**: Refatoração do motor de busca para suportar filtragem independente de palavras-chave, insensível a acentos (NFD) e ignorando traços. Substituição de constraints SQL (`ilike`) por processamento in-memory (`normalizeSearchString`) na API para uniformidade com o frontend. |
-| 21/03/2026 | 0.5h | **Fix Truncamento de Busca**: Correção de bug onde o Supabase PostgREST truncava silenciosamente resultados em 1000 linhas, causando produtos faltantes no autocomplete de vendas. Adicionado `.limit(10000)` à query da API. |
+| 21/03/2026 | 1.0h | **Fix Truncamento de Busca & Blindagem**: Investigação do limite rígido `max-rows: 1000` do PostgREST no Supabase. Implementação de laço de paginação (`while` + `.range()`) na API de busca e replicação preventiva nas telas de Lista e QR Code para garantir escalabilidade além de 1000 itens. |
+| 21/03/2026 | 0.5h | **Manutenção de Docs**: Atualização da documentação técnica e de planejamento para refletir a nova arquitetura de paginação de dados. |
 
 ## 📊 Métricas Globais
 
 - **Perfil de Esforço Estimado**: Compatível com 1 Desenvolvedor Pleno/Sênior 
-- **Tempo Acumulado do Projeto**: ~228h (aprox. 6 semanas em Full-Time 40h)
-- **Progresso atual**: ~98% (Fase 5 finalizada, pronto para operação plena)
+- **Tempo Acumulado do Projeto**: ~230h (aprox. 6 semanas em Full-Time 40h)
+- **Progresso atual**: ~100% (Fase 5 finalizada com sucesso, sistema totalmente resiliente)
 
 ---
 
-*Última atualização: 21/03/2026 09:42*
+*Última atualização: 21/03/2026 11:00*

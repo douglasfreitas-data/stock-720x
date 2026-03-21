@@ -627,7 +627,7 @@ Cada execução registra na tabela `sync_logs`:
 **Endpoint:** `GET /api/products?search=XXX`
 
 - A busca de produtos é processada em memória pelo Node.js após buscar as variantes no Supabase.
-- **Limite de Query Supabase:** A query utiliza `.limit(10000)` para garantir que todas as variantes sejam retornadas, contornando o limite padrão de 1000 linhas do Supabase PostgREST que truncava silenciosamente os resultados.
+- **Bypassing do Limite Supabase (PostgREST):** Devido ao limite rígido `max-rows` de 1000 linhas por requisição do motor do Supabase, o sistema utiliza um **laço de paginação automática** (`while` + `.range()`) para varrer e acumular todos os produtos/variantes do banco antes do processamento. Isso garante que lojas com mais de 1000 itens (ex: as 1700+ variantes atuais) sejam processadas integralmente sem perdas silenciosas.
 - **Busca Multi-Termos Independente:** A frase pesquisada é dividida em palavras ("lamina escola"). Para dar match, o produto deve conter TODAS as palavras em qualquer ordem.
 - **Insensível a Acentos e Formatação:** O utilitário `normalizeSearchString` (NFD) ignora acentos e converte a string limpando traços e pontuações, garantindo que buscas inexatas funcionem de primeira.
 - Verifica os termos pesquisados nas colunas: Nome, SKU, Barcode e ID.

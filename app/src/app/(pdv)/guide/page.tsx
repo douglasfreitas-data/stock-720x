@@ -7,81 +7,74 @@ import { ChevronDown, ChevronUp, BookOpen, ArrowLeft } from 'lucide-react';
 // Hardcoded guide sections derived from the GUIA_USUARIO.md
 const guideSections = [
     {
-        title: '1. Instalação (PWA)',
+        title: '1. Instalação',
         content: `O Stock 720x funciona como um aplicativo no seu celular.
         
-1. Ao acessar o sistema pela primeira vez, um aviso de **"Adicionar à tela inicial"** aparecerá.
-2. Clique no botão e siga as instruções para adicionar o ícone à sua tela de início.
-3. Caso o aviso não apareça, instale manualmente:
-   - **No iPhone:** Clique em "Compartilhar" (quadrado com seta) e **"Adicionar à Tela de Início"**.
-   - **No Android:** Clique nos 3 pontinhos e escolha **"Adicionar à tela inicial"**.`
+- Ao acessar o sistema pela primeira vez, um aviso de **"Adicionar à tela inicial"** aparecerá na parte inferior da tela inicial.
+- Clique no botão e siga as instruções para adicionar o ícone à sua tela de início.
+- Caso o aviso não apareça, instale manualmente:
+  - **No iPhone:** Clique no ícone de "Compartilhar" (quadrado com seta) e escolha **"Adicionar à Tela de Início"**.
+  - **No Android:** Clique nos três pontinhos e escolha **"Adicionar à tela inicial"**.`
     },
     {
-        title: '2. Realizando Vendas (PDV)',
-        content: `1. Na tela inicial, clique em **"Vender / Escanear"**.
-2. Aponte a câmera para o QR Code do produto.
-3. Clique no ícone do **Carrinho** para ver a lista.
-4. **No Carrinho você pode:**
-   - Alterar a quantidade total.
-   - Alterar o preço para dar descontos (clicando no lápis).
-   - Remover um item zerando a quantidade.
-5. Clique em **"Avançar para Checkout"**.
-6. Escolha a forma de pagamento e clique em **"Confirmar Venda"**.`
+        title: '2. Realizando Vendas',
+        content: `Como registrar a saída de um produto entregue ao cliente:
+- Na tela inicial, clique em **"Vender"**.
+- Aponte a câmera para o QR Code do produto. O item será adicionado automaticamente.
+- Se não tiver a etiqueta, você também pode usar o campo de busca no topo para digitar o nome ou ID do produto.
+- Para gerenciar os itens, clique no ícone do **Carrinho**. No carrinho você pode:
+   - Aumentar ou diminuir a **quantidade** de cada item.
+   - Clicar no **ícone de lápis** para conceder um desconto manual negociado com o cliente.
+   - **Remover um item** clicando no ícone de lixeira.
+- Após conferir os itens, clique em **"Avançar para Checkout"**. Selecione como o cliente pagou e clique em **"Confirmar Venda"**.`
     },
     {
-        title: '3. Venda Pendente (Reservar Estoque)',
-        content: `Se o cliente for pagar depois:
-1. No Carrinho, em vez de Finalizar, clique em **"Salvar como Pendente"**.
-2. O estoque será reservado (saída física), sem enviar para a Nuvemshop ainda.
-3. Para finalizar depois, vá em **"Vendas Pendentes"** na tela inicial e busque o cliente.`
+        title: '3. Venda Pendente',
+        content: `Utilizado quando o cliente ainda não confirmou totalmente a compra.
+- Adicione os produtos ao Carrinho normalmente.
+- Em vez de ir para o checkout, clique em **"Salvar como Pendente"**.
+- Insira o nome do cliente. O sistema irá **reservar** o estoque.
+- Quando o cliente voltar para pagar e retirar a mercadoria, acesse o ícone de relógio no topo da tela inicial ("Vendas Pendentes"), encontre o nome do cliente e finalize a venda.`
     },
     {
-        title: '4. Entrada de Mercadoria (Reposição)',
-        content: `Sempre que chegar carga nova:
-1. Clique em **"Entrada de Estoque"**.
-2. Escaneie o produto.
-3. Digite a **quantidade que está chegando** e confirme.
-4. O sistema atualizará automaticamente o saldo.`
+        title: '4. Entrada',
+        content: `- Na tela inicial, clique em **"Entrada"**.
+- Escaneie o QR Code do produto.
+- Digite a quantidade que está entrando na loja.
+- Adicione uma observação se desejar e confirme. (Ex: Só registra no estoque depois que a mercadoria já foi comprada e chegou).`
     },
     {
-        title: '5. Inventário (Ajuste de Estoque)',
-        content: `Para conferir se a prateleira bate com o sistema:
-1. Clique em **"Ajuste / Inventário"**.
-2. Escaneie o produto.
-3. Se o saldo estiver errado, digite a **quantidade real na prateleira**.
-4. O sistema fará o "ajuste de perda" ou "sobra" automaticamente.`
+        title: '5. Inventário',
+        content: `Utilizado para contagem de prateleira e corrigir divergências entre o celular e a realidade, e **também para gerenciar alertas de estoque mínimo**.
+- Na tela inicial, clique em **"Inventário"**.
+- Escaneie ou busque o produto. 
+- **Ajuste de Saldo:** Se a quantidade na prateleira for diferente do sistema, digite a quantidade real e confirme para corrigir.
+- **Estoque Mínimo Ideal:** Abaixo do saldo, você verá o campo de Estoque Mínimo. Ele serve para o sistema saber quando deve alertá-lo que o produto está acabando. **Atenção:** O sistema iniciou o padrão com 5 unidades para todos os itens. Você deve alterar esse número adequadamente para cada produto para que as notificações funcionem de verdade em sua loja.`
     },
     {
         title: '6. Busca de Produtos',
-        content: `Ao buscar (lupa), você pode procurar por:
-- **Nome do produto** (Ex: "camisa azul").
-- **ID** (O número interno do produto).
-*Dica: A busca funciona mesmo sem acentos ou com ordem invertida!*`
+        content: `A pesquisa inteligente agiliza a localização de itens sem precisar do QR Code.
+- Em qualquer tela com "Lupa", busque pelo **Nome exato ou ID numérico**.
+- A busca ignora acentos e a ordem das palavras. Por exemplo, se o produto se chama "Camisa Polo Azul", você pode pesquisar "azul camisa".`
     },
     {
-        title: '7. Notificações e Alertas',
-        content: `O sistema avisa se algo está acabando:
-1. **Ativação:** Se aparecer "Ativar Alertas" na tela inicial, clique e aceite.
-2. Você receberá um aviso no celular sempre que um item chegar no nível crítico.`
+        title: '7. Notificações',
+        content: `Mantenha o controle de forma automática quando os produtos estão ameaçando acabar.
+- Clique em **"Ativar Alertas"** que aparece na tela principal e autorize seu navegador quando ele perguntar.
+- Sempre que for registrada uma venda e o saldo do produto atingir seu nível de segurança ("Estoque Mínimo" do tópico 5), seu celular apitará alertando reposição.`
     },
     {
-        title: '8. Relatórios Sugeridos',
-        content: `Clique em **"Relatórios"** na tela inicial:
-- **Histórico de Movimentações:** Tudo o que entrou e saiu (vendas, entradas, ajustes).
-- **Relatório de Reposição:** Lista de compras sugerida baseada na falta de produtos. Você pode gerar um PDF para facilitar as compras.`
+        title: '8. Relatórios',
+        content: `Para controle rápido da operação da loja:
+- **Detalhes da Operação:** Ao clicar em qualquer linha do lançamento (venda, entrada, ajuste), o sistema abre os detalhes, incluindo número do pedido do site, status da sincronização com a Nuvemshop e observações inseridas.
+- **Uso dos Filtros:** O relatório possui filtros poderosos. No campo de **Cliente/Fornecedor**, se você deixar "Todos", o relatório listará as movimentações dividindo os totais e somando cada pessoa separadamente de forma consolidada. Caso preferir, pesquise por um nome específico para ver as movimentações apenas da pessoa informada.
+- **Reposição:** Uma tela que lista apenas produtos em estado de estoque crítico. (Atenção para o estoque mínimo configurado no Inventário).`
     },
     {
         title: '9. Impressão de Etiquetas',
-        content: `1. Vá em **"Lista de Produtos"** > **"Imprimir QR Code"**.
-2. Selecione os produtos desejados.
-3. Clique em **"Gerar PDF"**.
-4. O PDF gerado já vem no formato da etiquetadora.`
-    },
-    {
-        title: '10. Modo Offline',
-        content: `Se a internet cair, **não pare de trabalhar!**
-- Continue registrando vendas e entradas normalmente (uma tarja exibirá que você está offline).
-- Assim que o Wi-Fi ou 4G voltar, o app envia os dados pendentes para a Nuvemshop automaticamente.`
+        content: `Gere os QR Codes para colar nas mercadorias ou prateleiras.
+- Acesse **"Produtos"** na tela inicial.
+- Marque as caixinhas ao lado e clique em **"Imprimir QR Code"**. O sistema gerará um PDF pronto para a máquina de etiquetas.`
     }
 ];
 

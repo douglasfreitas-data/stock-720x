@@ -107,6 +107,7 @@
 | 20/03/2026 | 2.5h | **Busca Avançada Multi-Termos**: Refatoração do motor de busca para suportar filtragem independente de palavras-chave, insensível a acentos (NFD) e ignorando traços. Substituição de constraints SQL (`ilike`) por processamento in-memory (`normalizeSearchString`) na API para uniformidade com o frontend. |
 | 21/03/2026 | 1.0h | **Fix Truncamento de Busca & Blindagem**: Investigação do limite rígido `max-rows: 1000` do PostgREST no Supabase. Implementação de laço de paginação (`while` + `.range()`) na API de busca e replicação preventiva nas telas de Lista e QR Code para garantir escalabilidade além de 1000 itens. |
 | 21/03/2026 | 0.5h | **Manutenção de Docs**: Atualização da documentação técnica e de planejamento para refletir a nova arquitetura de paginação de dados. |
+| 21/03/2026 | 2.5h | **Refinamento UX & Manuais**: Implementação de visualização Accordion no Guia de Uso, menu nativo na Home, revisão não-técnica da documentação e projeto arquitetural (Proof of Concept) para Sincronização Serverless de alta frequência via GitHub Actions. |
 
 ## 📊 Métricas Globais
 

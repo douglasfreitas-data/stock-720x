@@ -69,6 +69,12 @@
 - [x] **Refinamento de UX (Toast)**: Redução de pop-ups intrusivos (removido "Produto Adicionado/Encontrado") para agilizar a operação de caixa.
 - [x] **Placeholders Inteligentes**: Atualização de todos os inputs de busca para informar os novos critérios (Nome, Código ou Barras).
 
-## 🖥️ Bloco 5.9: UX & Responsividade Desktop — BKP/ROADMAP
+## 📄 Bloco 5.9: Melhorias em Relatórios PDF & Etiquetas QR — CONCLUÍDO
+> Correções de exibição e melhorias de usabilidade nos PDFs gerados pelo sistema.
+- [x] **Relatório PDF — Campo de Produto Ampliado**: Aumento de 40% na largura do campo "Produto" nos PDFs de Movimentação e Reposição, com reposicionamento de todas as colunas adjacentes.
+- [x] **Relatório PDF — Saldo Infinito (∞)**: Correção de bug onde produtos com `stock_management: false` exibiam saldo `0` ao invés de `∞`. Adicionado campo `stock_management` à query de relatórios e criada função `formatStock()` para formatação condicional tanto na tela quanto no PDF.
+- [x] **Etiquetas QR Code — Rotação 180° (Coluna Direita)**: Implementação de rotação via **Matriz de Transformação PDF (CTM)** (`[-1, 0, 0, -1, 2*cx, 2*cy] cm`) para que ao cortar a folha A4 ao meio, ambas as colunas de etiquetas tenham a margem de furo no lado correto. Código original preservado em `PrintQRClient_backup.tsx`.
+
+## 🖥️ Bloco 5.10: UX & Responsividade Desktop — BKP/ROADMAP
 > Adaptações necessárias caso o PDV web passe a ser utilizado extensivamente num navegador de Desktop ou Totem.
 - [ ] Implementação de **CSS Grid** e `max-width` global (ver specs em `docs/planejamento/03_RESPONSIVIDADE_DESKTOP.md`).

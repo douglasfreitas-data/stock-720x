@@ -42,11 +42,18 @@
 - [x] **Inteligência de Busca & Estoque Infinito**
   - [x] Busca por SKU, Código de Barras e ID em todo o app.
   - [x] Tratamento de `stock_management: false` (Estoque Infinito Nuvemshop).
+  - [x] Exibição de **∞** nos Relatórios e PDFs para produtos com estoque infinito.
 - [x] **PDV Cloud & Vendas Pendentes**
   - [x] Lógica de Reserva e Estorno de estoque físico.
   - [x] Edição manual de preços.
+- [x] **Melhorias em Relatórios PDF**
+  - [x] Campo de produto ampliado em 40% nos PDFs (Relatório de Movimentação e Reposição).
+  - [x] Correção de saldo `0` para produtos com estoque infinito nos relatórios.
+- [x] **Etiquetas QR Code**
+  - [x] Rotação 180° da coluna da direita via CTM (Matriz de Transformação PDF) para impressão com margem de furo padrão.
 
 ## Fase 6: Próximos Passos (Pronto para Início) 🔲
 - [ ] Multi-loja (Análise de viabilidade).
 - [ ] Relatórios Avançados de Performance de Vendas por Período.
 - [ ] Dashboards de BI Customizados.
+- [ ] Responsividade Desktop (ver `03_RESPONSIVIDADE_DESKTOP.md`).

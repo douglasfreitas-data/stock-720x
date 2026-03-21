@@ -7,8 +7,8 @@
 | Mockup/Protótipo | 34.0h | ✅ Concluído |
 | Desenvolvimento (Fase 2/3) | 99.0h | ✅ Concluído |
 | Produção & Operação F. (Fase 4) | 8.0h | ✅ Concluído |
-| Expansão (Fase 5) | 81.0h | ✅ Concluído |
-| **Total** | **222.0h** | - |
+| Expansão (Fase 5) | 84.0h | ✅ Concluído |
+| **Total** | **225.0h** | - |
 
 ---
 
@@ -86,7 +86,7 @@
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
 **Fim**: 20/03/2026
-**Total**: 81.0 horas (Concluída)
+**Total**: 84.0 horas (Concluída)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -103,13 +103,14 @@
 | 20/03/2026 | 3.0h | **Sincronização & Inteligência de Estoque**: Implementação do tratamento de "Estoque Infinito" (Nuvemshop `stock_management: false`) em todo o ecossistema (vendas, auditoria, push notifications e relatórios). |
 | 20/03/2026 | 2.0h | **Engine de Busca & UI/UX**: Expansão da busca global (SKU, Código de Barras e ID), atualização de placeholders e limpeza de notificações toast para agilizar operação. |
 | 20/03/2026 | 1.0h | **Manutenção de Docs**: Varredura de código e atualização de Roadmap, Fase Atual e Timesheet. |
+| 20/03/2026 | 3.0h | **Melhorias PDF & Etiquetas QR**: Ampliação em 40% do campo Produto nos PDFs, correção de saldo ∞ em relatórios, rotação 180° da coluna direita das etiquetas QR Code via CTM (Matriz de Transformação PDF). |
 
 ## 📊 Métricas Globais
 
 - **Perfil de Esforço Estimado**: Compatível com 1 Desenvolvedor Pleno/Sênior 
-- **Tempo Acumulado do Projeto**: ~222.0h (aprox. 6 semanas em Full-Time 40h)
+- **Tempo Acumulado do Projeto**: ~225.0h (aprox. 6 semanas em Full-Time 40h)
 - **Progresso atual**: ~98% (Fase 5 finalizada, pronto para operação plena)
 
 ---
 
-*Última atualização: 20/03/2026 16:30*
+*Última atualização: 20/03/2026 22:50*

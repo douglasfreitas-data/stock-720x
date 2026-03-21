@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { signout, getAdminStatus } from '@/app/actions/auth';
 import { getReplenishmentDataAction } from '@/app/actions/reports';
-import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key, Users, Activity } from 'lucide-react';
+import { ShoppingCart, Package, Inbox, Tag, BarChart2, AlertTriangle, Key, Users, Activity, MoreVertical, BookOpen } from 'lucide-react';
 
 export default function HomeScreen() {
     const [hasCriticalItems, setHasCriticalItems] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        // ... (resto do useEffect mantém igual)
         async function checkCriticalStock() {
             try {
                 const result = await getReplenishmentDataAction();
@@ -36,8 +39,42 @@ export default function HomeScreen() {
         loadAdminStatus();
     }, []);
 
+    // Fechar menu ao clicar fora
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsMenuOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
     return (
-        <div className="home-screen">
+        <div className="home-screen" style={{ position: 'relative' }}>
+            
+            {/* Top-left Menu */}
+            <div ref={menuRef} style={{ position: 'absolute', top: '-110px', left: '0px', zIndex: 100 }}>
+                <button 
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-primary)', cursor: 'pointer', padding: '8px' }}
+                >
+                    <MoreVertical size={28} />
+                </button>
+                {isMenuOpen && (
+                    <div className="menu-dropdown" style={{ left: 0, right: 'auto', top: '100%' }}>
+                        <Link href="/guide" className="menu-item" style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                            <BookOpen size={16} /> Guia de Uso
+                        </Link>
+                        {!isAdmin && (
+                            <Link href="/update-password" className="menu-item" style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                <Key size={16} /> Alterar Senha
+                            </Link>
+                        )}
+                    </div>
+                )}
+            </div>
+
             <div className="menu-grid">
                 {/* Venda */}
                 <Link href="/scan?mode=sale" className="menu-card decoration-none">
@@ -94,8 +131,8 @@ export default function HomeScreen() {
                 </Link>
             </div>
 
-            {/* Alterar Senha ou Admin */}
-            {isAdmin ? (
+            {/* Admin Dashboard */}
+            {isAdmin && (
                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', margin: 'var(--space-lg) auto 0' }}>
                     <Link href="/admin/users" style={{ 
                         display: 'flex', alignItems: 'center', gap: '8px', 
@@ -127,17 +164,6 @@ export default function HomeScreen() {
                         <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 600 }}>Logs do Sistema</span>
                     </Link>
                 </div>
-            ) : (
-                <Link href="/update-password" style={{ 
-                    display: 'flex', alignItems: 'center', gap: '8px', 
-                    width: 'fit-content', margin: 'var(--space-lg) auto 0', 
-                    padding: 'var(--space-sm) var(--space-md)',
-                    borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)',
-                    color: 'var(--text-secondary)', textDecoration: 'none'
-                }}>
-                    <Key size={16} />
-                    <span style={{ fontSize: '0.85rem' }}>Alterar Senha</span>
-                </Link>
             )}
 
             {/* Sair */}

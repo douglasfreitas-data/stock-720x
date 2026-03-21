@@ -20,8 +20,9 @@ O Stock 720x funciona como um aplicativo no seu celular.
 2.  Aponte a câmera para o QR Code do produto.
 3.  O item irá para o Carrinho. Clique no ícone do **Carrinho** para ver a lista.
 4.  **No Carrinho você pode:**
-    - Alterar a quantidade.
+    - Alterar a quantidade total.
     - Alterar o preço (clicando no ícone de lápis) para dar descontos ou negociar.
+    - **Remover um item:** Diminua a quantidade até zero ou use o botão da lixeira ao editar o item.
 5.  Clique em **"Avançar para Checkout"**.
 6.  Escolha a forma de pagamento e clique em **"Confirmar Venda"**.
 

@@ -29,7 +29,7 @@ O projeto **Stock 720x** é um PDV mobile-first (Next.js PWA) integrado à Nuvem
 Já completamos Fase 1 (Mockup), Fase 2 (Backend Base), Fase 3 (Polimento) e Fase 4 (Operação Física). O PWA já funciona offline, possui E2E tests, reconciliações e onboarding ativo.
 
 ### Próximo Objetivo Imediato
-A fase de estabilização do Web Push e re-estruturação dos Webhooks terminou. O deploy automático da Vercel foi retomado com CI simples no GitHub. O próximo passo da fase atual (Blocos 5.3) concentra-se em planejamento de multi-lojas e multi-estoques, se aprovado.
+A fase de estabilização do Web Push e re-estruturação dos Webhooks terminou. O próximo passo da fase atual concentra-se na implementação da automação de **Sincronização de Alta Frequência via GitHub Actions** (para mitigar limites da Vercel) e no planejamento preliminar de multi-lojas e multi-estoques.
 
 ---
 

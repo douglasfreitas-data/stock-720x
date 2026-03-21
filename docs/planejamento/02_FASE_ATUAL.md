@@ -81,3 +81,7 @@
 ## 🖥️ Bloco 5.10: UX & Responsividade Desktop — BKP/ROADMAP
 > Adaptações necessárias caso o PDV web passe a ser utilizado extensivamente num navegador de Desktop ou Totem.
 - [ ] Implementação de **CSS Grid** e `max-width` global (ver specs em `docs/planejamento/03_RESPONSIVIDADE_DESKTOP.md`).
+
+## 🤖 Bloco 5.11: Automação High-Frequency Sync (Roadmap)
+> Ultrapassar o limite de Crons da Vercel para sincronizações gratuitas a cada 2h usando GitHub Actions.
+- [ ] Implementar a integração definida no `06_PLANO_CRON_GITHUB_ACTIONS.md` para blindar horários comerciais.

@@ -22,18 +22,20 @@ export async function GET(request: NextRequest) {
     // ===== Busca por nome — usa Supabase direto (não precisa autenticação Nuvemshop) =====
     if (search) {
         try {
-            // Busca TODOS os produtos para filtragem em memória (suportando ignorar acentos/traços)
+            const terms = normalizeSearchString(search).split(' ').filter(Boolean);
+            const searchNumber = Number(search);
+
+            // Busca todas as variantes com limite alto para evitar truncamento do Supabase (padrão: 1000)
             const { data: allVariants, error: fetchError } = await supabaseAdmin
                 .from('product_variants')
-                .select('id, sku, barcode, price, stock, stock_management, min_stock, values, image_url, products!inner(name, images)');
+                .select('id, sku, barcode, price, stock, stock_management, min_stock, values, image_url, products!inner(name, images)')
+                .limit(10000);
             
             if (fetchError) {
                 console.error('[API Products Search] Erro Supabase:', fetchError);
             }
 
-            const terms = normalizeSearchString(search).split(' ').filter(Boolean);
-            const searchNumber = Number(search);
-
+            // Refinamento em memória com normalizeSearchString (suporta acentos e multi-termos)
             const allFiltered = (allVariants || []).filter((v: any) => {
                 const name = typeof v.products?.name === 'string' 
                     ? JSON.parse(v.products.name)?.pt 

@@ -71,11 +71,18 @@ Mantenha o controle de forma automática quando os produtos estão ameaçando ac
 Para controle rápido da operação da loja:
 - **Detalhes da Operação:** Ao clicar em qualquer linha do lançamento (venda, entrada, ajuste), o sistema abre os detalhes, incluindo número do pedido do site, status da sincronização com a Nuvemshop e observações inseridas.
 - **Uso dos Filtros:** O relatório possui filtros poderosos. No campo de **Cliente/Fornecedor**, se você deixar "Todos", o relatório listará as movimentações dividindo os totais e somando cada pessoa separadamente de forma consolidada. Caso preferir, pesquise por um nome específico para ver as movimentações apenas da pessoa informada.
-- **Reposição:** Uma tela que lista apenas produtos em estado de estoque crítico. (Atenção para o estoque mínimo configurado no Inventário).
 
 ---
 
-## 9. Impressão de Etiquetas
+## 9. Reposição
+Acompanhe os produtos que estão com estoque crítico (abaixo do mínimo que você configurou no Inventário).
+- **Ação Imediata:** Produtos que já esgotaram ou estão muito abaixo do limite e precisam ser comprados urgentemente.
+- **Em Observação:** Produtos que estão chegando perto do limite ou bateram exatamente na margem de segurança.
+- **PDF de Compras:** Dentro da tela de Reposição, você pode clicar em **"Baixar PDF"** ou **"Gerar PDF"** para criar uma lista limpa, facilitando na hora de realizar pedidos com seu fornecedor.
+
+---
+
+## 10. Impressão de Etiquetas
 Gere os QR Codes para colar nas mercadorias ou prateleiras.
 - Acesse **"Produtos"** na tela inicial.
 - Marque as caixinhas ao lado e clique em **"Imprimir QR Code"**. O sistema gerará um PDF pronto para a máquina de etiquetas.

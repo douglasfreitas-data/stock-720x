@@ -67,11 +67,17 @@ const guideSections = [
         title: '8. Relatórios',
         content: `Para controle rápido da operação da loja:
 - **Detalhes da Operação:** Ao clicar em qualquer linha do lançamento (venda, entrada, ajuste), o sistema abre os detalhes, incluindo número do pedido do site, status da sincronização com a Nuvemshop e observações inseridas.
-- **Uso dos Filtros:** O relatório possui filtros poderosos. No campo de **Cliente/Fornecedor**, se você deixar "Todos", o relatório listará as movimentações dividindo os totais e somando cada pessoa separadamente de forma consolidada. Caso preferir, pesquise por um nome específico para ver as movimentações apenas da pessoa informada.
-- **Reposição:** Uma tela que lista apenas produtos em estado de estoque crítico. (Atenção para o estoque mínimo configurado no Inventário).`
+- **Uso dos Filtros:** O relatório possui filtros poderosos. No campo de **Cliente/Fornecedor**, se você deixar "Todos", o relatório listará as movimentações dividindo os totais e somando cada pessoa separadamente de forma consolidada. Caso preferir, pesquise por um nome específico para ver as movimentações apenas da pessoa informada.`
     },
     {
-        title: '9. Impressão de Etiquetas',
+        title: '9. Reposição',
+        content: `Acompanhe os produtos que estão com estoque crítico (abaixo do mínimo que você configurou no Inventário).
+- **Ação Imediata:** Produtos que já esgotaram ou estão muito abaixo do limite e precisam ser comprados urgentemente.
+- **Em Observação:** Produtos que estão chegando perto do limite ou bateram exatamente na margem de segurança.
+- **PDF de Compras:** Clique em "Gerar PDF" nesta tela para criar uma lista limpa, facilitando pedidos com o seu fornecedor.`
+    },
+    {
+        title: '10. Impressão de Etiquetas',
         content: `Gere os QR Codes para colar nas mercadorias ou prateleiras.
 - Acesse **"Produtos"** na tela inicial.
 - Marque as caixinhas ao lado e clique em **"Imprimir QR Code"**. O sistema gerará um PDF pronto para a máquina de etiquetas.`

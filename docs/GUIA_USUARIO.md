@@ -5,11 +5,13 @@ Este manual explica as principais funções do sistema de forma rápida e direta
 ---
 
 ## 1. Instalação (PWA)
-O Stock 720x funciona como um aplicativo no seu celular sem precisar baixar da App Store ou Play Store.
+O Stock 720x funciona como um aplicativo no seu celular.
 
-1.  Acesse o link do sistema no navegador do celular (Safari no iPhone ou Chrome no Android).
-2.  **No iPhone:** Clique no ícone de "Compartilhar" (quadrado com seta) e escolha **"Adicionar à Tela de Início"**.
-3.  **No Android:** Clique nos três pontinhos e escolha **"Instalar Aplicativo"**.
+1.  Ao acessar o sistema pela primeira vez, um aviso de **"Instalar Aplicativo"** aparecerá na parte inferior da tela inicial.
+2.  Clique no botão e siga as instruções para adicionar o ícone à sua tela de início.
+3.  Caso o aviso não apareça, você pode instalar manualmente:
+    - **No iPhone:** Clique no ícone de "Compartilhar" (quadrado com seta) e escolha **"Adicionar à Tela de Início"**.
+    - **No Android:** Clique nos três pontinhos e escolha **"Instalar Aplicativo"**.
 
 ---
 

@@ -98,6 +98,7 @@ export async function getStockSessionsAction(filters?: ReportFilters) {
                         barcode,
                         price,
                         values,
+                        stock_management,
                         products (
                             name
                         )

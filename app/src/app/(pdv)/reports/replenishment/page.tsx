@@ -89,8 +89,8 @@ export default function ReplenishmentReport() {
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold');
             doc.text('Produto', 14, y);
-            doc.text('Estoque', 140, y);
-            doc.text('Mínimo', 170, y);
+            doc.text('Estoque', 155, y);
+            doc.text('Mínimo', 180, y);
             y += 6;
             doc.setFont('helvetica', 'normal');
         };
@@ -107,9 +107,9 @@ export default function ReplenishmentReport() {
 
             criticalItems.forEach(item => {
                 if (y > 275) { doc.addPage(); y = 20; drawHeader(); }
-                doc.text(item.productName.substring(0, 60), 14, y);
-                doc.text(String(item.stock), 140, y);
-                doc.text(String(item.min_stock), 170, y);
+                doc.text(item.productName.substring(0, 84), 14, y);
+                doc.text(String(item.stock), 155, y);
+                doc.text(String(item.min_stock), 180, y);
                 y += 6;
             });
             y += 8;
@@ -128,9 +128,9 @@ export default function ReplenishmentReport() {
 
             attentionItems.forEach(item => {
                 if (y > 275) { doc.addPage(); y = 20; drawHeader(); }
-                doc.text(item.productName.substring(0, 60), 14, y);
-                doc.text(String(item.stock), 140, y);
-                doc.text(String(item.min_stock), 170, y);
+                doc.text(item.productName.substring(0, 84), 14, y);
+                doc.text(String(item.stock), 155, y);
+                doc.text(String(item.min_stock), 180, y);
                 y += 6;
             });
         }

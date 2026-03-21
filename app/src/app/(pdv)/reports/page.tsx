@@ -18,6 +18,7 @@ interface StockMovement {
         barcode?: string;
         price?: number;
         values?: any;
+        stock_management?: boolean;
         products?: { name?: { pt?: string; [key: string]: string | undefined } };
     };
 }
@@ -76,6 +77,11 @@ function getProductName(m: StockMovement): string {
 
 function getProductPrice(m: StockMovement): number {
     return m.product_variants?.price || 0;
+}
+
+function formatStock(value: number, m: StockMovement): string {
+    if (m.product_variants?.stock_management === false) return '∞';
+    return String(value);
 }
 
 function shortUser(email: string | null | undefined): string {
@@ -183,7 +189,7 @@ function MovementRow({ mov, session, activeTab }: { mov: StockMovement, session:
                         {activeTab !== 'entrada' && (
                             <div><strong style={{color: 'var(--text-primary)'}}>Valor:</strong> R$ {price.toFixed(2).replace('.', ',')}</div>
                         )}
-                        <div><strong style={{color: 'var(--text-primary)'}}>Saldo:</strong> {mov.new_stock}</div>
+                        <div><strong style={{color: 'var(--text-primary)'}}>Saldo:</strong> {formatStock(mov.new_stock, mov)}</div>
                         <div><strong style={{color: 'var(--text-primary)'}}>Usuário:</strong> {shortUser(session.user_email)}</div>
                     </div>
                     {client && (
@@ -441,19 +447,19 @@ export default function ReportsPage() {
                 doc.text('Data', 14, y);
                 doc.text('Operação', 55, y);
                 doc.text('Produto', 100, y);
-                doc.text('Qtd', 195, y);
-                if (activeTab !== 'entrada') doc.text('Valor', 212, y);
-                doc.text('Saldo', 235, y);
-                doc.text('Usuário', 255, y);
+                doc.text('Qtd', 210, y);
+                if (activeTab !== 'entrada') doc.text('Valor', 227, y);
+                doc.text('Saldo', 250, y);
+                doc.text('Usuário', 268, y);
             } else {
                 doc.text('Data', 14, y);
                 doc.text(clientLabel, 35, y);
                 doc.text('Operação', 75, y);
                 doc.text('Produto', 110, y);
-                doc.text('Qtd', 195, y);
-                if (activeTab !== 'entrada') doc.text('Valor', 212, y);
-                doc.text('Saldo', 235, y);
-                doc.text('Usuário', 255, y);
+                doc.text('Qtd', 210, y);
+                if (activeTab !== 'entrada') doc.text('Valor', 227, y);
+                doc.text('Saldo', 250, y);
+                doc.text('Usuário', 268, y);
             }
             y += 6;
             doc.setFont('helvetica', 'normal');
@@ -487,23 +493,24 @@ export default function ReportsPage() {
                 const price = getProductPrice(m);
                 const qty = Math.abs(m.quantity);
                 
+                const stockStr = formatStock(m.new_stock, m);
                 if (group.isClient) {
                     doc.text(date, 14, y);
                     doc.text((OPERATION_LABELS[s.operation] || s.operation).substring(0, 22), 55, y);
-                    doc.text(getProductName(m).substring(0, 42), 100, y);
-                    doc.text(String(m.quantity), 195, y);
-                    if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 212, y);
-                    doc.text(String(m.new_stock), 235, y);
-                    doc.text(shortUser(s.user_email).substring(0, 20), 255, y);
+                    doc.text(getProductName(m).substring(0, 59), 100, y);
+                    doc.text(String(m.quantity), 210, y);
+                    if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 227, y);
+                    doc.text(stockStr, 250, y);
+                    doc.text(shortUser(s.user_email).substring(0, 20), 268, y);
                 } else {
                     doc.text(date, 14, y);
                     doc.text(extractClient(s).substring(0, 25) || '-', 35, y);
                     doc.text((OPERATION_LABELS[s.operation] || s.operation).substring(0, 20), 75, y);
-                    doc.text(getProductName(m).substring(0, 35), 110, y);
-                    doc.text(String(m.quantity), 195, y);
-                    if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 212, y);
-                    doc.text(String(m.new_stock), 235, y);
-                    doc.text(shortUser(s.user_email).substring(0, 20), 255, y);
+                    doc.text(getProductName(m).substring(0, 49), 110, y);
+                    doc.text(String(m.quantity), 210, y);
+                    if (activeTab !== 'entrada') doc.text(`R$ ${price.toFixed(2)}`, 227, y);
+                    doc.text(stockStr, 250, y);
+                    doc.text(shortUser(s.user_email).substring(0, 20), 268, y);
                 }
                 
                 groupTotalUnits += qty;

@@ -63,6 +63,7 @@
 > Expansão da capacidade de localização de itens e tratamento de modelos sem controle de estoque.
 - [x] **Nova Busca em todo o App**: Além do nome, agora é possível buscar por **SKU**, **Código de Barras** e **ID do Produto** nas telas de PDV, Entrada, Inventário e Relatórios.
 - [x] **Busca Multi-Termos (Agnóstica)**: O motor de busca (`normalizeSearchString`) agora ignora acentos, traços e caracteres especiais. Além disso, a busca processa palavras independentes (ex: digitar "lamina escola" encontra o produto mesmo que a ordem ou palavras no meio divirjam), e o limite de resultados no autocomplete foi ampliado para 50itens.
+- [x] **Fix Truncamento de Busca (Supabase)**: Adicionado `.limit(10000)` à query da API para evitar o truncamento silencioso do PostgREST (limite padrão: 1000 linhas), que causava produtos faltantes nos resultados de busca.
 - [x] **Suporte a Estoque Infinito**: Implementação da regra de negócio para produtos com `stock_management: false` na Nuvemshop.
   - O app ignora alertas de estoque baixo e permite vendas mesmo com saldo "0" (Tratando como `Infinity`).
   - Símbolo **"∞"** exibido nas listas para clareza visual.

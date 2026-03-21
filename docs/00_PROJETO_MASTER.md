@@ -14,9 +14,10 @@
 |---------------------|-----------------|
 | **O que fazer agora?** | [🎯 Fase Atual (Sprint)](./planejamento/02_FASE_ATUAL.md) |
 | **Visão de Futuro** | [🗺️ Roadmap Macro](./planejamento/01_ROADMAP_MACRO.md) |
+| **Regras de Negócio** | [🧠 Funcionamento do Sistema](./planejamento/04_REGRAS_NEGOCIO.md) |
 | **Bugs Conhecidos** | [🐛 Bug Tracker](./rastreamento/BUG_TRACKER.md) |
-| **Horas Trabalhadas** | [⏱️ Timesheet](./rastreamento/TIMESHEET.md) |
-| **Decisões Técnicas** | [🏗️ Arquitetura & Manuais](./tecnico/ARQUITETURA.md) |
+| **Horas Trabalhadas** | [⏱️ Timesheet](./planejamento/TIMESHEET.md) |
+| **Decisões Técnicas** | [🏗️ Arquitetura & Manuais](./ARCHITECTURE.md) |
 
 ---
 

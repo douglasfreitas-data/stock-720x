@@ -626,7 +626,8 @@ Cada execução registra na tabela `sync_logs`:
 
 **Endpoint:** `GET /api/products?search=XXX`
 
-- A busca de produtos agora é processada em memória pelo Node.js após buscar as variantes no Supabase.
+- A busca de produtos é processada em memória pelo Node.js após buscar as variantes no Supabase.
+- **Limite de Query Supabase:** A query utiliza `.limit(10000)` para garantir que todas as variantes sejam retornadas, contornando o limite padrão de 1000 linhas do Supabase PostgREST que truncava silenciosamente os resultados.
 - **Busca Multi-Termos Independente:** A frase pesquisada é dividida em palavras ("lamina escola"). Para dar match, o produto deve conter TODAS as palavras em qualquer ordem.
 - **Insensível a Acentos e Formatação:** O utilitário `normalizeSearchString` (NFD) ignora acentos e converte a string limpando traços e pontuações, garantindo que buscas inexatas funcionem de primeira.
 - Verifica os termos pesquisados nas colunas: Nome, SKU, Barcode e ID.
@@ -786,4 +787,4 @@ Endpoints obrigatórios para compliance com a Nuvemshop. Retornam `200 OK` para 
 
 ---
 
-> **Última atualização:** 20/03/2026 — Gerada por varredura completa do código-fonte.
+> **Última atualização:** 21/03/2026 — Gerada por varredura completa do código-fonte.

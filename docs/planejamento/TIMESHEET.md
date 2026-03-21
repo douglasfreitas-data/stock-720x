@@ -7,8 +7,8 @@
 | Mockup/Protótipo | 34.0h | ✅ Concluído |
 | Desenvolvimento (Fase 2/3) | 99.0h | ✅ Concluído |
 | Produção & Operação F. (Fase 4) | 8.0h | ✅ Concluído |
-| Expansão (Fase 5) | 84.0h | ✅ Concluído |
-| **Total** | **225.0h** | - |
+| Expansão (Fase 5) | 84.5h | ✅ Concluído |
+| **Total** | **225.5h** | - |
 
 ---
 
@@ -85,8 +85,8 @@
 
 ### Fase 5: Expansão
 **Início**: 13/03/2026  
-**Fim**: 20/03/2026
-**Total**: 84.0 horas (Concluída)
+**Fim**: 21/03/2026
+**Total**: 84.5 horas (Concluída)
 
 | Data | Horas | Atividade |
 |------|-------|-----------|
@@ -105,13 +105,14 @@
 | 20/03/2026 | 1.0h | **Manutenção de Docs**: Varredura de código e atualização de Roadmap, Fase Atual e Timesheet. |
 | 20/03/2026 | 3.0h | **Melhorias PDF & Etiquetas QR**: Ampliação em 40% do campo Produto nos PDFs, correção de saldo ∞ em relatórios, rotação 180° da coluna direita das etiquetas QR Code via CTM (Matriz de Transformação PDF). |
 | 20/03/2026 | 2.5h | **Busca Avançada Multi-Termos**: Refatoração do motor de busca para suportar filtragem independente de palavras-chave, insensível a acentos (NFD) e ignorando traços. Substituição de constraints SQL (`ilike`) por processamento in-memory (`normalizeSearchString`) na API para uniformidade com o frontend. |
+| 21/03/2026 | 0.5h | **Fix Truncamento de Busca**: Correção de bug onde o Supabase PostgREST truncava silenciosamente resultados em 1000 linhas, causando produtos faltantes no autocomplete de vendas. Adicionado `.limit(10000)` à query da API. |
 
 ## 📊 Métricas Globais
 
 - **Perfil de Esforço Estimado**: Compatível com 1 Desenvolvedor Pleno/Sênior 
-- **Tempo Acumulado do Projeto**: ~227.5h (aprox. 6 semanas em Full-Time 40h)
+- **Tempo Acumulado do Projeto**: ~228h (aprox. 6 semanas em Full-Time 40h)
 - **Progresso atual**: ~98% (Fase 5 finalizada, pronto para operação plena)
 
 ---
 
-*Última atualização: 20/03/2026 23:50*
+*Última atualização: 21/03/2026 09:42*

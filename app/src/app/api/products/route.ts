@@ -76,8 +76,6 @@ export async function GET(request: NextRequest) {
                 // Todos os termos digitados devem estar presentes em algum campo (AND)
                 return terms.every(term => 
                     nFullName.includes(term) ||
-                    nSku.includes(term) ||
-                    nBarcode.includes(term) ||
                     (!isNaN(searchNumber) && v.id === searchNumber && terms.length === 1)
                 );
             });

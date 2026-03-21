@@ -16,7 +16,7 @@ async function searchProducts(query: string): Promise<Product[]> {
     return data.products || [];
 }
 
-export default function SearchModal({ onSelect, placeholder = 'Nome ou código...', label = 'Buscar Produto' }: SearchModalProps) {
+export default function SearchModal({ onSelect, placeholder = 'Nome ou ID...', label = 'Buscar Produto' }: SearchModalProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Product[]>([]);

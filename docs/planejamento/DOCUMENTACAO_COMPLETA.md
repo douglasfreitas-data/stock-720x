@@ -37,7 +37,7 @@
 O **Stock 720x** é um sistema de **Ponto de Venda (PDV) mobile-first** desenvolvido para sincronizar o estoque físico e online em tempo real. Ele elimina furos de estoque e planilhas manuais, integrando-se diretamente com a **Nuvemshop** como ERP / fonte da verdade.
 
 **Funcionalidades principais:**
-- PDV com leitura de código de barras via câmera do celular
+- PDV com leitura de QR Code via câmera do celular
 - Controle completo de estoque (entradas, saídas, ajustes, inventário)
 - Integração bidirecional com Nuvemshop (dual-write)
 - Reservas de estoque para pedidos online e vendas pendentes (fiado)
@@ -55,7 +55,7 @@ O **Stock 720x** é um sistema de **Ponto de Venda (PDV) mobile-first** desenvol
 |--------|------------|---------------|
 | **Frontend** | Next.js 16 (App Router) + React 19 | Full-stack, PWA instalável no celular |
 | **Estilo** | Tailwind CSS v4 | Prototipagem rápida, design system |
-| **Scanner** | `html5-qrcode` | Leitura de códigos de barras via câmera |
+| **Scanner** | `html5-qrcode` | Leitura de QR Codes via câmera |
 | **PDF/QR** | `jspdf` + `qrcode` | Geração de etiquetas e relatórios PDF |
 | **Banco de Dados** | Supabase (PostgreSQL) | Auth pronto, RLS, realtime |
 | **Integração** | API REST Nuvemshop | Aplicativo Externo (OAuth2) |
@@ -101,7 +101,7 @@ O sistema opera em um modelo **híbrido Sync + Cache**:
 |--------|-----------|
 | `nuvemshop_stores` | Credenciais OAuth2 das lojas (store_id, access_token, scope) |
 | `products` | Cache dos produtos da Nuvemshop (id, name em JSONB, handle, images, published) |
-| `product_variants` | Variantes com estoque real (id, sku, barcode, price, stock, stock_management, min_stock, values, image_url) |
+| `product_variants` | Variantes com estoque real (id, price, stock, stock_management, min_stock, values, image_url) |
 | `stock_sessions` | Sessões de movimentação (tipo, operação, notas, user_email). Cada venda/entrada/ajuste cria uma sessão |
 | `stock_movements` | Itens individuais de cada sessão (variant_id, quantity, old_stock, new_stock) |
 | `pending_sales` | Vendas pendentes / reservas (client_name, items em JSONB, status: pending/completed/canceled) |
@@ -113,9 +113,7 @@ O sistema opera em um modelo **híbrido Sync + Cache**:
 
 | Campo | Descrição |
 |-------|-----------|
-| `id` | ID da variante na Nuvemshop (usado como chave primária) |
-| `barcode` | Código de barras para leitura no scanner |
-| `sku` | Código de referência |
+| `id` | ID da variante na Nuvemshop (chave primária principal) |
 | `stock` | Quantidade atual em estoque |
 | `min_stock` | Estoque mínimo ideal (definido pelo usuário no App, NÃO vem da Nuvemshop) |
 | `stock_management` | `true` = estoque gerenciado, `false` = estoque infinito (∞) |
@@ -124,8 +122,6 @@ O sistema opera em um modelo **híbrido Sync + Cache**:
 
 ### Índices de Performance
 
-- `idx_variants_barcode` — busca ultra-rápida por código de barras
-- `idx_variants_sku` — busca por referência
 - `idx_variants_product_id` — join com a tabela products
 - `idx_products_store_id` — filtro por loja
 
@@ -176,12 +172,12 @@ Lojista → App → Nuvemshop /authorize → Lojista aprova → Callback com cod
 
 Dashboard principal do PDV com acesso rápido a todas as funcionalidades.
 
-### 6.2. Scanner de Código de Barras (`/scan`)
+### 6.2. Scanner de QR Code (`/scan`)
 
 **Arquivo:** [scan/page.tsx](file:///home/douglas/Documentos/Projects/Stock%20-%20720x/app/src/app/(pdv)/scan/page.tsx)
 
 - Utiliza a câmera do dispositivo via `html5-qrcode`
-- Lê códigos de barras EAN-13, Code128, QR Code, entre outros
+- Focado na leitura de **QR Codes** (e fallbacks de ID)
 - Ao ler, busca o produto instantaneamente no Supabase (cache local)
 - Resposta típica: < 50ms (sem chamada à API da Nuvemshop)
 
@@ -340,7 +336,7 @@ Esta é a **função central** do sistema. Toda alteração de estoque passa por
 | `searchProducts(query)` | `GET /products?q=` | Busca por nome |
 | `getProduct(id)` | `GET /products/:id` | Produto individual |
 | `updateVariantStock(productId, variantId, stock)` | `PUT /products/:id/variants/:id` | Atualiza estoque |
-| `findVariantByBarcode(barcode)` | Busca interna | Itera todos os produtos para encontrar por barcode |
+| `findVariantById(id)` | Busca interna | Retorna a variante pelo ID único da Nuvemshop |
 | `getOrders(page, perPage)` | `GET /orders` | Lista pedidos |
 | `getOrder(orderId)` | `GET /orders/:id` | Pedido individual |
 | `getWebhooks()` | `GET /webhooks` | Lista webhooks registrados |
@@ -352,7 +348,7 @@ Esta é a **função central** do sistema. Toda alteração de estoque passa por
 
 | Endpoint | Método | Descrição |
 |----------|--------|-----------|
-| `/api/stock` | `POST` | Baixa de estoque por barcode (venda rápida) |
+| `/api/stock` | `POST` | Baixa de estoque por ID/QR Code (venda rápida) |
 | `/api/stock` | `PUT` | Atualiza estoque direto (product_id, variant_id, stock) |
 
 ---
@@ -550,7 +546,7 @@ Cada execução registra na tabela `sync_logs`:
 - Lista sessões de estoque com seus movimentos detalhados
 - Filtros: data (de/até), tipo (entrada/saída), operação (venda/compra/etc)
 - Join com `stock_movements` → `product_variants` → `products`
-- Inclui: SKU, barcode, nome, preço, valores da variante, usuário responsável
+- Inclui: ID, nome, preço, valores da variante, usuário responsável
 - Limite: 200 registros
 
 ### 15.2. Reposição de Estoque (`/reports/replenishment`)
@@ -604,7 +600,7 @@ Cada execução registra na tabela `sync_logs`:
 **Funcionalidades:**
 - Lista todos os produtos com suas variantes
 - Seleciona produtos para impressão
-- Gera etiquetas com QR code contendo o barcode/ID da variante
+- Gera etiquetas com QR code contendo o ID único da variante
 - Exporta em PDF para impressão em etiquetadoras
 - Usa `jspdf` + `qrcode` para geração
 
@@ -612,13 +608,13 @@ Cada execução registra na tabela `sync_logs`:
 
 ## 18. Busca de Produtos
 
-### 18.1. Busca por Código de Barras (Supabase)
+### 18.1. Busca por ID / QR Code (Supabase)
 
 **Arquivo:** [products.ts](file:///home/douglas/Documentos/Projects/Stock%20-%20720x/app/src/lib/products.ts)
 
 **Endpoint:** `GET /api/products/barcode?code=XXX` ou `?id=XXX`
 
-- Busca na tabela `product_variants` por `barcode`, `sku` ou `id`
+- Busca na tabela `product_variants` primariamente por `id`
 - Resposta instantânea (< 50ms)
 - Join com `products` para nome e imagens
 
@@ -630,7 +626,7 @@ Cada execução registra na tabela `sync_logs`:
 - **Bypassing do Limite Supabase (PostgREST):** Devido ao limite rígido `max-rows` de 1000 linhas por requisição do motor do Supabase, o sistema utiliza um **laço de paginação automática** (`while` + `.range()`) para varrer e acumular todos os produtos/variantes do banco antes do processamento. Isso garante que lojas com mais de 1000 itens (ex: as 1700+ variantes atuais) sejam processadas integralmente sem perdas silenciosas.
 - **Busca Multi-Termos Independente:** A frase pesquisada é dividida em palavras ("lamina escola"). Para dar match, o produto deve conter TODAS as palavras em qualquer ordem.
 - **Insensível a Acentos e Formatação:** O utilitário `normalizeSearchString` (NFD) ignora acentos e converte a string limpando traços e pontuações, garantindo que buscas inexatas funcionem de primeira.
-- Verifica os termos pesquisados nas colunas: Nome, SKU, Barcode e ID.
+- Verifica os termos pesquisados nas colunas: Nome e ID.
 - Limite de 50 resultados retornados para popular modal de autocompletar e tela de Etiquetas de forma abrangente.
 - Sem necessidade de token Nuvemshop.
 
@@ -719,7 +715,7 @@ Endpoints obrigatórios para compliance com a Nuvemshop. Retornam `200 OK` para 
 | `/api/auth/login` | GET | `api/auth/login/route.ts` |
 | `/api/auth/callback` | GET | `api/auth/callback/route.ts` |
 | `/api/products` | GET | `api/products/route.ts` |
-| `/api/products/barcode` | GET | `api/products/barcode/route.ts` |
+| `/api/products/id` | GET | `api/products/barcode/route.ts` |
 | `/api/stock` | POST, PUT | `api/stock/route.ts` |
 | `/api/sync` | GET, POST | `api/sync/route.ts` |
 | `/api/push/subscribe` | POST, DELETE | `api/push/subscribe/route.ts` |
@@ -733,7 +729,7 @@ Endpoints obrigatórios para compliance com a Nuvemshop. Retornam `200 OK` para 
 | Rota | Arquivo | Descrição |
 |------|---------|-----------|
 | `/` | `(pdv)/page.tsx` | Dashboard PDV |
-| `/scan` | `(pdv)/scan/page.tsx` | Scanner de código de barras |
+| `/scan` | `(pdv)/scan/page.tsx` | Scanner de QR Code |
 | `/cart` | `(pdv)/cart/page.tsx` | Carrinho de compras |
 | `/checkout` | `(pdv)/checkout/page.tsx` | Finalização de operação |
 | `/success` | `(pdv)/success/page.tsx` | Confirmação de sucesso |
@@ -771,15 +767,15 @@ Endpoints obrigatórios para compliance com a Nuvemshop. Retornam `200 OK` para 
 | `supabase/` | `client.ts`, `server.ts`, `middleware.ts` | Clientes Supabase (admin / server / middleware) |
 | `sync/` | `products.ts` | Sincronização completa + sync_queue |
 | `push/` | `webpush.ts` | Envio de Web Push (VAPID) |
-| `products.ts` | — | Busca de produtos por barcode/id no Supabase |
+| `products.ts` | — | Busca de produtos por ID no Supabase |
 | `types.ts` | — | Interfaces `Product`, `CartItem` |
 
 ### Componentes Compartilhados (`components/*`)
 
 | Componente | Descrição |
 |------------|-----------|
-| `Scanner.tsx` | Leitura de código de barras via câmera |
-| `SearchModal.tsx` | Modal de busca textual de produtos |
+| `Scanner.tsx` | Leitura de QR Code via câmera |
+| `SearchModal.tsx` | Modal de busca textual de produtos (Nome/ID) |
 | `PrintQRModal.tsx` | Modal para seleção e impressão de QR codes |
 | `OfflineBanner.tsx` | Banner de aviso quando sem internet |
 | `PWAInstallPrompt.tsx` | Prompt para instalação do PWA |

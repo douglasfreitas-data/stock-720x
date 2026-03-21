@@ -61,8 +61,8 @@
 
 ## 🚀 Bloco 5.8: Inteligência de Busca & Estoque Infinito — CONCLUÍDO
 > Expansão da capacidade de localização de itens e tratamento de modelos sem controle de estoque.
-- [x] **Nova Busca em todo o App**: Além do nome, agora é possível buscar por **SKU**, **Código de Barras** e **ID do Produto** nas telas de PDV, Entrada, Inventário e Relatórios.
-- [x] **Busca Multi-Termos (Agnóstica)**: O motor de busca (`normalizeSearchString`) agora ignora acentos, traços e caracteres especiais. Além disso, a busca processa palavras independentes (ex: digitar "lamina escola" encontra o produto mesmo que a ordem ou palavras no meio divirjam), e o limite de resultados no autocomplete foi ampliado para 50itens.
+- [x] **Nova Busca em todo o App**: Além do nome, agora é possível buscar por **ID do Produto** nas telas de PDV, Entrada, Inventário e Relatórios (SKU e Barras foram depreciados como chaves primárias).
+- [x] **Busca Multi-Termos (Agnóstica)**: O motor de busca (`normalizeSearchString`) agora ignora acentos, traços e caracteres especiais. Além disso, a busca processa palavras independentes (ex: digitar "lamina escola" encontra o produto mesmo que a ordem ou palavras no meio divirjam), e o limite de resultados no autocomplete foi ampliado para 50 itens.
 - [x] **Fix Truncamento de Busca (Supabase)**: Implementação de um laço de **paginação automática** (`while` + `.range()`) na query da API para contornar o limite rígido de 1000 linhas do PostgREST (Supabase). Isso garante que o motor de busca em memória processe todas as 1700+ variantes sem perdas silenciosas de resultados.
 - [x] **Blindagem Preventiva**: Mesma lógica de paginação estendida às telas de **Lista de Produtos** e **Geração de Etiquetas QR** para evitar que o crescimento da loja amanhã (passando de 1000 produtos-pai) quebre a visualização nessas páginas.
 - [x] **Suporte a Estoque Infinito**: Implementação da regra de negócio para produtos com `stock_management: false` na Nuvemshop.
@@ -70,7 +70,7 @@
   - Símbolo **"∞"** exibido nas listas para clareza visual.
   - Sincronização automática ignora divergências para estes itens.
 - [x] **Refinamento de UX (Toast)**: Redução de pop-ups intrusivos (removido "Produto Adicionado/Encontrado") para agilizar a operação de caixa.
-- [x] **Placeholders Inteligentes**: Atualização de todos os inputs de busca para informar os novos critérios (Nome, Código ou Barras).
+- [x] **Placeholders Inteligentes**: Atualização de todos os inputs de busca para informar os novos critérios (Nome ou ID).
 
 ## 📄 Bloco 5.9: Melhorias em Relatórios PDF & Etiquetas QR — CONCLUÍDO
 > Correções de exibição e melhorias de usabilidade nos PDFs gerados pelo sistema.

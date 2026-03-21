@@ -15,7 +15,7 @@ O Stock 720x funciona como um aplicativo no seu celular sem precisar baixar da A
 
 ## 2. Realizando Vendas (PDV)
 1.  Na tela inicial, clique em **"Vender / Escanear"**.
-2.  Aponte a câmera para o código de barras ou QR Code do produto.
+2.  Aponte a câmera para o QR Code do produto.
 3.  O item irá para o Carrinho. Clique no ícone do **Carrinho** para ver a lista.
 4.  **No Carrinho você pode:**
     - Alterar a quantidade.
@@ -54,8 +54,6 @@ Para conferir se o que está na prateleira bate com o sistema:
 ## 6. Busca de Produtos
 Em qualquer tela que tenha uma lupa ou campo de busca, você pode procurar por:
 - **Nome do produto** (Ex: "camisa azul").
-- **SKU** (Código de referência).
-- **Código de Barras** (Digitando o número).
 - **ID** (O número interno do produto).
 
 *Dica: A busca funciona mesmo se você esquecer os acentos ou inverter a ordem das palavras!*
@@ -66,11 +64,17 @@ Em qualquer tela que tenha uma lupa ou campo de busca, você pode procurar por:
 O sistema avisa você quando um produto está acabando:
 1.  **Ativação:** Na tela inicial, se aparecer um botão "Ativar Alertas", clique nele e aceite as notificações do navegador.
 2.  Sempre que um item chegar no "Estoque Mínimo", você receberá um aviso no celular.
-3.  Veja a lista completa do que comprar em **"Relatórios"** > **"Reposição Disponível"**.
 
 ---
 
-## 8. Impressão de Etiquetas
+## 8. Relatórios Sugeridos
+Para acompanhar a saúde da loja, clique em **"Relatórios"** na tela inicial:
+- **Histórico de Movimentações:** Veja tudo o que entrou e saiu (vendas, compras, ajustes) com data e quem realizou a ação.
+- **Relatório de Reposição:** Lista automática do que você precisa comprar, baseada no estoque mínimo. Você pode gerar um PDF clicando em "Gerar PDF para Compra".
+
+---
+
+## 9. Impressão de Etiquetas
 1.  Vá em **"Lista de Produtos"** > **"Imprimir QR Code"**.
 2.  Selecione os produtos que deseja etiquetar.
 3.  Clique em **"Gerar PDF"**.
@@ -78,7 +82,7 @@ O sistema avisa você quando um produto está acabando:
 
 ---
 
-## 9. Modo Offline
+## 10. Modo Offline
 Se a internet cair, **não pare de vender!**
 - O sistema permite continuar registrando vendas e entradas mesmo sem internet.
 - Assim que a conexão voltar, o sistema sincronizará as informações automaticamente com a Nuvemshop em segundo plano.
